@@ -8,7 +8,7 @@
     "build": "rimraf build && mkdir -p build && cp public/* build/ && webpack",
     "watch": "run-p watch:*",
     "watch:client": "webpack --watch",
-    "watch:server": "PUSHER_APP_ID=296195 PUSHER_APP_KEY=8dfa4a5831cd9c0be510 PUSHER_APP_SECRET=e862904922c335204b8a nodemon server.js"
+    "watch:server": "nodemon server.js"
   },
   "keywords": [],
   "author": "Tim Paik",
@@ -20,7 +20,7 @@
     "moment": "^2.17.1",
     "mongoose": "^4.6.4",
     "path": "^0.12.7",
-    "pusher": "^1.5.0",
+    "pusher": "^1.5.1",
     "react": "^15.4.2",
     "react-addons-css-transition-group": "15.4.2",
     "react-dom": "^15.4.2",

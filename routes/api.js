@@ -4,19 +4,19 @@ var express = require('express');
 var router = express.Router();
 
 var pusher = new Pusher({
-  appId      : process.env.PUSHER_APP_ID,
-  key        : process.env.PUSHER_APP_KEY,
-  secret     : process.env.PUSHER_APP_SECRET,
-  encrypted  : true,
+  appId: '296195',
+  key: '8dfa4a5831cd9c0be510',
+  secret: 'e862904922c335204b8a',
+  encrypted: true
 });
-var channel = 'events_to_be_shown';
+var channel = 'project_posts';
 
 router.post('/post', function (req, res) {
   Post.create({
     accessCode: req.body.accessCode,
     username: req.body.username,
     content: req.body.content,
-    notes: req.body.notes,
+    comment: req.body.comment,
     insertedAt: new Date(),
   }, function (err, post) {
     if (err) {
@@ -25,13 +25,13 @@ router.post('/post', function (req, res) {
     } else {
       pusher.trigger(
         channel,
-        'newPosts', 
+        'new_post', 
         {
           accessCode: post.accessCode,
           username: post.username,
           date: post.insertedAt,
           content: post.content,
-          notes: post.notes
+          comment: post.comment
         }
       );
     }

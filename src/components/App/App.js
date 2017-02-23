@@ -1,11 +1,12 @@
 var React = require('react');
 var UserForms = require('../UserForms/UserForms');
-var Events = require('../Events/Events');
+var Posts = require('../Posts/Posts');
+var PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
 
 var App = React.createClass({
   getInitialState: function() {
     return {
-      events: [],
+      posts: [],
       matchCode: ''
     };
   },
@@ -14,11 +15,11 @@ var App = React.createClass({
     this.pusher = new Pusher(PUSHER_APP_KEY, {
       encrypted: true,
     });
-    this.channel = this.pusher.subscribe('events_to_be_shown');
+    this.channel = this.pusher.subscribe('project_posts');
   },
 
   componentDidMount: function() {
-    this.channel.bind('newPosts', this.updateEvents);
+    this.channel.bind('new_post', this.updatePosts);
   },
 
   componentWillUnmount: function() {
@@ -27,25 +28,25 @@ var App = React.createClass({
     this.pusher.unsubscribe(this.channel);
   },
 
-  updateEvents: function(data) {
-    var newArray = this.state.events;
+  updatePosts: function(data) {
+    var newArray = this.state.posts;
     newArray.push(data);
     this.setState({
-      events: newArray,
+      posts: newArray,
     });
   },
 
   render: function() {
     return (
       <div>
-        <Events events={this.state.events} matchCode={this.state.matchCode} ref="events" />
+        <Posts posts={this.state.posts} matchCode={this.state.matchCode} ref="posts" />
         <UserForms showOldPosts={this.showOldPosts} getAccessCode={this.getAccessCode} />
       </div>
     );
   },
   
   showOldPosts: function(data) {
-    this.setState({events: data});
+    this.setState({posts: data});
   },
   
   getAccessCode: function(accessCode) {

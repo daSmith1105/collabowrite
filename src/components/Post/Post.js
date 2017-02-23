@@ -4,7 +4,7 @@ var diffString = require('./jsdiff');
 var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
 
-var Event = React.createClass({
+var Post = React.createClass({
   getInitialState: function() {
     return {
       showCommand: true,
@@ -13,12 +13,12 @@ var Event = React.createClass({
   },
   
   render: function() {
-    var username = this.props.event.username;
-    var date = moment(this.props.event.insertedAt).fromNow();
-    var content = this.props.event.content;
-    var prevContent = this.props.event.prevContent;
+    var username = this.props.post.username;
+    var date = moment(this.props.post.insertedAt).fromNow();
+    var content = this.props.post.content;
+    var prevContent = this.props.post.prevContent;
     var diff = diffString(prevContent, content);
-    var notes = this.props.event.notes;   
+    var comment = this.props.post.comment;   
     if (this.props.id == 0) {
       return (
         <li className={'evt'}>
@@ -26,7 +26,7 @@ var Event = React.createClass({
           <br />
           <div className={'evt-name'}>{username} originally wrote,</div>
           <div className={'evt-name'}>{content}</div>
-          <div className={'evt-name'}>Note - {notes}</div>
+          <div className={'evt-name'}>Note - {comment}</div>
           <div className={'evt-name'}>Posted {date}</div>
         </li>        
       );
@@ -43,7 +43,7 @@ var Event = React.createClass({
               <div className={'evt-name'} dangerouslySetInnerHTML={{__html: diff}}></div>
               <div className={'evt-name'} onClick={this.hideDiff}>- Hide changes from previous version</div>
             </div> : null }
-            <div className={'evt-name'}>Note - {notes}</div>
+            <div className={'evt-name'}>Note - {comment}</div>
             <div className={'evt-name'}>Posted {date}</div>
           </li>
         );
@@ -51,7 +51,7 @@ var Event = React.createClass({
         return (
           <li className={'evt'}>
             <div className={'evt-name'}>{username} commented:</div>
-            <div className={'evt-name'}>{notes}</div>
+            <div className={'evt-name'}>{comment}</div>
             <div className={'evt-name'}>Posted {date}</div>
           </li>
         );        
@@ -78,4 +78,4 @@ var Event = React.createClass({
   }
 });
 
-module.exports = Event;
+module.exports = Post;

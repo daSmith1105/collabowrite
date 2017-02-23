@@ -1,31 +1,31 @@
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var Event = require('../Event/Event');
+var Post = require('../Post/Post');
 
-var Events = React.createClass({
+var Posts = React.createClass({
 	render: function() {
-	  var eventsArray = this.props.events;
-    for (var i = 0; i < eventsArray.length; i++) { 
+	  var postsArray = this.props.posts;
+    for (var i = 0; i < postsArray.length; i++) { 
       if (i === 0) {
-  	    eventsArray[i].prevContent = eventsArray[i].content;        
+  	    postsArray[i].prevContent = postsArray[i].content;        
       } else {
-        eventsArray[i].prevContent = eventsArray[i-1].content;
+        postsArray[i].prevContent = postsArray[i-1].content;
       }
 	  }
-    var eventsMapped = eventsArray.map(function (evt, index) {
+    var postsMapped = postsArray.map(function (evt, index) {
       const key = index;
       if (this.props.matchCode === evt.accessCode) {
-        return <Event event={evt} key={key} id={key} />;
+        return <Post post={evt} key={key} id={key} />;
       }
     }.bind(this));
     return <section className={'blue-gradient-background intro-splash splash'}>
              <div className={'container center-all-container'}>
                <ReactCSSTransitionGroup component="ul" className="evts" transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-                 {eventsMapped}
+                 {postsMapped}
                </ReactCSSTransitionGroup>
              </div>
            </section>;
 	}
 });
 
-module.exports = Events;
+module.exports = Posts;

@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.use('/', index);
 app.use('/api', api);
 
-mongoose.connect('mongodb://admin:password@ds137749.mlab.com:37749/pusher');
+mongoose.connect('mongodb://admin:password@ds137149.mlab.com:37149/collabowrite');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection Error:'));

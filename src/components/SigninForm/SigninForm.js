@@ -24,7 +24,7 @@ var SigninForm = React.createClass({
           <br />
           <label>Comment on what you're writing about and what you'd like others to focus on.</label>
           <br/>
-          <textarea required ref="notes" />
+          <textarea required ref="comment" />
           <br/>
           <label>Share your initial version of the writing.</label>
           <br/>
@@ -54,7 +54,7 @@ var SigninForm = React.createClass({
     var candidateCode = Math.random().toString(36).substr(2, 4);
     $.get('/api/posts/' + candidateCode, function(data){
       var match = false;
-      if (data !== []) { match = true }
+      if (data.length !== 0) { match = true }
       if (match) {
         candidateCode = Math.random().toString(36).substr(2, 4);
         this.refs.newAccessCode.value = candidateCode;
@@ -89,7 +89,7 @@ var SigninForm = React.createClass({
       accessCode: this.refs.newAccessCode.value,
       username: this.refs.newUsername.value,
       content: this.refs.content.value,
-      notes: this.refs.notes.value
+      comment: this.refs.comment.value
     };
   
     $.ajax('/api/post', {
@@ -108,7 +108,15 @@ var SigninForm = React.createClass({
   
   storeSigninVars: function(e) {
     e.preventDefault();
-    this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
+    $.get('/api/posts/' + this.refs.accessCode.value, function(data){
+      var noMatch = false;
+      if (data.length === 0) { noMatch = true }
+      if (noMatch) {
+        alert('The project access code you typed in is not valid. Please check again!');
+      } else {
+        this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
+      }
+    }.bind(this));
   }
 });
 

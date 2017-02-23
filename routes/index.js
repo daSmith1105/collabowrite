@@ -1,9 +1,9 @@
 var express = require("express");
 var router = express.Router();
 
-/* GET home page. */
+//Get homepage
 router.get("/", function (req, res) {
-  res.render('index', { pusher_app_key : process.env.PUSHER_APP_KEY });
+  res.render('index', { pusher_app_key : '8dfa4a5831cd9c0be510' });
 });
 
 module.exports = router;

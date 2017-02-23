@@ -28,7 +28,7 @@ var PostForm = React.createClass({
           <br/>
           <label>Share a comment about the writing above.</label>
           <br/>
-          <input type="text" autoFocus required ref="revisionNotes" />
+          <input type="text" autoFocus required ref="revisionComment" />
           <br/>
           <input type="submit" value="Submit your ideas" />
           <button onClick={this.goBack}>Back</button>
@@ -36,7 +36,7 @@ var PostForm = React.createClass({
         {this.state.showCommentForm ? <form onSubmit={this.addComment}>
           <label>Post a comment.</label>
           <br/>
-          <input type="text" autoFocus required ref="commentNotes" />
+          <input type="text" autoFocus required ref="commentOnly" />
           <br/>
           <input type="submit" value="Submit your ideas" />
           <button onClick={this.goBack}>Back</button>
@@ -81,7 +81,7 @@ var PostForm = React.createClass({
       accessCode: this.props.accessCode,
       username: this.props.username,
       content: this.refs.revisionContent.value,
-      notes: this.refs.revisionNotes.value
+      comment: this.refs.revisionComment.value
     };
   
     $.ajax('/api/post', {
@@ -114,7 +114,7 @@ var PostForm = React.createClass({
       accessCode: this.props.accessCode,
       username: this.props.username,
       content: this.state.latestContent,
-      notes: this.refs.commentNotes.value
+      comment: this.refs.commentOnly.value
     };
   
     $.ajax('/api/post', {
