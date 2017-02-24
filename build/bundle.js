@@ -37117,393 +37117,8 @@ if(false) {
 /* 210 */,
 /* 211 */,
 /* 212 */,
-/* 213 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var React = __webpack_require__(12);
-var $ = __webpack_require__(35);
-var Scroll = __webpack_require__(198);
-var scroll = Scroll.animateScroll;
-
-var PostForm = React.createClass({
-  displayName: 'PostForm',
-
-  getInitialState: function getInitialState() {
-    return {
-      showButtons: true,
-      showReviseForm: false,
-      showCommentForm: false,
-      latestContent: ''
-    };
-  },
-
-  render: function render() {
-    return React.createElement(
-      'div',
-      null,
-      this.state.showButtons ? React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'button',
-          { autoFocus: true, id: 'revise', onClick: this.showReviseForm },
-          'Revise'
-        ),
-        React.createElement(
-          'button',
-          { id: 'comment', onClick: this.showCommentForm },
-          'Comment'
-        ),
-        React.createElement(
-          'button',
-          { id: 'scrollup', onClick: this.scrollUp },
-          'Read original'
-        )
-      ) : true,
-      this.state.showReviseForm ? React.createElement(
-        'form',
-        { onSubmit: this.addRevision },
-        React.createElement(
-          'label',
-          null,
-          'Make changes or leave as is if you wish to simply comment on it.'
-        ),
-        React.createElement('br', null),
-        React.createElement('textarea', { required: true, ref: 'revisionContent' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Share a comment about the writing above.'
-        ),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'revisionComment' }),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'submit', value: 'Submit your ideas' }),
-        React.createElement(
-          'button',
-          { onClick: this.goBack },
-          'Back'
-        )
-      ) : false,
-      this.state.showCommentForm ? React.createElement(
-        'form',
-        { onSubmit: this.addComment },
-        React.createElement(
-          'label',
-          null,
-          'Post a comment.'
-        ),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly' }),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'submit', value: 'Submit your ideas' }),
-        React.createElement(
-          'button',
-          { onClick: this.goBack },
-          'Back'
-        )
-      ) : false
-    );
-  },
-
-  showReviseForm: function showReviseForm(e) {
-    e.preventDefault();
-
-    $.get('/api/posts/latest/' + this.props.accessCode, function (data) {
-      this.setState({
-        showButtons: false,
-        showReviseForm: true
-      });
-      this.refs.revisionContent.value = data.content;
-    }.bind(this));
-  },
-
-  showCommentForm: function showCommentForm(e) {
-    e.preventDefault();
-
-    $.get('/api/posts/latest/' + this.props.accessCode, function (data) {
-      this.setState({
-        showButtons: false,
-        showCommentForm: true,
-        latestContent: data.content
-      });
-    }.bind(this));
-  },
-
-  scrollUp: function scrollUp() {
-    scroll.scrollToTop();
-  },
-
-  addRevision: function addRevision(e) {
-    e.preventDefault();
-
-    var data = {
-      accessCode: this.props.accessCode,
-      username: this.props.username,
-      content: this.refs.revisionContent.value,
-      comment: this.refs.revisionComment.value
-    };
-
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    }).done(function (data) {
-      console.log('Successfully posted to database.');
-      console.log(data);
-      scroll.scrollToBottom();
-    }).fail(function () {
-      console.log('Failed to post to database.');
-    });
-
-    this.setState({
-      showButtons: true,
-      showReviseForm: false,
-      showCommentForm: false,
-      latestContent: ''
-    });
-  },
-
-  addComment: function addComment(e) {
-    e.preventDefault();
-
-    var data = {
-      accessCode: this.props.accessCode,
-      username: this.props.username,
-      content: this.state.latestContent,
-      comment: this.refs.commentOnly.value
-    };
-
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    }).done(function (data) {
-      console.log('Successfully posted to database.');
-      console.log(data);
-      scroll.scrollToBottom();
-    }).fail(function () {
-      console.log('Failed to post to database.');
-    });
-
-    this.setState({
-      showButtons: true,
-      showReviseForm: false,
-      showCommentForm: false,
-      latestContent: ''
-    });
-  },
-
-  goBack: function goBack(e) {
-    e.preventDefault();
-    this.setState({
-      showButtons: true,
-      showReviseForm: false,
-      showCommentForm: false,
-      latestContent: ''
-    });
-  }
-
-});
-
-module.exports = PostForm;
-
-/***/ }),
-/* 214 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var React = __webpack_require__(12);
-var $ = __webpack_require__(35);
-
-var SigninForm = React.createClass({
-  displayName: 'SigninForm',
-
-  getInitialState: function getInitialState() {
-    return {
-      showButtons: true,
-      showNewForm: false,
-      showJoinForm: false
-    };
-  },
-
-  render: function render() {
-    return React.createElement(
-      'div',
-      null,
-      this.state.showButtons ? React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'button',
-          { id: 'newproject', onClick: this.showNewForm },
-          'Start a new project'
-        ),
-        React.createElement(
-          'button',
-          { id: 'joinproject', onClick: this.showJoinForm },
-          'Join in on a project'
-        )
-      ) : true,
-      this.state.showNewForm ? React.createElement(
-        'form',
-        { id: 'newform', onSubmit: this.createNewPost },
-        React.createElement(
-          'label',
-          null,
-          'This is your project access code. Please write it down!'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', required: true, ref: 'newAccessCode', readOnly: true }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Enter your name'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Comment on what you\'re writing about and what you\'d like others to focus on.'
-        ),
-        React.createElement('br', null),
-        React.createElement('textarea', { required: true, ref: 'comment' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Share your initial version of the writing.'
-        ),
-        React.createElement('br', null),
-        React.createElement('textarea', { required: true, ref: 'content' }),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'submit', value: 'Start a new project' }),
-        React.createElement(
-          'button',
-          { onClick: this.goBack },
-          'Back'
-        )
-      ) : false,
-      this.state.showJoinForm ? React.createElement(
-        'form',
-        { id: 'joinform', onSubmit: this.storeSigninVars },
-        React.createElement(
-          'label',
-          null,
-          'Project access code'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'accessCode' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Username'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', required: true, ref: 'username' }),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'submit', value: 'Join in on the project' }),
-        React.createElement(
-          'button',
-          { onClick: this.goBack },
-          'Back'
-        )
-      ) : false
-    );
-  },
-
-  showNewForm: function showNewForm(e) {
-    e.preventDefault();
-    this.setState({
-      showButtons: false,
-      showNewForm: true
-    });
-    var candidateCode = Math.random().toString(36).substr(2, 4);
-    $.get('/api/posts/' + candidateCode, function (data) {
-      var match = false;
-      if (data.length !== 0) {
-        match = true;
-      }
-      if (match) {
-        candidateCode = Math.random().toString(36).substr(2, 4);
-        this.refs.newAccessCode.value = candidateCode;
-      } else {
-        this.refs.newAccessCode.value = candidateCode;
-      }
-    }.bind(this));
-  },
-
-  showJoinForm: function showJoinForm(e) {
-    e.preventDefault();
-    this.setState({
-      showButtons: false,
-      showJoinForm: true
-    });
-  },
-
-  goBack: function goBack(e) {
-    e.preventDefault();
-    this.setState({
-      showButtons: true,
-      showNewForm: false,
-      showJoinForm: false
-    });
-  },
-
-  createNewPost: function createNewPost(e) {
-    e.preventDefault();
-    this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
-
-    var data = {
-      accessCode: this.refs.newAccessCode.value,
-      username: this.refs.newUsername.value,
-      content: this.refs.content.value,
-      comment: this.refs.comment.value
-    };
-
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    }).done(function (data) {
-      console.log('Successfully posted to database.');
-    }).fail(function () {
-      console.log('Failed to post to database.');
-    });
-  },
-
-  storeSigninVars: function storeSigninVars(e) {
-    e.preventDefault();
-    $.get('/api/posts/' + this.refs.accessCode.value, function (data) {
-      var noMatch = false;
-      if (data.length === 0) {
-        noMatch = true;
-      }
-      if (noMatch) {
-        alert('The project access code you typed in is not valid. Please check again!');
-      } else {
-        this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
-      }
-    }.bind(this));
-  }
-});
-
-module.exports = SigninForm;
-
-/***/ }),
+/* 213 */,
+/* 214 */,
 /* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -37511,8 +37126,8 @@ module.exports = SigninForm;
 
 
 var React = __webpack_require__(12);
-var SigninForm = __webpack_require__(214);
-var PostForm = __webpack_require__(213);
+var SigninForm = __webpack_require__(330);
+var PostForm = __webpack_require__(329);
 var $ = __webpack_require__(35);
 
 var UserForms = React.createClass({
@@ -37559,7 +37174,6 @@ var UserForms = React.createClass({
 
     $.get('/api/posts/' + accessCode, function (data) {
       this.props.showOldPosts(data);
-      console.log('Loaded old posts and stored signin variables.');
     }.bind(this));
   }
 });
@@ -50650,7 +50264,432 @@ __webpack_require__(209);
 ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
 
 /***/ }),
-/* 326 */
+/* 326 */,
+/* 327 */,
+/* 328 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(12);
+var Post = __webpack_require__(331);
+var ReactCSSTransitionGroup = __webpack_require__(234);
+
+var Posts = React.createClass({
+  displayName: 'Posts',
+
+  render: function render() {
+    var postsArray = this.props.posts;
+
+    for (var i = 0; i < postsArray.length; i++) {
+      if (i === 0) {
+        postsArray[i].prevContent = postsArray[i].content;
+      } else {
+        postsArray[i].prevContent = postsArray[i - 1].content;
+      }
+    }
+
+    var postsMapped = postsArray.map(function (evt, index) {
+      var key = index;
+      if (this.props.matchCode === evt.accessCode) {
+        return React.createElement(Post, { post: evt, key: key, id: key });
+      }
+    }.bind(this));
+
+    return React.createElement(
+      'section',
+      { className: 'blue-gradient-background intro-splash splash' },
+      React.createElement(
+        'div',
+        { className: 'container center-all-container' },
+        React.createElement(
+          ReactCSSTransitionGroup,
+          { component: 'ul', className: 'evts', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          postsMapped
+        )
+      )
+    );
+  }
+});
+
+module.exports = Posts;
+
+/***/ }),
+/* 329 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(12);
+var $ = __webpack_require__(35);
+var Scroll = __webpack_require__(198);
+var scroll = Scroll.animateScroll;
+
+var PostForm = React.createClass({
+  displayName: 'PostForm',
+
+  getInitialState: function getInitialState() {
+    return {
+      showButtons: true,
+      showReviseForm: false,
+      showCommentForm: false,
+      latestContent: ''
+    };
+  },
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      null,
+      this.state.showButtons ? React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'button',
+          { autoFocus: true, className: 'revise', onClick: this.showReviseForm },
+          'Revise'
+        ),
+        React.createElement(
+          'button',
+          { className: 'comment', onClick: this.showCommentForm },
+          'Comment'
+        ),
+        React.createElement(
+          'button',
+          { className: 'scrollup', onClick: this.scrollUp },
+          'Read original'
+        )
+      ) : true,
+      this.state.showReviseForm ? React.createElement(
+        'form',
+        { onSubmit: this.addRevision },
+        React.createElement(
+          'label',
+          null,
+          'Make changes or leave as is if you wish to simply comment on it.'
+        ),
+        React.createElement('br', null),
+        React.createElement('textarea', { required: true, ref: 'revisionContent' }),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Share a comment about the writing above.'
+        ),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'revisionComment' }),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'submit', value: 'Submit your ideas' }),
+        React.createElement(
+          'button',
+          { onClick: this.goBack },
+          'Back'
+        )
+      ) : false,
+      this.state.showCommentForm ? React.createElement(
+        'form',
+        { onSubmit: this.addComment },
+        React.createElement(
+          'label',
+          null,
+          'Post a comment.'
+        ),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly' }),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'submit', value: 'Submit your ideas' }),
+        React.createElement(
+          'button',
+          { onClick: this.goBack },
+          'Back'
+        )
+      ) : false
+    );
+  },
+
+  showReviseForm: function showReviseForm() {
+    $.get('/api/posts/latest/' + this.props.accessCode, function (data) {
+      this.setState({
+        showButtons: false,
+        showReviseForm: true
+      });
+
+      this.refs.revisionContent.value = data.content;
+    }.bind(this));
+  },
+
+  showCommentForm: function showCommentForm() {
+    $.get('/api/posts/latest/' + this.props.accessCode, function (data) {
+      this.setState({
+        showButtons: false,
+        showCommentForm: true,
+        latestContent: data.content
+      });
+    }.bind(this));
+  },
+
+  scrollUp: function scrollUp() {
+    scroll.scrollToTop();
+  },
+
+  addRevision: function addRevision(e) {
+    e.preventDefault();
+
+    var data = {
+      accessCode: this.props.accessCode,
+      username: this.props.username,
+      content: this.refs.revisionContent.value,
+      comment: this.refs.revisionComment.value
+    };
+
+    $.ajax('/api/post', {
+      type: 'POST',
+      data: JSON.stringify(data),
+      datatype: 'json',
+      contentType: 'application/json'
+    }).done(function () {
+      console.log('Successfully posted.');
+      scroll.scrollToBottom();
+    }).fail(function () {
+      console.log('Failed to post.');
+    });
+
+    this.setState({
+      showButtons: true,
+      showReviseForm: false,
+      showCommentForm: false,
+      latestContent: ''
+    });
+  },
+
+  addComment: function addComment(e) {
+    e.preventDefault();
+
+    var data = {
+      accessCode: this.props.accessCode,
+      username: this.props.username,
+      content: this.state.latestContent,
+      comment: this.refs.commentOnly.value
+    };
+
+    $.ajax('/api/post', {
+      type: 'POST',
+      data: JSON.stringify(data),
+      datatype: 'json',
+      contentType: 'application/json'
+    }).done(function () {
+      console.log('Successfully posted.');
+      scroll.scrollToBottom();
+    }).fail(function () {
+      console.log('Failed to post.');
+    });
+
+    this.setState({
+      showButtons: true,
+      showReviseForm: false,
+      showCommentForm: false,
+      latestContent: ''
+    });
+  },
+
+  goBack: function goBack() {
+    this.setState({
+      showButtons: true,
+      showReviseForm: false,
+      showCommentForm: false,
+      latestContent: ''
+    });
+  }
+
+});
+
+module.exports = PostForm;
+
+/***/ }),
+/* 330 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(12);
+var $ = __webpack_require__(35);
+
+var SigninForm = React.createClass({
+  displayName: 'SigninForm',
+
+  getInitialState: function getInitialState() {
+    return {
+      showButtons: true,
+      showNewForm: false,
+      showJoinForm: false
+    };
+  },
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      null,
+      this.state.showButtons ? React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'button',
+          { id: 'newproject', onClick: this.showNewForm },
+          'Start a new project'
+        ),
+        React.createElement(
+          'button',
+          { id: 'joinproject', onClick: this.showJoinForm },
+          'Join in on a project'
+        )
+      ) : true,
+      this.state.showNewForm ? React.createElement(
+        'form',
+        { id: 'newform', onSubmit: this.createNewPost },
+        React.createElement(
+          'label',
+          null,
+          'This is your project access code. Please write it down!'
+        ),
+        '\xA0',
+        React.createElement('input', { type: 'text', required: true, ref: 'newAccessCode', readOnly: true }),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Enter your name'
+        ),
+        '\xA0',
+        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Comment on what you\'re writing about and what you\'d like others to focus on.'
+        ),
+        React.createElement('br', null),
+        React.createElement('textarea', { required: true, ref: 'comment' }),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Share your initial version of the writing.'
+        ),
+        React.createElement('br', null),
+        React.createElement('textarea', { required: true, ref: 'content' }),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'submit', value: 'Start a new project' }),
+        React.createElement(
+          'button',
+          { onClick: this.goBack },
+          'Back'
+        )
+      ) : false,
+      this.state.showJoinForm ? React.createElement(
+        'form',
+        { id: 'joinform', onSubmit: this.storeSigninVars },
+        React.createElement(
+          'label',
+          null,
+          'Project access code'
+        ),
+        '\xA0',
+        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'accessCode' }),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Username'
+        ),
+        '\xA0',
+        React.createElement('input', { type: 'text', required: true, ref: 'username' }),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'submit', value: 'Join in on the project' }),
+        React.createElement(
+          'button',
+          { onClick: this.goBack },
+          'Back'
+        )
+      ) : false
+    );
+  },
+
+  showNewForm: function showNewForm() {
+    this.setState({
+      showButtons: false,
+      showNewForm: true
+    });
+
+    var candidateCode = Math.random().toString(36).substr(2, 4);
+
+    $.get('/api/posts/' + candidateCode, function (data) {
+      if (data.length !== 0) {
+        candidateCode = Math.random().toString(36).substr(2, 4);
+        this.refs.newAccessCode.value = candidateCode;
+      } else {
+        this.refs.newAccessCode.value = candidateCode;
+      }
+    }.bind(this));
+  },
+
+  showJoinForm: function showJoinForm() {
+    this.setState({
+      showButtons: false,
+      showJoinForm: true
+    });
+  },
+
+  createNewPost: function createNewPost(e) {
+    e.preventDefault();
+
+    this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
+
+    var data = {
+      accessCode: this.refs.newAccessCode.value,
+      username: this.refs.newUsername.value,
+      content: this.refs.content.value,
+      comment: this.refs.comment.value
+    };
+
+    $.ajax('/api/post', {
+      type: 'POST',
+      data: JSON.stringify(data),
+      datatype: 'json',
+      contentType: 'application/json'
+    }).done(function () {
+      console.log('Successfully posted.');
+    }).fail(function () {
+      console.log('Failed to post.');
+    });
+  },
+
+  storeSigninVars: function storeSigninVars(e) {
+    e.preventDefault();
+    $.get('/api/posts/' + this.refs.accessCode.value, function (data) {
+      if (data.length === 0) {
+        alert('The project access code you typed in is not valid. Please check again!');
+      } else {
+        this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
+      }
+    }.bind(this));
+  },
+
+  goBack: function goBack() {
+    this.setState({
+      showButtons: true,
+      showNewForm: false,
+      showJoinForm: false
+    });
+  }
+});
+
+module.exports = SigninForm;
+
+/***/ }),
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50658,9 +50697,9 @@ ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
 
 var React = __webpack_require__(12);
 var moment = __webpack_require__(0);
-var diffString = __webpack_require__(327);
 var Scroll = __webpack_require__(198);
 var scroll = Scroll.animateScroll;
+var diffString = __webpack_require__(332);
 
 var Post = React.createClass({
   displayName: 'Post',
@@ -50679,15 +50718,18 @@ var Post = React.createClass({
     var prevContent = this.props.post.prevContent;
     var diff = diffString(prevContent, content);
     var comment = this.props.post.comment;
+
+    //For original post
     if (this.props.id == 0) {
       return React.createElement(
         'li',
         { className: 'evt' },
         React.createElement(
-          'div',
-          { className: 'evt-name', onClick: this.scrollDown },
-          'SCROLL DOWN TO THE LATEST VERSION'
+          'button',
+          { onClick: this.scrollDown },
+          'Latest discussion'
         ),
+        React.createElement('br', null),
         React.createElement('br', null),
         React.createElement(
           'div',
@@ -50714,6 +50756,7 @@ var Post = React.createClass({
         )
       );
     } else {
+      //For revisions
       if (content !== prevContent) {
         return React.createElement(
           'li',
@@ -50747,7 +50790,7 @@ var Post = React.createClass({
               { className: 'evt-name', onClick: this.hideDiff },
               '- Hide changes from previous version'
             )
-          ) : null,
+          ) : false,
           React.createElement(
             'div',
             { className: 'evt-name' },
@@ -50762,6 +50805,7 @@ var Post = React.createClass({
           )
         );
       } else {
+        //For comments
         return React.createElement(
           'li',
           { className: 'evt' },
@@ -50809,7 +50853,7 @@ var Post = React.createClass({
 module.exports = Post;
 
 /***/ }),
-/* 327 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50969,53 +51013,6 @@ function diff(o, n) {
 }
 
 module.exports = diffString;
-
-/***/ }),
-/* 328 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var React = __webpack_require__(12);
-var ReactCSSTransitionGroup = __webpack_require__(234);
-var Post = __webpack_require__(326);
-
-var Posts = React.createClass({
-  displayName: 'Posts',
-
-  render: function render() {
-    var postsArray = this.props.posts;
-    for (var i = 0; i < postsArray.length; i++) {
-      if (i === 0) {
-        postsArray[i].prevContent = postsArray[i].content;
-      } else {
-        postsArray[i].prevContent = postsArray[i - 1].content;
-      }
-    }
-    var postsMapped = postsArray.map(function (evt, index) {
-      var key = index;
-      if (this.props.matchCode === evt.accessCode) {
-        return React.createElement(Post, { post: evt, key: key, id: key });
-      }
-    }.bind(this));
-    return React.createElement(
-      'section',
-      { className: 'blue-gradient-background intro-splash splash' },
-      React.createElement(
-        'div',
-        { className: 'container center-all-container' },
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { component: 'ul', className: 'evts', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-          postsMapped
-        )
-      )
-    );
-  }
-});
-
-module.exports = Posts;
 
 /***/ })
 /******/ ]);

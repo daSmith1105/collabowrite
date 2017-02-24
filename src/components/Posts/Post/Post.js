@@ -1,8 +1,8 @@
 var React = require('react');
 var moment = require('moment');
-var diffString = require('./jsdiff');
 var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
+var diffString = require('./jsdiff');
 
 var Post = React.createClass({
   getInitialState: function() {
@@ -18,12 +18,14 @@ var Post = React.createClass({
     var content = this.props.post.content;
     var prevContent = this.props.post.prevContent;
     var diff = diffString(prevContent, content);
-    var comment = this.props.post.comment;   
+    var comment = this.props.post.comment;  
+    
+    //For original post
     if (this.props.id == 0) {
       return (
         <li className={'evt'}>
-          <div className={'evt-name'} onClick={this.scrollDown}>SCROLL DOWN TO THE LATEST VERSION</div>
-          <br />
+          <button onClick={this.scrollDown}>Latest discussion</button>
+          <br /><br />
           <div className={'evt-name'}>{username} originally wrote,</div>
           <div className={'evt-name'}>{content}</div>
           <div className={'evt-name'}>Note - {comment}</div>
@@ -31,23 +33,29 @@ var Post = React.createClass({
         </li>        
       );
     } else {
+      //For revisions
       if (content !== prevContent) {
         return (
           <li className={'evt'}>
             <div className={'evt-name'}>{username} proposes,</div>
-            {this.state.showCommand ? <div>
-              <div className={'evt-name'}>{content}</div>
-              <div className={'evt-name'} onClick={this.showDiff}>+ Show changes from previous version</div>
-            </div> : true }
-            {this.state.showDiff ? <div>
-              <div className={'evt-name'} dangerouslySetInnerHTML={{__html: diff}}></div>
-              <div className={'evt-name'} onClick={this.hideDiff}>- Hide changes from previous version</div>
-            </div> : null }
+            {this.state.showCommand ?
+              <div>
+                <div className={'evt-name'}>{content}</div>
+                <div className={'evt-name'} onClick={this.showDiff}>+ Show changes from previous version</div>
+              </div>
+            : true}
+            {this.state.showDiff ?
+              <div>
+                <div className={'evt-name'} dangerouslySetInnerHTML={{__html: diff}}></div>
+                <div className={'evt-name'} onClick={this.hideDiff}>- Hide changes from previous version</div>
+              </div>
+            : false}
             <div className={'evt-name'}>Note - {comment}</div>
             <div className={'evt-name'}>Posted {date}</div>
           </li>
         );
       } else {
+        //For comments
         return (
           <li className={'evt'}>
             <div className={'evt-name'}>{username} commented:</div>
