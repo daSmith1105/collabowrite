@@ -4,6 +4,8 @@ var Posts = require('../Posts/Posts');
 var PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
 var $ = require('jquery');
 
+import { Grid, Row, Col } from 'react-bootstrap';
+
 var App = React.createClass({
   getInitialState: function() {
     return {
@@ -61,7 +63,7 @@ var App = React.createClass({
 
   render: function() {
     return (
-      <div className="row">
+      <div className="row app_container">
         <Posts posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} ref="posts" />
         <UserForms showOldPosts={this.showOldPosts} getSigninVars={this.getSigninVars} />
       </div>

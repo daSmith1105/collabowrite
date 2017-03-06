@@ -6,11 +6,15 @@ var notification = new Audio('notification.mp3');
 var Posts = React.createClass({
 	render: function() {
 	  var postsArray = this.props.posts;
+	  var verNumber = 0;
 	  
-    var postsMapped = postsArray.map(function (evt, index) {
-      if (this.props.matchCode === evt.accessCode) {
+    var postsMapped = postsArray.map(function (post, index) {
+      if (this.props.matchCode === post.accessCode) {
         notification.play();
-        return <Post post={evt} key={index} version={index + 1} yourUsername={this.props.username} />;
+        if (post.content !== 'general_comment' ) {
+          verNumber++;
+        }
+        return <Post post={post} key={index} version={verNumber} yourUsername={this.props.username} />;
       }
     }.bind(this));
     

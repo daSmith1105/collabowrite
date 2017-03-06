@@ -1,7 +1,11 @@
 var React = require('react');
-var $ = require('jquery');
+var FA = require('react-fontawesome');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
+var $ = require('jquery');
+
+import { Panel, Button, ButtonGroup } from 'react-bootstrap';
 
 var PostForm = React.createClass({
   getInitialState: function() {
@@ -13,25 +17,31 @@ var PostForm = React.createClass({
 
   render: function(){
     return (
-      <div>
+      <Panel>
         {this.state.showButtons ?
-          <div>
-            <button onClick={this.showCommentForm}>Post a general comment in the project room</button>
-            <button onClick={this.scrollUp}>Scroll to the original post</button>
-            <br /><br />
-          </div>
+          <ButtonGroup justified bsSize="large">
+            <ButtonGroup>
+              <Button bsStyle="primary" onClick={this.showCommentForm}><FA name="bullhorn" /> Announce / Discuss</Button>   
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button bsStyle="danger" onClick={this.scrollUp}><FA name="angle-up" /> Scroll to top</Button>
+            </ButtonGroup>
+          </ButtonGroup>
         : true}
-        
         {this.state.showCommentForm ?
           <form onSubmit={this.addComment}>
-            <label>Post a comment.</label><br/>
-            <input type="text" autoFocus required ref="comment" /><br/>
-            <input type="submit" value="Post your announcement" />
-            <button onClick={this.goBack}>Back</button>
-            <br /><br />
+            <textarea className="general_comment_textarea" autoFocus spellCheck="true" required ref="comment" placeholder="Make a group announcement or start a discussion about the project." /><br />
+            <ButtonGroup justified>
+              <ButtonGroup>
+                <Button bsStyle="success" type="submit"><FA name="upload" /> Post thread</Button>
+              </ButtonGroup>
+              <ButtonGroup>
+                <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
+              </ButtonGroup>
+            </ButtonGroup>
           </form>
         : false}
-      </div>
+      </Panel>
     );
   },
   
@@ -39,10 +49,12 @@ var PostForm = React.createClass({
     this.setState({
       showButtons: false,
       showCommentForm: true,
+    }, function (){
+      scroll.scrollToBottom();      
     });
   },
   
-  scrollUp: function(){
+  scrollUp: function (){
     scroll.scrollToTop();
   },
   

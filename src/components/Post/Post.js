@@ -1,19 +1,20 @@
 var React = require('react');
 var moment = require('moment');
 var diffString = require('./jsdiff');
+var FA = require('react-fontawesome');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
-var Element = Scroll.Element;
-var scroller = Scroll.scroller;
 var $ = require('jquery');
 
-import { Label } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Panel, Label, ListGroup, ListGroupItem, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
 
 var Post = React.createClass({
   getInitialState: function() {
     return {
-      showChangesCommand: true,
+      alertVisible: true,
+      showChangesCommand: false,
+      showChanges: true,
       showReviseForm: false,
       showCommentForm: false
     };
@@ -24,17 +25,18 @@ var Post = React.createClass({
     var now = moment();
     var postInsertedAt = this.props.post.insertedAt;
     if (moment(postInsertedAt).add(60, 'minutes').isBefore(now)) {
-      var timeStamp = moment(this.props.post.insertedAt).fromNow() + ':';
+      var timeStamp = moment(this.props.post.insertedAt).fromNow();
     } else {
-      timeStamp = '<b>' + moment(this.props.post.insertedAt).fromNow() + '</b>:';
-      if (timeStamp === '<b>in a few seconds</b>:') {
-        timeStamp === '<b>a few seconds ago</b>:';
+      timeStamp = '<b>' + moment(this.props.post.insertedAt).fromNow() + '</b>';
+      if (timeStamp === '<b>in a few seconds</b>') {
+        timeStamp === '<b>a few seconds ago</b>';
       }
     }
     
     //Post variables
     var username = this.props.post.username;
     var content = this.props.post.content;
+    var contentInQuotes = '"' + content + '"';
     var prevContent = this.props.post.prevContent;
     var changes = '"' + diffString(prevContent, content).trim() + '"';
     var editedFrom = this.props.post.editedFrom;
@@ -42,9 +44,9 @@ var Post = React.createClass({
     var commentsArray = this.props.post.comments;
     var commentsHTML = '';
     var stringifyComments = function(pClass, index, openBold, closeBold) {
-      return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>'+ ' commented '
-      + openBold + moment(commentsArray[index].insertedAt).fromNow() + closeBold + ': <br />'
-      + commentsArray[index].comment + '</p>';
+      return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: '+ commentsArray[index].comment + '<span class="comment_timestamp">'
+      + openBold + moment(commentsArray[index].insertedAt).fromNow() + closeBold
+      + '</span></p>';
     };
     
     //Generate HTML from comments array
@@ -52,131 +54,196 @@ var Post = React.createClass({
       if (moment(commentsArray[i].insertedAt).add(60, 'minutes').isBefore(now)) {
         stringifyComments('<p>', i, '', '');
       } else {
-        stringifyComments('<p>', i, '<b>', '</b>');
+        stringifyComments('<p>', i, '<b class="newComment_time">', '</b>');
       }
     }
     
     //HTML for most recent or newly added comments
     if (this.props.post.updated) {
       //Add p class for css highlighting function
-      stringifyComments('<p class="newComment">', commentsArray.length-1, '<b>', '</b>');
+      stringifyComments('<p class="newComment">', commentsArray.length-1, '<b class="newComment_time">', '</b>');
     } else {
       if (moment(commentsArray[commentsArray.length-1].insertedAt).add(60, 'minutes').isBefore(now)) {
         stringifyComments('<p>', commentsArray.length-1, '', '');
       } else {
-        stringifyComments('<p>', commentsArray.length-1, '<b>', '</b>');
+        stringifyComments('<p>', commentsArray.length-1, '<b class="newComment_time">', '</b>');
       }
     }
     
     //For original post
     if (this.props.version == 1) {
+      var postTitle = (
+        <div className="post_title">
+          <Label bsStyle="info" className="title_header">VERSION {this.props.version}</Label>
+          <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp}}></div>
+        </div>
+      );
+      
       return (
         <li className="postitem">
-          <button onClick={this.scrollDown}>Scroll down to latest post</button>
-          <br /><br />
-          <Element name={"top" + this.props.version.toString()}></Element>
-          <Label>VER. {this.props.version}</Label>
-          <div className="byline" dangerouslySetInnerHTML={{__html: '<span class="displayed_username">' + username + '</span> posted ' + timeStamp}}></div>
-          <div className={'evt-name'}>"{content}"</div>
-          <div className="evt-name comment" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
-          <div>
-            <button onClick={this.showReviseForm}>Revise this version</button>
-            <button onClick={this.showCommentForm}>Comment on this version</button>
-          </div>
-          <Element name={"bottom" + this.props.version.toString()}></Element>  
-          <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-            {this.state.showReviseForm ?
-              <form onSubmit={this.addRevision}>
-                <label>Make changes or leave as is if you wish to simply comment on it.</label><br/>
-                <textarea required ref="revisionContent" /><br/>
-                <label>Share a comment about the writing above.</label><br/>
-                <input type="text" autoFocus required ref="revisionComment" /><br/>
-                <input type="submit" value="Submit your ideas" />
-                <button onClick={this.goBack}>Close</button>
-                <br /><br />
-              </form>
-            : false}
-            {this.state.showCommentForm ?
-              <form onSubmit={this.addComment}>
-                <label>Post a comment.</label><br/>
-                <input type="text" autoFocus required ref="commentOnly" /><br/>
-                <input type="submit" value="Submit your ideas" />
-                <button onClick={this.goBack}>Close</button>
-                <br /><br />
-              </form>
-            : false}
-          </ReactCSSTransitionGroup>
-        </li>        
-      );
-    } else {
-      if (content === 'general_comment') {
-        //For comments
-        return (
-          <li className={'evt'}>
-            <Element name={"top" + this.props.version.toString()}></Element>  
-            <div className="evt-name" dangerouslySetInnerHTML={{__html: 'A discussion was ' + timeStamp}}></div>
-            <div className="evt-name comment" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
-            <button onClick={this.showCommentForm}>Comment</button>
-            <Element name={"bottom" + this.props.version.toString()}></Element>   
-            {this.state.showCommentForm ?
-              <form onSubmit={this.addComment}>
-                <label>Post a comment.</label><br/>
-                <input type="text" autoFocus required ref="commentOnly" /><br/>
-                <input type="submit" value="Submit your ideas" />
-                <button onClick={this.goBack}>Close</button>
-                <br /><br />
-              </form>
-            : false}
-          </li>
-        );  
-      } else {
-        //For revisions
-        return (
-          <li className={'evt'}>
-            <Element name={"top" + this.props.version.toString()}></Element>           
-            <div className={'evt-name'}>Version {this.props.version}:</div>
-            <div className="evt-name" dangerouslySetInnerHTML={{__html: 'A revision of ver. ' + editedFrom + ' was' + timeStamp + ' by ' + username}}></div>
-            {this.state.showChangesCommand ?
-              <div>
-                <div className={'evt-name'}>"{content}"</div>
-                <div className={'evt-name'} onClick={this.showChanges}>+ Show changes from ver. {editedFrom}</div>
-              </div>
+          <Button bsStyle="success" bsSize="large" block onClick={this.scrollDown}><FA name="angle-down" /> Scroll down to latest post</Button><br />
+          <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
+            {this.state.alertVisible ?
+              <Alert bsStyle="warning" onDismiss={this.handleAlertDismiss}>
+                <b><FA name="lightbulb-o" /> Tip: During presentations, you can click on a post or comment to enlarge its text size!</b>
+              </Alert>
             : true}
-            {this.state.showChanges ?
-              <div>
-                <div className={'evt-name'} dangerouslySetInnerHTML={{__html: changes}}></div>
-                <div className={'evt-name'} onClick={this.hideChanges}>- Hide changes from ver. {editedFrom}</div>
-              </div>
-            : false}
-            <div className="evt-name comment" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
-            <div>
-              <button onClick={this.showReviseForm}>Revise this version</button>
-              <button onClick={this.showCommentForm}>Comment on this version</button>
-            </div>
-            <Element name={"bottom" + this.props.version.toString()}></Element>                
-            <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>              
+          </ReactCSSTransitionGroup>
+          <Panel header={postTitle} bsStyle="info">
+            <ListGroup fill>
+              <ListGroupItem>
+                <div className="writing" dangerouslySetInnerHTML={{__html: contentInQuotes}}></div>
+              </ListGroupItem>
+              <ListGroupItem>
+                <div className="comments_header"><b><FA name='comments' className="gray_icon" /> Comments</b> -</div>
+                <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
+              </ListGroupItem>
+            </ListGroup>
+            <ButtonGroup justified>
+              <ButtonGroup>
+                <Button bsStyle="warning" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
+              </ButtonGroup>
+              <ButtonGroup>
+                <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Revise</Button>
+              </ButtonGroup>
+            </ButtonGroup>
+            <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
               {this.state.showReviseForm ?
                 <form onSubmit={this.addRevision}>
-                  <label>Make changes or leave as is if you wish to simply comment on it.</label><br/>
-                  <textarea required ref="revisionContent" /><br/>
-                  <label>Share a comment about the writing above.</label><br/>
-                  <input type="text" autoFocus required ref="revisionComment" /><br/>
-                  <input type="submit" value="Submit your ideas" />
-                  <button onClick={this.goBack}>Close</button>
-                  <br /><br />
+                  <br />
+                  <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
+                  <input type="text" data-emojiable="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
+                  <ButtonGroup justified>
+                    <ButtonGroup>
+                      <Button bsStyle="success" type="submit"><FA name="upload" /> Post revision</Button>
+                    </ButtonGroup>
+                    <ButtonGroup>
+                      <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
+                    </ButtonGroup>
+                  </ButtonGroup>
                 </form>
               : false}
               {this.state.showCommentForm ?
                 <form onSubmit={this.addComment}>
-                  <label>Post a comment.</label><br/>
-                  <input type="text" autoFocus required ref="commentOnly" /><br/>
-                  <input type="submit" value="Submit your ideas" />
-                  <button onClick={this.goBack}>Close</button>
-                  <br /><br />
+                  <br />
+                  <input type="text" data-emojiable="true" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
+                  <ButtonGroup justified>
+                    <ButtonGroup>
+                      <Button bsStyle="success" type="submit"><FA name="upload" /> Post comment</Button>
+                    </ButtonGroup>
+                    <ButtonGroup>
+                      <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
+                    </ButtonGroup>
+                  </ButtonGroup>
                 </form>
               : false}
             </ReactCSSTransitionGroup>
-          </li>
+          </Panel>
+        </li>        
+      );
+    } else {
+      if (content === 'general_comment') {
+        postTitle = (
+          <div className="post_title">
+            <Label className="title_header">ANNOUNCE / DISCUSS</Label>
+            <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted ' + timeStamp}}></div>
+          </div>          
+        );
+        //For general comments
+        return (
+          <li className="postitem">
+            <Panel header={postTitle} className="general_comment">
+              <ListGroup fill>
+                <ListGroupItem>
+                  <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
+                </ListGroupItem>
+              </ListGroup>
+                <form onSubmit={this.addComment}>
+                  <FormGroup className="button_combined">
+                    <InputGroup>
+                      <input className="button_combined" type="text" data-emojiable="true" required ref="commentOnly" placeholder="Comment on the discussion above." />
+                      <InputGroup.Button>
+                        <Button type="submit"><FA name="comment" /></Button>
+                      </InputGroup.Button>
+                    </InputGroup>
+                  </FormGroup>  
+                </form>
+            </Panel>
+          </li> 
+        );  
+      } else {
+        //For revisions
+        postTitle = (
+          <div className="post_title">
+            <Label bsStyle="success" className="title_header">VERSION {this.props.version}</Label>
+            <div className="byline" dangerouslySetInnerHTML={{__html: 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp}}></div>
+          </div>
+        );        
+        
+        return (
+          <li className="postitem">
+            <Panel header={postTitle} bsStyle="success">
+              <ListGroup fill>
+                <ListGroupItem>
+                  {this.state.showChangesCommand ?
+                    <div>
+                      <div className="changes_command" onClick={this.showChanges}>+ Show changes made from <Label bsStyle="default" className="change_version">VERSION {editedFrom}</Label></div>                      
+                      <div className="writing" dangerouslySetInnerHTML={{__html: contentInQuotes}}></div>
+                    </div>
+                  : false}
+                  {this.state.showChanges ?
+                    <div>
+                      <div className="changes_command" onClick={this.hideChanges}>- Hide changes from <Label bsStyle="default" className="change_version">VERSION {editedFrom}</Label></div>
+                      <div className="writing" dangerouslySetInnerHTML={{__html: changes}}></div>
+                    </div>
+                  : true}
+                </ListGroupItem>
+                <ListGroupItem>
+                  <div className="comments_header"><b><FA name='comments' className="gray_icon" /> Comments</b> -</div>
+                  <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
+                </ListGroupItem>
+              </ListGroup>
+              <ButtonGroup justified>
+                <ButtonGroup>
+                  <Button bsStyle="warning" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
+                </ButtonGroup>
+                <ButtonGroup>
+                  <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Revise</Button>
+                </ButtonGroup>
+              </ButtonGroup>
+              <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+                {this.state.showReviseForm ?
+                  <form onSubmit={this.addRevision}>
+                    <br />
+                    <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
+                    <input type="text" data-emojiable="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
+                    <ButtonGroup justified>
+                      <ButtonGroup>
+                        <Button bsStyle="success" type="submit"><FA name="upload" /> Post revision</Button>
+                      </ButtonGroup>
+                      <ButtonGroup>
+                        <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
+                      </ButtonGroup>
+                    </ButtonGroup>
+                  </form>
+                : false}
+                {this.state.showCommentForm ?
+                  <form onSubmit={this.addComment}>
+                    <br />
+                    <input type="text" data-emojiable="true" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
+                    <ButtonGroup justified>
+                      <ButtonGroup>
+                        <Button bsStyle="success" type="submit"><FA name="upload" /> Post comment</Button>
+                      </ButtonGroup>
+                      <ButtonGroup>
+                        <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
+                      </ButtonGroup>
+                    </ButtonGroup>
+                  </form>
+                : false}
+              </ReactCSSTransitionGroup>
+            </Panel>
+          </li>              
         );
       }
     }
@@ -184,6 +251,10 @@ var Post = React.createClass({
   
   scrollDown: function() {
     scroll.scrollToBottom();
+  },
+  
+  handleAlertDismiss: function() {
+    this.setState({alertVisible: false});
   },
   
   showChanges: function() {
@@ -206,12 +277,6 @@ var Post = React.createClass({
       showCommentForm: false
     }, function(){
       this.refs.revisionContent.value = this.props.post.content;
-      scroller.scrollTo("bottom" + this.props.version.toString(), {
-        duration: 1000,
-        delay: 100,
-        offset: -150,
-        smooth: true,
-      });
     });
   },
   
@@ -219,13 +284,6 @@ var Post = React.createClass({
     this.setState({
       showCommentForm: true,
       showReviseForm: false
-    }, function(){
-      scroller.scrollTo("bottom" + this.props.version.toString(), {
-        duration: 1000,
-        delay: 100,
-        offset: -150,
-        smooth: true,
-      });
     });
   },
   
@@ -235,7 +293,7 @@ var Post = React.createClass({
     var data = {
       accessCode: this.props.post.accessCode,
       username: this.props.yourUsername,
-      content: this.refs.revisionContent.value,
+      content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
       prevContent: this.props.post.content,
       editedFrom: this.props.version,
       comment: this.refs.revisionComment.value
@@ -248,11 +306,7 @@ var Post = React.createClass({
       contentType: 'application/json'
     })
     .done(function() {
-      console.log('Successfully posted.');      
       scroll.scrollToBottom();
-    })
-    .fail(function() {
-      console.log('Failed to post.');
     });
     
     this.setState({
@@ -277,11 +331,8 @@ var Post = React.createClass({
       contentType: 'application/json'
     })
     .done(function() {
-      console.log('Successfully posted.');      
-    })
-    .fail(function() {
-      console.log('Failed to post.');
-    });
+      this.refs.commentOnly.value = '';   
+    }.bind(this));
     
     this.setState({
       showReviseForm: false,
@@ -294,14 +345,13 @@ var Post = React.createClass({
     this.setState({
       showReviseForm: false,
       showCommentForm: false
-    }, function(){
-      scroller.scrollTo("top" + this.props.version.toString(), {
-        duration: 1000,
-        delay: 100,
-        smooth: true,
-      });
     });
   }
+});
+
+//Enlarge text when clicked
+$('body').on('click', '.writing, p', function() {
+  $(this).toggleClass('large_text');
 });
 
 module.exports = Post;
