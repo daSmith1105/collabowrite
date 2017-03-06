@@ -87,6 +87,8 @@ var SigninForm = React.createClass({
       accessCode: this.refs.newAccessCode.value,
       username: this.refs.newUsername.value,
       content: this.refs.content.value,
+      prevContent: '',
+      editedFrom: 0,
       comment: this.refs.comment.value
     };
   

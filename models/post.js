@@ -5,7 +5,9 @@ var postSchema = new Schema({
   accessCode: { type: String },
   username:    { type: String },
   content: { type: String },
-  comment: {type: String },
+  prevContent: { type: String },
+  editedFrom: {type: Number },
+  comments: {type: Array },
   insertedAt:  { type: Date }
 });
 

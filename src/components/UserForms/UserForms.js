@@ -1,6 +1,6 @@
 var React = require('react');
-var SigninForm = require('./SigninForm/SigninForm');
-var PostForm = require('./PostForm/PostForm');
+var SigninForm = require('../SigninForm/SigninForm');
+var PostForm = require('../PostForm/PostForm');
 var $ = require('jquery');
 
 var UserForms = React.createClass({
@@ -30,7 +30,7 @@ var UserForms = React.createClass({
       showSigninForm: false
     });
     
-    this.props.getAccessCode(accessCode);
+    this.props.getSigninVars(accessCode, username);
   },
   
   onSignin: function(accessCode, username){
@@ -41,7 +41,7 @@ var UserForms = React.createClass({
       showSigninForm: false
     });
     
-    this.props.getAccessCode(accessCode);
+    this.props.getSigninVars(accessCode, username);
     
     $.get('/api/posts/' + accessCode, function(data){
       this.props.showOldPosts(data);
