@@ -7,7 +7,7 @@ var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
 var $ = require('jquery');
 
-import { Alert, Button, ButtonGroup, Panel, Label, ListGroup, ListGroupItem, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import { Jumbotron, Alert, Button, ButtonGroup, Panel, Label, ListGroup, ListGroupItem, FormGroup, InputGroup } from 'react-bootstrap';
 
 var Post = React.createClass({
   getInitialState: function() {
@@ -81,14 +81,6 @@ var Post = React.createClass({
       
       return (
         <li className="postitem">
-          <Button bsStyle="success" bsSize="large" block onClick={this.scrollDown}><FA name="angle-down" /> Scroll down to latest post</Button><br />
-          <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-            {this.state.alertVisible ?
-              <Alert bsStyle="warning" onDismiss={this.handleAlertDismiss}>
-                <b><FA name="lightbulb-o" /> Tip: During presentations, you can click on a post or comment to enlarge its text size!</b>
-              </Alert>
-            : true}
-          </ReactCSSTransitionGroup>
           <Panel header={postTitle} bsStyle="info">
             <ListGroup fill>
               <ListGroupItem>
@@ -101,7 +93,7 @@ var Post = React.createClass({
             </ListGroup>
             <ButtonGroup justified>
               <ButtonGroup>
-                <Button bsStyle="warning" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
+                <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
               </ButtonGroup>
               <ButtonGroup>
                 <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Revise</Button>
@@ -112,29 +104,15 @@ var Post = React.createClass({
                 <form onSubmit={this.addRevision}>
                   <br />
                   <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-                  <input type="text" data-emojiable="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
-                  <ButtonGroup justified>
-                    <ButtonGroup>
-                      <Button bsStyle="success" type="submit"><FA name="upload" /> Post revision</Button>
-                    </ButtonGroup>
-                    <ButtonGroup>
-                      <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
-                    </ButtonGroup>
-                  </ButtonGroup>
+                  <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
+                  <Button block bsStyle="info" type="submit">Post revision</Button>
                 </form>
               : false}
               {this.state.showCommentForm ?
                 <form onSubmit={this.addComment}>
                   <br />
-                  <input type="text" data-emojiable="true" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
-                  <ButtonGroup justified>
-                    <ButtonGroup>
-                      <Button bsStyle="success" type="submit"><FA name="upload" /> Post comment</Button>
-                    </ButtonGroup>
-                    <ButtonGroup>
-                      <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
-                    </ButtonGroup>
-                  </ButtonGroup>
+                  <input type="text" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
+                  <Button block bsStyle="success" type="submit">Post comment</Button>
                 </form>
               : false}
             </ReactCSSTransitionGroup>
@@ -143,13 +121,13 @@ var Post = React.createClass({
       );
     } else {
       if (content === 'general_comment') {
+        //For discussion thread comments        
         postTitle = (
           <div className="post_title">
-            <Label className="title_header">ANNOUNCE / DISCUSS</Label>
+            <Label className="title_header"><FA name="bullhorn" /> ANNOUNCE / DISCUSS</Label>
             <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted ' + timeStamp}}></div>
           </div>          
         );
-        //For general comments
         return (
           <li className="postitem">
             <Panel header={postTitle} className="general_comment">
@@ -161,7 +139,7 @@ var Post = React.createClass({
                 <form onSubmit={this.addComment}>
                   <FormGroup className="button_combined">
                     <InputGroup>
-                      <input className="button_combined" type="text" data-emojiable="true" required ref="commentOnly" placeholder="Comment on the discussion above." />
+                      <input className="button_combined" type="text" required ref="commentOnly" placeholder="Comment on this thread." />
                       <InputGroup.Button>
                         <Button type="submit"><FA name="comment" /></Button>
                       </InputGroup.Button>
@@ -171,6 +149,51 @@ var Post = React.createClass({
             </Panel>
           </li> 
         );  
+      } else if (content === '') {
+        //For initial post without content
+        postTitle = (
+          <div className="post_title">
+            <Label bsStyle="warning" className="title_header">CONTEXT</Label>
+            <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp}}></div>
+          </div>
+        );
+      
+        return (
+          <li className="postitem">
+            <Panel header={postTitle} bsStyle="warning">
+              <ListGroup fill>
+                <ListGroupItem>
+                  <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
+                </ListGroupItem>
+              </ListGroup>
+              <ButtonGroup justified>
+                <ButtonGroup>
+                  <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
+                </ButtonGroup>
+                <ButtonGroup>
+                  <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Write</Button>
+                </ButtonGroup>
+              </ButtonGroup>
+              <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+                {this.state.showReviseForm ?
+                  <form onSubmit={this.addRevision}>
+                    <br />
+                    <textarea autoFocus spellCheck="true" required ref="revisionContent" placeholder="Suggest an initial version of writing for the project."/><br/>
+                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain or comment on your writing." /><br/>
+                    <Button block type="submit" bsStyle="info">Post writing</Button>
+                  </form>
+                : false}
+                {this.state.showCommentForm ?
+                  <form onSubmit={this.addComment}>
+                    <br />
+                    <input type="text" autoFocus required ref="commentOnly" placeholder="Comment on the context or discussion above." /><br/>
+                    <Button block type="submit" bsStyle="success">Post comment</Button>
+                  </form>
+                : false}
+              </ReactCSSTransitionGroup>
+            </Panel>
+          </li>                
+        );
       } else {
         //For revisions
         postTitle = (
@@ -205,7 +228,7 @@ var Post = React.createClass({
               </ListGroup>
               <ButtonGroup justified>
                 <ButtonGroup>
-                  <Button bsStyle="warning" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
+                  <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
                 </ButtonGroup>
                 <ButtonGroup>
                   <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Revise</Button>
@@ -216,29 +239,15 @@ var Post = React.createClass({
                   <form onSubmit={this.addRevision}>
                     <br />
                     <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-                    <input type="text" data-emojiable="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
-                    <ButtonGroup justified>
-                      <ButtonGroup>
-                        <Button bsStyle="success" type="submit"><FA name="upload" /> Post revision</Button>
-                      </ButtonGroup>
-                      <ButtonGroup>
-                        <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
-                      </ButtonGroup>
-                    </ButtonGroup>
+                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
+                    <Button block type="submit" bsStyle="info">Post revision</Button>
                   </form>
                 : false}
                 {this.state.showCommentForm ?
                   <form onSubmit={this.addComment}>
                     <br />
-                    <input type="text" data-emojiable="true" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
-                    <ButtonGroup justified>
-                      <ButtonGroup>
-                        <Button bsStyle="success" type="submit"><FA name="upload" /> Post comment</Button>
-                      </ButtonGroup>
-                      <ButtonGroup>
-                        <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
-                      </ButtonGroup>
-                    </ButtonGroup>
+                    <input type="text" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
+                    <Button block type="submit" bsStyle="success">Post comment</Button>
                   </form>
                 : false}
               </ReactCSSTransitionGroup>
@@ -247,14 +256,6 @@ var Post = React.createClass({
         );
       }
     }
-  },
-  
-  scrollDown: function() {
-    scroll.scrollToBottom();
-  },
-  
-  handleAlertDismiss: function() {
-    this.setState({alertVisible: false});
   },
   
   showChanges: function() {
@@ -272,19 +273,33 @@ var Post = React.createClass({
   },
   
   showReviseForm: function(){
-    this.setState({
-      showReviseForm: true,
-      showCommentForm: false
-    }, function(){
-      this.refs.revisionContent.value = this.props.post.content;
-    });
+    
+    if (this.state.showReviseForm == false) {
+      this.setState({
+        showReviseForm: true,
+        showCommentForm: false
+      }, function(){
+        this.refs.revisionContent.value = this.props.post.content;
+      });
+    } else {
+      this.setState({
+        showReviseForm: false
+      });
+    }    
+    
   },
   
   showCommentForm: function(){
-    this.setState({
-      showCommentForm: true,
-      showReviseForm: false
-    });
+    if (this.state.showCommentForm == false) {
+      this.setState({
+        showCommentForm: true,
+        showReviseForm: false
+      });
+    } else {
+      this.setState({
+        showCommentForm: false
+      });
+    }
   },
   
   addRevision: function (e){
@@ -296,7 +311,7 @@ var Post = React.createClass({
       content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
       prevContent: this.props.post.content,
       editedFrom: this.props.version,
-      comment: this.refs.revisionComment.value
+      comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
     };
   
     $.ajax('/api/post', {
@@ -349,9 +364,11 @@ var Post = React.createClass({
   }
 });
 
-//Enlarge text when clicked
-$('body').on('click', '.writing, p', function() {
-  $(this).toggleClass('large_text');
-});
+if ($(window).width() > 767) {
+  //Enlarge text when clicked
+  $('body').on('click', '.writing, p', function() {
+    $(this).toggleClass('large_text');
+  });
+}
 
 module.exports = Post;

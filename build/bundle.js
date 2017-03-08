@@ -44690,7 +44690,8 @@ var App = React.createClass({
     return {
       posts: [],
       matchCode: '',
-      username: ''
+      username: '',
+      showPosts: false
     };
   },
 
@@ -44744,19 +44745,32 @@ var App = React.createClass({
     return React.createElement(
       'div',
       { className: 'row app_container' },
-      React.createElement(Posts, { posts: this.state.posts, matchCode: this.state.matchCode, username: this.state.username, ref: 'posts' }),
-      React.createElement(UserForms, { showOldPosts: this.showOldPosts, getSigninVars: this.getSigninVars })
+      this.state.showPosts ? React.createElement(Posts, { posts: this.state.posts, matchCode: this.state.matchCode, username: this.state.username, ref: 'posts' }) : false,
+      React.createElement(UserForms, { showOldPosts: this.showOldPosts, getSigninVars: this.getSigninVars }),
+      React.createElement(
+        'div',
+        { className: 'rights' },
+        React.createElement(
+          _reactBootstrap.Label,
+          { className: 'rights' },
+          '\xA9 2017 Tim Paik'
+        )
+      )
     );
   },
 
   showOldPosts: function showOldPosts(data) {
-    this.setState({ posts: data });
+    this.setState({
+      posts: data,
+      showPosts: true
+    });
   },
 
   getSigninVars: function getSigninVars(accessCode, username) {
     this.setState({
       matchCode: accessCode,
-      username: username
+      username: username,
+      showPosts: true
     });
   }
 });
@@ -46601,27 +46615,6 @@ var Post = React.createClass({
         'li',
         { className: 'postitem' },
         React.createElement(
-          _reactBootstrap.Button,
-          { bsStyle: 'success', bsSize: 'large', block: true, onClick: this.scrollDown },
-          React.createElement(FA, { name: 'angle-down' }),
-          ' Scroll down to latest post'
-        ),
-        React.createElement('br', null),
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-          this.state.alertVisible ? React.createElement(
-            _reactBootstrap.Alert,
-            { bsStyle: 'warning', onDismiss: this.handleAlertDismiss },
-            React.createElement(
-              'b',
-              null,
-              React.createElement(FA, { name: 'lightbulb-o' }),
-              ' Tip: During presentations, you can click on a post or comment to enlarge its text size!'
-            )
-          ) : true
-        ),
-        React.createElement(
           _reactBootstrap.Panel,
           { header: postTitle, bsStyle: 'info' },
           React.createElement(
@@ -46657,7 +46650,7 @@ var Post = React.createClass({
               null,
               React.createElement(
                 _reactBootstrap.Button,
-                { bsStyle: 'warning', onClick: this.showCommentForm },
+                { bsStyle: 'success', onClick: this.showCommentForm },
                 React.createElement(FA, { name: 'comment' }),
                 ' Comment'
               )
@@ -46682,62 +46675,24 @@ var Post = React.createClass({
               React.createElement('br', null),
               React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
               React.createElement('br', null),
-              React.createElement('input', { type: 'text', 'data-emojiable': 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your changes.' }),
+              React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your changes.' }),
               React.createElement('br', null),
               React.createElement(
-                _reactBootstrap.ButtonGroup,
-                { justified: true },
-                React.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  React.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'success', type: 'submit' },
-                    React.createElement(FA, { name: 'upload' }),
-                    ' Post revision'
-                  )
-                ),
-                React.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  React.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'danger', onClick: this.goBack },
-                    React.createElement(FA, { name: 'times-circle' }),
-                    ' Close'
-                  )
-                )
+                _reactBootstrap.Button,
+                { block: true, bsStyle: 'info', type: 'submit' },
+                'Post revision'
               )
             ) : false,
             this.state.showCommentForm ? React.createElement(
               'form',
               { onSubmit: this.addComment },
               React.createElement('br', null),
-              React.createElement('input', { type: 'text', 'data-emojiable': 'true', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
+              React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
               React.createElement('br', null),
               React.createElement(
-                _reactBootstrap.ButtonGroup,
-                { justified: true },
-                React.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  React.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'success', type: 'submit' },
-                    React.createElement(FA, { name: 'upload' }),
-                    ' Post comment'
-                  )
-                ),
-                React.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  React.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'danger', onClick: this.goBack },
-                    React.createElement(FA, { name: 'times-circle' }),
-                    ' Close'
-                  )
-                )
+                _reactBootstrap.Button,
+                { block: true, bsStyle: 'success', type: 'submit' },
+                'Post comment'
               )
             ) : false
           )
@@ -46745,17 +46700,18 @@ var Post = React.createClass({
       );
     } else {
       if (content === 'general_comment') {
+        //For discussion thread comments        
         postTitle = React.createElement(
           'div',
           { className: 'post_title' },
           React.createElement(
             _reactBootstrap.Label,
             { className: 'title_header' },
-            'ANNOUNCE / DISCUSS'
+            React.createElement(FA, { name: 'bullhorn' }),
+            ' ANNOUNCE / DISCUSS'
           ),
           React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted ' + timeStamp } })
         );
-        //For general comments
         return React.createElement(
           'li',
           { className: 'postitem' },
@@ -46780,7 +46736,7 @@ var Post = React.createClass({
                 React.createElement(
                   _reactBootstrap.InputGroup,
                   null,
-                  React.createElement('input', { className: 'button_combined', type: 'text', 'data-emojiable': 'true', required: true, ref: 'commentOnly', placeholder: 'Comment on the discussion above.' }),
+                  React.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
                   React.createElement(
                     _reactBootstrap.InputGroup.Button,
                     null,
@@ -46792,6 +46748,90 @@ var Post = React.createClass({
                   )
                 )
               )
+            )
+          )
+        );
+      } else if (content === '') {
+        //For initial post without content
+        postTitle = React.createElement(
+          'div',
+          { className: 'post_title' },
+          React.createElement(
+            _reactBootstrap.Label,
+            { bsStyle: 'warning', className: 'title_header' },
+            'CONTEXT'
+          ),
+          React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
+        );
+
+        return React.createElement(
+          'li',
+          { className: 'postitem' },
+          React.createElement(
+            _reactBootstrap.Panel,
+            { header: postTitle, bsStyle: 'warning' },
+            React.createElement(
+              _reactBootstrap.ListGroup,
+              { fill: true },
+              React.createElement(
+                _reactBootstrap.ListGroupItem,
+                null,
+                React.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
+              )
+            ),
+            React.createElement(
+              _reactBootstrap.ButtonGroup,
+              { justified: true },
+              React.createElement(
+                _reactBootstrap.ButtonGroup,
+                null,
+                React.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'success', onClick: this.showCommentForm },
+                  React.createElement(FA, { name: 'comment' }),
+                  ' Comment'
+                )
+              ),
+              React.createElement(
+                _reactBootstrap.ButtonGroup,
+                null,
+                React.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'info', onClick: this.showReviseForm },
+                  React.createElement(FA, { name: 'font' }),
+                  ' Write'
+                )
+              )
+            ),
+            React.createElement(
+              ReactCSSTransitionGroup,
+              { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+              this.state.showReviseForm ? React.createElement(
+                'form',
+                { onSubmit: this.addRevision },
+                React.createElement('br', null),
+                React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest an initial version of writing for the project.' }),
+                React.createElement('br', null),
+                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your writing.' }),
+                React.createElement('br', null),
+                React.createElement(
+                  _reactBootstrap.Button,
+                  { block: true, type: 'submit', bsStyle: 'info' },
+                  'Post writing'
+                )
+              ) : false,
+              this.state.showCommentForm ? React.createElement(
+                'form',
+                { onSubmit: this.addComment },
+                React.createElement('br', null),
+                React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the context or discussion above.' }),
+                React.createElement('br', null),
+                React.createElement(
+                  _reactBootstrap.Button,
+                  { block: true, type: 'submit', bsStyle: 'success' },
+                  'Post comment'
+                )
+              ) : false
             )
           )
         );
@@ -46879,7 +46919,7 @@ var Post = React.createClass({
                 null,
                 React.createElement(
                   _reactBootstrap.Button,
-                  { bsStyle: 'warning', onClick: this.showCommentForm },
+                  { bsStyle: 'success', onClick: this.showCommentForm },
                   React.createElement(FA, { name: 'comment' }),
                   ' Comment'
                 )
@@ -46904,62 +46944,24 @@ var Post = React.createClass({
                 React.createElement('br', null),
                 React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
                 React.createElement('br', null),
-                React.createElement('input', { type: 'text', 'data-emojiable': 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your changes.' }),
+                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your changes.' }),
                 React.createElement('br', null),
                 React.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  { justified: true },
-                  React.createElement(
-                    _reactBootstrap.ButtonGroup,
-                    null,
-                    React.createElement(
-                      _reactBootstrap.Button,
-                      { bsStyle: 'success', type: 'submit' },
-                      React.createElement(FA, { name: 'upload' }),
-                      ' Post revision'
-                    )
-                  ),
-                  React.createElement(
-                    _reactBootstrap.ButtonGroup,
-                    null,
-                    React.createElement(
-                      _reactBootstrap.Button,
-                      { bsStyle: 'danger', onClick: this.goBack },
-                      React.createElement(FA, { name: 'times-circle' }),
-                      ' Close'
-                    )
-                  )
+                  _reactBootstrap.Button,
+                  { block: true, type: 'submit', bsStyle: 'info' },
+                  'Post revision'
                 )
               ) : false,
               this.state.showCommentForm ? React.createElement(
                 'form',
                 { onSubmit: this.addComment },
                 React.createElement('br', null),
-                React.createElement('input', { type: 'text', 'data-emojiable': 'true', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
+                React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
                 React.createElement('br', null),
                 React.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  { justified: true },
-                  React.createElement(
-                    _reactBootstrap.ButtonGroup,
-                    null,
-                    React.createElement(
-                      _reactBootstrap.Button,
-                      { bsStyle: 'success', type: 'submit' },
-                      React.createElement(FA, { name: 'upload' }),
-                      ' Post comment'
-                    )
-                  ),
-                  React.createElement(
-                    _reactBootstrap.ButtonGroup,
-                    null,
-                    React.createElement(
-                      _reactBootstrap.Button,
-                      { bsStyle: 'danger', onClick: this.goBack },
-                      React.createElement(FA, { name: 'times-circle' }),
-                      ' Close'
-                    )
-                  )
+                  _reactBootstrap.Button,
+                  { block: true, type: 'submit', bsStyle: 'success' },
+                  'Post comment'
                 )
               ) : false
             )
@@ -46967,14 +46969,6 @@ var Post = React.createClass({
         );
       }
     }
-  },
-
-  scrollDown: function scrollDown() {
-    scroll.scrollToBottom();
-  },
-
-  handleAlertDismiss: function handleAlertDismiss() {
-    this.setState({ alertVisible: false });
   },
 
   showChanges: function showChanges() {
@@ -46992,19 +46986,32 @@ var Post = React.createClass({
   },
 
   showReviseForm: function showReviseForm() {
-    this.setState({
-      showReviseForm: true,
-      showCommentForm: false
-    }, function () {
-      this.refs.revisionContent.value = this.props.post.content;
-    });
+
+    if (this.state.showReviseForm == false) {
+      this.setState({
+        showReviseForm: true,
+        showCommentForm: false
+      }, function () {
+        this.refs.revisionContent.value = this.props.post.content;
+      });
+    } else {
+      this.setState({
+        showReviseForm: false
+      });
+    }
   },
 
   showCommentForm: function showCommentForm() {
-    this.setState({
-      showCommentForm: true,
-      showReviseForm: false
-    });
+    if (this.state.showCommentForm == false) {
+      this.setState({
+        showCommentForm: true,
+        showReviseForm: false
+      });
+    } else {
+      this.setState({
+        showCommentForm: false
+      });
+    }
   },
 
   addRevision: function addRevision(e) {
@@ -47016,7 +47023,7 @@ var Post = React.createClass({
       content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
       prevContent: this.props.post.content,
       editedFrom: this.props.version,
-      comment: this.refs.revisionComment.value
+      comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
     };
 
     $.ajax('/api/post', {
@@ -47067,10 +47074,12 @@ var Post = React.createClass({
   }
 });
 
-//Enlarge text when clicked
-$('body').on('click', '.writing, p', function () {
-  $(this).toggleClass('large_text');
-});
+if ($(window).width() > 767) {
+  //Enlarge text when clicked
+  $('body').on('click', '.writing, p', function () {
+    $(this).toggleClass('large_text');
+  });
+}
 
 module.exports = Post;
 
@@ -47247,7 +47256,6 @@ var _reactBootstrap = __webpack_require__(278);
 
 var React = __webpack_require__(0);
 var FA = __webpack_require__(551);
-var ReactCSSTransitionGroup = __webpack_require__(260);
 var Scroll = __webpack_require__(318);
 var scroll = Scroll.animateScroll;
 var $ = __webpack_require__(59);
@@ -47264,76 +47272,45 @@ var PostForm = React.createClass({
 
   render: function render() {
     return React.createElement(
-      _reactBootstrap.Panel,
+      _reactBootstrap.Well,
       null,
-      this.state.showButtons ? React.createElement(
-        _reactBootstrap.ButtonGroup,
-        { justified: true, bsSize: 'large' },
+      React.createElement(
+        _reactBootstrap.Button,
+        { block: true, bsSize: 'large', onClick: this.showCommentForm },
         React.createElement(
-          _reactBootstrap.ButtonGroup,
+          'b',
           null,
-          React.createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'primary', onClick: this.showCommentForm },
-            React.createElement(FA, { name: 'bullhorn' }),
-            ' Announce / Discuss'
-          )
-        ),
-        React.createElement(
-          _reactBootstrap.ButtonGroup,
-          null,
-          React.createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'danger', onClick: this.scrollUp },
-            React.createElement(FA, { name: 'angle-up' }),
-            ' Scroll to top'
-          )
+          React.createElement(FA, { name: 'bullhorn' }),
+          ' Announce / Discuss'
         )
-      ) : true,
+      ),
       this.state.showCommentForm ? React.createElement(
         'form',
         { onSubmit: this.addComment },
-        React.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make a group announcement or start a discussion about the project.' }),
+        React.createElement('br', null),
+        React.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
         React.createElement('br', null),
         React.createElement(
-          _reactBootstrap.ButtonGroup,
-          { justified: true },
-          React.createElement(
-            _reactBootstrap.ButtonGroup,
-            null,
-            React.createElement(
-              _reactBootstrap.Button,
-              { bsStyle: 'success', type: 'submit' },
-              React.createElement(FA, { name: 'upload' }),
-              ' Post thread'
-            )
-          ),
-          React.createElement(
-            _reactBootstrap.ButtonGroup,
-            null,
-            React.createElement(
-              _reactBootstrap.Button,
-              { bsStyle: 'danger', onClick: this.goBack },
-              React.createElement(FA, { name: 'times-circle' }),
-              ' Close'
-            )
-          )
+          _reactBootstrap.Button,
+          { block: true, bsStyle: 'success', type: 'submit' },
+          'Begin thread'
         )
       ) : false
     );
   },
 
   showCommentForm: function showCommentForm() {
-    this.setState({
-      showButtons: false,
-      showCommentForm: true
-    }, function () {
-      scroll.scrollToBottom();
-    });
-  },
-
-  scrollUp: function scrollUp() {
-    scroll.scrollToTop();
+    if (this.state.showCommentForm == false) {
+      this.setState({
+        showCommentForm: true
+      }, function () {
+        scroll.scrollToBottom();
+      });
+    } else {
+      this.setState({
+        showCommentForm: false
+      });
+    }
   },
 
   addComment: function addComment(e) {
@@ -47345,7 +47322,7 @@ var PostForm = React.createClass({
       content: 'general_comment',
       prevContent: 'general_comment',
       editedFrom: 0,
-      comment: this.refs.comment.value
+      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
     };
 
     $.ajax('/api/post', {
@@ -47356,20 +47333,11 @@ var PostForm = React.createClass({
     });
 
     this.setState({
-      showButtons: true,
       showCommentForm: false
     }, function () {
       scroll.scrollToBottom();
     });
-  },
-
-  goBack: function goBack() {
-    this.setState({
-      showButtons: true,
-      showCommentForm: false
-    });
   }
-
 });
 
 module.exports = PostForm;
@@ -47381,38 +47349,141 @@ module.exports = PostForm;
 "use strict";
 
 
+var _reactBootstrap = __webpack_require__(278);
+
 var React = __webpack_require__(0);
 var Post = __webpack_require__(334);
+var FA = __webpack_require__(551);
 var ReactCSSTransitionGroup = __webpack_require__(260);
 var notification = new Audio('notification.mp3');
+var Scroll = __webpack_require__(318);
+var scroll = Scroll.animateScroll;
 
 var Posts = React.createClass({
   displayName: 'Posts',
 
+  getInitialState: function getInitialState() {
+    return {
+      alertVisible: true
+    };
+  },
+
   render: function render() {
     var postsArray = this.props.posts;
     var verNumber = 0;
+    var username = this.props.username;
 
     var postsMapped = postsArray.map(function (post, index) {
       if (this.props.matchCode === post.accessCode) {
         notification.play();
-        if (post.content !== 'general_comment') {
+        if (post.content !== 'general_comment' && post.content !== '') {
           verNumber++;
         }
-        return React.createElement(Post, { post: post, key: index, version: verNumber, yourUsername: this.props.username });
+        return React.createElement(Post, { post: post, key: index, version: verNumber, yourUsername: username });
       }
     }.bind(this));
 
-    return React.createElement(
-      'div',
-      null,
-      React.createElement(
-        ReactCSSTransitionGroup,
-        { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-        postsMapped
-      )
-    );
+    if (postsArray.length < 4) {
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(
+          _reactBootstrap.Jumbotron,
+          null,
+          React.createElement(
+            'h2',
+            null,
+            'Collabo',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              'write'
+            )
+          )
+        ),
+        React.createElement(
+          ReactCSSTransitionGroup,
+          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          this.state.alertVisible ? React.createElement(
+            _reactBootstrap.Alert,
+            { bsStyle: 'warning' },
+            React.createElement(
+              'b',
+              null,
+              React.createElement(FA, { name: 'lightbulb-o' }),
+              ' Tip: During presentations, you can click on a post or comment to enlarge its text size!'
+            )
+          ) : true
+        ),
+        React.createElement(
+          ReactCSSTransitionGroup,
+          { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          postsMapped
+        )
+      );
+    } else {
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(
+          _reactBootstrap.Jumbotron,
+          null,
+          React.createElement(
+            'h2',
+            null,
+            'Collabo',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              'write'
+            )
+          )
+        ),
+        React.createElement(
+          _reactBootstrap.Button,
+          { bsStyle: 'success', bsSize: 'large', block: true, onClick: this.scrollDown },
+          React.createElement(FA, { name: 'angle-down' }),
+          ' Scroll down to latest post'
+        ),
+        React.createElement('br', null),
+        React.createElement(
+          ReactCSSTransitionGroup,
+          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          this.state.alertVisible ? React.createElement(
+            _reactBootstrap.Alert,
+            { bsStyle: 'warning' },
+            React.createElement(
+              'b',
+              null,
+              React.createElement(FA, { name: 'lightbulb-o' }),
+              ' Tip: During presentations, you can click on a post or comment to enlarge its text size!'
+            )
+          ) : true
+        ),
+        React.createElement(
+          ReactCSSTransitionGroup,
+          { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          postsMapped
+        ),
+        React.createElement(
+          _reactBootstrap.Button,
+          { block: true, bsSize: 'large', bsStyle: 'warning', onClick: this.scrollUp },
+          React.createElement(FA, { name: 'angle-up' }),
+          ' Scroll up to original post'
+        ),
+        React.createElement('br', null)
+      );
+    }
+  },
+
+  scrollDown: function scrollDown() {
+    scroll.scrollToBottom();
+  },
+
+  scrollUp: function scrollUp() {
+    scroll.scrollToTop();
   }
+
 });
 
 module.exports = Posts;
@@ -47424,7 +47495,11 @@ module.exports = Posts;
 "use strict";
 
 
+var _reactBootstrap = __webpack_require__(278);
+
 var React = __webpack_require__(0);
+var FA = __webpack_require__(551);
+var ReactCSSTransitionGroup = __webpack_require__(260);
 var $ = __webpack_require__(59);
 
 var SigninForm = React.createClass({
@@ -47432,112 +47507,276 @@ var SigninForm = React.createClass({
 
   getInitialState: function getInitialState() {
     return {
-      showButtons: true,
+      showIntro: true,
       showNewForm: false,
       showJoinForm: false
     };
   },
 
   render: function render() {
+
+    var tooltip = React.createElement(
+      _reactBootstrap.Tooltip,
+      { id: 'tooltip' },
+      React.createElement(
+        'b',
+        null,
+        React.createElement(FA, { name: 'lightbulb-o' }),
+        ' Tip'
+      ),
+      ': Share only with your group members since this is what your project members will use to log into the project.'
+    );
+
+    var buttons = React.createElement(
+      'div',
+      null,
+      React.createElement(
+        _reactBootstrap.ButtonGroup,
+        { justified: true },
+        React.createElement(
+          _reactBootstrap.ButtonGroup,
+          null,
+          React.createElement(
+            _reactBootstrap.Button,
+            { bsStyle: 'success', onClick: this.showNewForm },
+            'Create project'
+          )
+        ),
+        React.createElement(
+          _reactBootstrap.ButtonGroup,
+          null,
+          React.createElement(
+            _reactBootstrap.Button,
+            { bsStyle: 'info', onClick: this.showJoinForm },
+            'Join project'
+          )
+        )
+      )
+    );
+
     return React.createElement(
       'div',
       null,
-      this.state.showButtons ? React.createElement(
-        'div',
-        null,
+      React.createElement(
+        _reactBootstrap.Jumbotron,
+        { onClick: this.showIntro },
         React.createElement(
-          'button',
-          { id: 'newproject', onClick: this.showNewForm },
-          'Start a new project'
-        ),
-        React.createElement(
-          'button',
-          { id: 'joinproject', onClick: this.showJoinForm },
-          'Join in on a project'
+          'h2',
+          null,
+          'Collabo',
+          React.createElement(
+            'span',
+            { className: 'green' },
+            'write'
+          ),
+          ' ',
+          React.createElement(
+            'span',
+            { className: 'example' },
+            'a sentence.'
+          )
         )
-      ) : true,
-      this.state.showNewForm ? React.createElement(
-        'form',
-        { id: 'newform', onSubmit: this.createNewPost },
-        React.createElement(
-          'label',
+      ),
+      React.createElement(
+        _reactBootstrap.Panel,
+        { header: buttons, className: 'intro_screen' },
+        this.state.showIntro ? React.createElement(
+          'div',
           null,
-          'This is your project access code. Please write it down!'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', required: true, ref: 'newAccessCode', readOnly: true }),
-        React.createElement('br', null),
+          React.createElement(
+            'h3',
+            null,
+            React.createElement(FA, { name: 'clock-o', className: 'intro' }),
+            ' Collaborate ',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              'real-time'
+            )
+          ),
+          React.createElement(
+            'h5',
+            null,
+            'Anytime you post a revision, comment, suggestion, or announcment, others working on the project will see it instantly. No more waiting around or refreshing for updates.'
+          ),
+          React.createElement(
+            'h3',
+            null,
+            React.createElement(FA, { name: 'mobile', className: 'intro' }),
+            ' Work ',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              'mobile-friendly'
+            )
+          ),
+          React.createElement(
+            'h5',
+            null,
+            'For those light-bulb moments while you\'re out, access and work on your projects on a smartphone or tablet, with all of the functions you have while you\'re on your computer.'
+          ),
+          React.createElement(
+            'h3',
+            null,
+            React.createElement(FA, { name: 'slideshare', className: 'intro' }),
+            ' Involve your ',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              ' audience'
+            )
+          ),
+          React.createElement(
+            'h5',
+            null,
+            'Skip the slides: when you\'re facilitating a class, meeting, or a brainstorming session, just put your project on a projector and invite others in the room to share their ideas onto the screen using their smartphones. You can blow up the text of any post or comment with a single click.'
+          ),
+          React.createElement(
+            'h3',
+            null,
+            React.createElement(FA, { name: 'hand-peace-o', className: 'intro' }),
+            ' Get started ',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              ' hassle-free'
+            )
+          ),
+          React.createElement(
+            'h5',
+            null,
+            'No need to sign up for an account. Create a new project, and we\'ll generate a four-letter/number code that you and your project members can use to access the project anytime, anywhere.'
+          ),
+          React.createElement(
+            _reactBootstrap.Button,
+            { block: true, onClick: this.showDemo },
+            React.createElement(
+              'b',
+              null,
+              'Click to see a demo project'
+            )
+          )
+        ) : true,
         React.createElement(
-          'label',
-          null,
-          'Enter your name'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Comment on what you\'re writing about and what you\'d like others to focus on.'
-        ),
-        React.createElement('br', null),
-        React.createElement('textarea', { required: true, ref: 'comment' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Share your initial version of the writing.'
-        ),
-        React.createElement('br', null),
-        React.createElement('textarea', { required: true, ref: 'content' }),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'submit', value: 'Start a new project' }),
-        React.createElement(
-          'button',
-          { onClick: this.goBack },
-          'Back'
+          ReactCSSTransitionGroup,
+          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+          this.state.showNewForm ? React.createElement(
+            'div',
+            null,
+            React.createElement(
+              'form',
+              { id: 'newform', onSubmit: this.createNewPost },
+              React.createElement(
+                _reactBootstrap.Well,
+                null,
+                React.createElement(
+                  'label',
+                  { className: 'accesscode_label' },
+                  'Below is your new project access code.',
+                  React.createElement('br', null),
+                  'Please write it down or save it somewhere safe.'
+                ),
+                React.createElement(
+                  _reactBootstrap.OverlayTrigger,
+                  { placement: 'bottom', overlay: tooltip },
+                  React.createElement('input', { className: 'accesscode_input', type: 'text', required: true, ref: 'newAccessCode', readOnly: true })
+                )
+              ),
+              React.createElement(
+                'label',
+                null,
+                'Enter your name.'
+              ),
+              '\xA0',
+              React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
+              React.createElement('br', null),
+              React.createElement(
+                'label',
+                null,
+                'Provide some context for this project (what kind of writing it is, what you\'d like others to focus on, etc).'
+              ),
+              React.createElement('br', null),
+              React.createElement('textarea', { required: true, ref: 'comment' }),
+              React.createElement('br', null),
+              React.createElement(
+                'label',
+                null,
+                'Optional: Share an initial version of the writing you have in mind.'
+              ),
+              React.createElement('br', null),
+              React.createElement('textarea', { ref: 'content' }),
+              React.createElement('br', null),
+              React.createElement(
+                _reactBootstrap.Button,
+                { block: true, bsStyle: 'success', type: 'submit' },
+                React.createElement(FA, { name: 'upload' }),
+                ' Launch it!'
+              )
+            )
+          ) : false,
+          this.state.showJoinForm ? React.createElement(
+            'div',
+            null,
+            React.createElement(
+              'form',
+              { id: 'joinform', onSubmit: this.storeSigninVars },
+              React.createElement('input', { type: 'password', autoFocus: true, required: true, ref: 'accessCode', placeholder: 'Project access code' }),
+              React.createElement('br', null),
+              React.createElement('input', { type: 'text', required: true, ref: 'username', placeholder: 'Your name' }),
+              React.createElement('br', null),
+              React.createElement(
+                _reactBootstrap.Button,
+                { block: true, bsStyle: 'info', type: 'submit' },
+                React.createElement(FA, { name: 'sign-in' }),
+                ' Join in!'
+              )
+            )
+          ) : false
         )
-      ) : false,
-      this.state.showJoinForm ? React.createElement(
-        'form',
-        { id: 'joinform', onSubmit: this.storeSigninVars },
-        React.createElement(
-          'label',
-          null,
-          'Project access code'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'accessCode' }),
-        React.createElement('br', null),
-        React.createElement(
-          'label',
-          null,
-          'Username'
-        ),
-        '\xA0',
-        React.createElement('input', { type: 'text', required: true, ref: 'username' }),
-        React.createElement('br', null),
-        React.createElement('input', { type: 'submit', value: 'Join in on the project' }),
-        React.createElement(
-          'button',
-          { onClick: this.goBack },
-          'Back'
-        )
-      ) : false
+      )
     );
+  },
+
+  showIntro: function showIntro() {
+    this.setState({
+      showIntro: true,
+      showNewForm: false,
+      showJoinForm: false
+    });
+  },
+
+  showDemo: function showDemo() {
+    $.get('/api/posts/1234', function (data) {
+      if (data.length === 0) {
+        alert('The project access code you typed in is not valid. Please check again!');
+      } else {
+        this.props.onSignin('1234', 'Test user');
+      }
+    }.bind(this));
   },
 
   showNewForm: function showNewForm() {
     this.setState({
-      showButtons: false,
-      showNewForm: true
+      showIntro: false,
+      showNewForm: true,
+      showJoinForm: false
     });
 
-    var candidateCode = Math.random().toString(36).substr(2, 4);
+    var candidateCode;
+    var generateCode = function generateCode() {
+      candidateCode = '';
+      var possible = "abcdefghijkmnpqrtuvwxyz234678";
+
+      for (var i = 0; i < 4; i++) {
+        candidateCode += possible.charAt(Math.floor(Math.random() * possible.length));
+      }return candidateCode;
+    };
+
+    generateCode();
 
     $.get('/api/posts/' + candidateCode, function (data) {
       if (data.length !== 0) {
-        candidateCode = Math.random().toString(36).substr(2, 4);
+        generateCode();
         this.refs.newAccessCode.value = candidateCode;
       } else {
         this.refs.newAccessCode.value = candidateCode;
@@ -47547,8 +47786,9 @@ var SigninForm = React.createClass({
 
   showJoinForm: function showJoinForm() {
     this.setState({
-      showButtons: false,
-      showJoinForm: true
+      showIntro: false,
+      showJoinForm: true,
+      showNewForm: false
     });
   },
 
@@ -47560,21 +47800,21 @@ var SigninForm = React.createClass({
     var data = {
       accessCode: this.refs.newAccessCode.value,
       username: this.refs.newUsername.value,
-      content: this.refs.content.value,
+      content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
       prevContent: '',
       editedFrom: 0,
-      comment: this.refs.comment.value
+      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
     };
+
+    if (data.content === '') {
+      data.content = '';
+    }
 
     $.ajax('/api/post', {
       type: 'POST',
       data: JSON.stringify(data),
       datatype: 'json',
       contentType: 'application/json'
-    }).done(function () {
-      console.log('Successfully posted.');
-    }).fail(function () {
-      console.log('Failed to post.');
     });
   },
 
@@ -47587,16 +47827,18 @@ var SigninForm = React.createClass({
         this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
       }
     }.bind(this));
-  },
-
-  goBack: function goBack() {
-    this.setState({
-      showButtons: true,
-      showNewForm: false,
-      showJoinForm: false
-    });
   }
 });
+
+var examples = ["a topic sentence", "a thesis statement", "a mission statement", "instructions", "product descriptions", "translations", "a plotline", "a headline", "a tagline", "a catchphrase", "a paraphrase", "a paragraph", "a sentence"];
+
+if ($(window).width() > 767) {
+  setInterval(function () {
+    $(".example").fadeOut(function () {
+      $(this).text(examples[examples.push(examples.shift()) - 1] + '.').fadeIn();
+    });
+  }, 1500);
+}
 
 module.exports = SigninForm;
 
@@ -48645,7 +48887,7 @@ exports = module.exports = __webpack_require__(145)();
 
 
 // module
-exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n.app_container {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n.evts .evt + .evt {\n    border-top: 1px solid #fff;\n}\n\n.evts .evt-op {\n    color: #172935;\n    font-variant: small-caps;\n    font-weight: bold;\n}\n\n.evts .evt-id {\n    font-weight: bold;\n    color: rgba(255, 255, 255, 0.7);\n}\n\n.evts .evt-date {\n    font-style: italic;\n    color: rgba(255, 255, 255, 0.7);\n}\n\n.evts .evt-content {\n    margin-top: 0.5em;\n    color: rgba(255, 255, 255, 0.7);\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 50px;\n}\n\nbutton, .alert, .panel, input, textarea {\n    box-shadow: 1px 1px 2px #dddddd;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.95;\n}", ""]);
+exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n.app_container {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.95;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {\n    box-shadow: 0 0 6px #dddddd;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-warning {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 50px;\n  }\n}", ""]);
 
 // exports
 

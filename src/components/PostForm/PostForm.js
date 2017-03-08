@@ -1,11 +1,10 @@
 var React = require('react');
 var FA = require('react-fontawesome');
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
 var $ = require('jquery');
 
-import { Panel, Button, ButtonGroup } from 'react-bootstrap';
+import { Well, Button } from 'react-bootstrap';
 
 var PostForm = React.createClass({
   getInitialState: function() {
@@ -17,45 +16,31 @@ var PostForm = React.createClass({
 
   render: function(){
     return (
-      <Panel>
-        {this.state.showButtons ?
-          <ButtonGroup justified bsSize="large">
-            <ButtonGroup>
-              <Button bsStyle="primary" onClick={this.showCommentForm}><FA name="bullhorn" /> Announce / Discuss</Button>   
-            </ButtonGroup>
-            <ButtonGroup>
-              <Button bsStyle="danger" onClick={this.scrollUp}><FA name="angle-up" /> Scroll to top</Button>
-            </ButtonGroup>
-          </ButtonGroup>
-        : true}
+      <Well>
+        <Button block bsSize="large" onClick={this.showCommentForm}><b><FA name="bullhorn" /> Announce / Discuss</b></Button>   
         {this.state.showCommentForm ?
           <form onSubmit={this.addComment}>
-            <textarea className="general_comment_textarea" autoFocus spellCheck="true" required ref="comment" placeholder="Make a group announcement or start a discussion about the project." /><br />
-            <ButtonGroup justified>
-              <ButtonGroup>
-                <Button bsStyle="success" type="submit"><FA name="upload" /> Post thread</Button>
-              </ButtonGroup>
-              <ButtonGroup>
-                <Button bsStyle="danger" onClick={this.goBack}><FA name="times-circle" /> Close</Button>
-              </ButtonGroup>
-            </ButtonGroup>
+            <br />
+            <textarea className="general_comment_textarea" autoFocus spellCheck="true" required ref="comment" placeholder="Make an announcement or suggestion about this project in a separate discussion thread post." /><br />
+            <Button block bsStyle="success" type="submit">Begin thread</Button>
           </form>
         : false}
-      </Panel>
+      </Well>
     );
   },
   
   showCommentForm: function(){
-    this.setState({
-      showButtons: false,
-      showCommentForm: true,
-    }, function (){
-      scroll.scrollToBottom();      
-    });
-  },
-  
-  scrollUp: function (){
-    scroll.scrollToTop();
+    if (this.state.showCommentForm == false) {
+      this.setState({
+        showCommentForm: true,
+      }, function (){
+        scroll.scrollToBottom();      
+      });
+    } else {
+      this.setState({
+        showCommentForm: false
+      });
+    }    
   },
   
   addComment: function (e){
@@ -67,7 +52,7 @@ var PostForm = React.createClass({
       content: 'general_comment',
       prevContent: 'general_comment',
       editedFrom: 0,
-      comment: this.refs.comment.value
+      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />'),
     };
   
     $.ajax('/api/post', {
@@ -78,20 +63,11 @@ var PostForm = React.createClass({
     });
     
     this.setState({
-      showButtons: true,
       showCommentForm: false
     }, function(){
       scroll.scrollToBottom();
     });
-  },
-  
-  goBack: function() {
-    this.setState({
-      showButtons: true,
-      showCommentForm: false
-    });
   }
-  
 });
 
 module.exports = PostForm;

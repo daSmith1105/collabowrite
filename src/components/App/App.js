@@ -4,14 +4,15 @@ var Posts = require('../Posts/Posts');
 var PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
 var $ = require('jquery');
 
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Label } from 'react-bootstrap';
 
 var App = React.createClass({
   getInitialState: function() {
     return {
       posts: [],
       matchCode: '',
-      username: ''
+      username: '',
+      showPosts: false
     };
   },
 
@@ -64,20 +65,27 @@ var App = React.createClass({
   render: function() {
     return (
       <div className="row app_container">
-        <Posts posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} ref="posts" />
+        {this.state.showPosts ?
+          <Posts posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} ref="posts" />
+        : false}
         <UserForms showOldPosts={this.showOldPosts} getSigninVars={this.getSigninVars} />
+        <div className="rights"><Label className="rights">© 2017 Tim Paik</Label></div>
       </div>
     );
   },
   
   showOldPosts: function(data) {
-    this.setState({posts: data});
+    this.setState({
+      posts: data,
+      showPosts: true
+    });
   },
   
   getSigninVars: function(accessCode, username) {
     this.setState({
       matchCode: accessCode,
-      username: username
+      username: username,
+      showPosts: true
     });
   }
 });
