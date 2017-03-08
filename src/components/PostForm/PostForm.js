@@ -1,5 +1,6 @@
 var React = require('react');
 var FA = require('react-fontawesome');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
 var $ = require('jquery');
@@ -18,13 +19,15 @@ var PostForm = React.createClass({
     return (
       <Well>
         <Button block bsSize="large" onClick={this.showCommentForm}><b><FA name="bullhorn" /> Announce / Discuss</b></Button>   
-        {this.state.showCommentForm ?
-          <form onSubmit={this.addComment}>
-            <br />
-            <textarea className="general_comment_textarea" autoFocus spellCheck="true" required ref="comment" placeholder="Make an announcement or suggestion about this project in a separate discussion thread post." /><br />
-            <Button block bsStyle="success" type="submit">Begin thread</Button>
-          </form>
-        : false}
+        <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>   
+          {this.state.showCommentForm ?
+            <form onSubmit={this.addComment}>
+              <br />
+              <textarea className="general_comment_textarea" autoFocus spellCheck="true" required ref="comment" placeholder="Make an announcement or suggestion about this project in a separate discussion thread post." /><br />
+              <Button block bsStyle="success" type="submit">Begin thread</Button>
+            </form>
+          : false}
+        </ReactCSSTransitionGroup>
       </Well>
     );
   },
@@ -37,10 +40,18 @@ var PostForm = React.createClass({
         scroll.scrollToBottom();      
       });
     } else {
-      this.setState({
-        showCommentForm: false
-      });
-    }    
+      if (this.refs.comment.value !== '') {
+        if (confirm("You haven't posted your thread yet.\nDo you still want to close this form?")) {
+          this.setState({
+            showCommentForm: false
+          });          
+        }
+      } else {
+        this.setState({
+          showCommentForm: false
+        });
+      }
+    }     
   },
   
   addComment: function (e){

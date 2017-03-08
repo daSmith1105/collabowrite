@@ -7,7 +7,7 @@ var Scroll = require('react-scroll');
 var scroll = Scroll.animateScroll;
 var $ = require('jquery');
 
-import { Jumbotron, Alert, Button, ButtonGroup, Panel, Label, ListGroup, ListGroupItem, FormGroup, InputGroup } from 'react-bootstrap';
+import { Button, ButtonGroup, Panel, Label, ListGroup, ListGroupItem, FormGroup, InputGroup } from 'react-bootstrap';
 
 var Post = React.createClass({
   getInitialState: function() {
@@ -16,7 +16,8 @@ var Post = React.createClass({
       showChangesCommand: false,
       showChanges: true,
       showReviseForm: false,
-      showCommentForm: false
+      showCommentForm: false,
+      showWriteButton: true
     };
   },
   
@@ -104,14 +105,14 @@ var Post = React.createClass({
                 <form onSubmit={this.addRevision}>
                   <br />
                   <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-                  <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
+                  <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain your changes." /><br/>
                   <Button block bsStyle="info" type="submit">Post revision</Button>
                 </form>
               : false}
               {this.state.showCommentForm ?
                 <form onSubmit={this.addComment}>
                   <br />
-                  <input type="text" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
+                  <textarea autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
                   <Button block bsStyle="success" type="submit">Post comment</Button>
                 </form>
               : false}
@@ -124,7 +125,7 @@ var Post = React.createClass({
         //For discussion thread comments        
         postTitle = (
           <div className="post_title">
-            <Label className="title_header"><FA name="bullhorn" /> ANNOUNCE / DISCUSS</Label>
+            <Label className="title_header">ANNOUNCE / DISCUSS</Label>
             <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted ' + timeStamp}}></div>
           </div>          
         );
@@ -170,23 +171,25 @@ var Post = React.createClass({
                 <ButtonGroup>
                   <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
                 </ButtonGroup>
-                <ButtonGroup>
-                  <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Write</Button>
-                </ButtonGroup>
+                {this.state.showWriteButton ?
+                  <ButtonGroup>
+                    <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Write</Button>
+                  </ButtonGroup>
+                : null}
               </ButtonGroup>
               <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
                 {this.state.showReviseForm ?
                   <form onSubmit={this.addRevision}>
                     <br />
                     <textarea autoFocus spellCheck="true" required ref="revisionContent" placeholder="Suggest an initial version of writing for the project."/><br/>
-                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain or comment on your writing." /><br/>
+                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain your writing." /><br/>
                     <Button block type="submit" bsStyle="info">Post writing</Button>
                   </form>
                 : false}
                 {this.state.showCommentForm ?
                   <form onSubmit={this.addComment}>
                     <br />
-                    <input type="text" autoFocus required ref="commentOnly" placeholder="Comment on the context or discussion above." /><br/>
+                    <textarea autoFocus required ref="commentOnly" placeholder="Comment on the context or discussion above." /><br/>
                     <Button block type="submit" bsStyle="success">Post comment</Button>
                   </form>
                 : false}
@@ -239,14 +242,14 @@ var Post = React.createClass({
                   <form onSubmit={this.addRevision}>
                     <br />
                     <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain or comment on your changes." /><br/>
+                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain your changes." /><br/>
                     <Button block type="submit" bsStyle="info">Post revision</Button>
                   </form>
                 : false}
                 {this.state.showCommentForm ?
                   <form onSubmit={this.addComment}>
                     <br />
-                    <input type="text" autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
+                    <textarea autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
                     <Button block type="submit" bsStyle="success">Post comment</Button>
                   </form>
                 : false}
@@ -282,9 +285,17 @@ var Post = React.createClass({
         this.refs.revisionContent.value = this.props.post.content;
       });
     } else {
-      this.setState({
-        showReviseForm: false
-      });
+      if (this.refs.revisionContent.value !== this.props.post.content) {
+        if (confirm("You haven't posted your revision yet.\nDo you still want to close this form?")) {
+          this.setState({
+            showReviseForm: false
+          });          
+        }
+      } else {
+        this.setState({
+          showReviseForm: false
+        });
+      }
     }    
     
   },
@@ -296,10 +307,18 @@ var Post = React.createClass({
         showReviseForm: false
       });
     } else {
-      this.setState({
-        showCommentForm: false
-      });
-    }
+      if (this.refs.commentOnly.value !== '') {
+        if (confirm("You haven't posted your comment yet.\nDo you still want to close this form?")) {
+          this.setState({
+            showCommentForm: false
+          });          
+        }
+      } else {
+        this.setState({
+          showCommentForm: false
+        });
+      }
+    }    
   },
   
   addRevision: function (e){
@@ -344,10 +363,7 @@ var Post = React.createClass({
       data: JSON.stringify(data),
       datatype: 'json',
       contentType: 'application/json'
-    })
-    .done(function() {
-      this.refs.commentOnly.value = '';   
-    }.bind(this));
+    });
     
     this.setState({
       showReviseForm: false,

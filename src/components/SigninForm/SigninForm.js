@@ -36,8 +36,8 @@ var SigninForm = React.createClass({
     
     return (
       <div>
-        <Jumbotron onClick={this.showIntro}>
-          <h2>Collabo<span className="green">write</span> <span className="example">a sentence.</span></h2>
+        <Jumbotron>
+          <a href="#" onClick={this.showIntro}><h2>Collabo<span className="green">write</span> <span className="example">a sentence.</span></h2></a>
         </Jumbotron>
         <Panel header={buttons} className="intro_screen">
           {this.state.showIntro ?
@@ -63,13 +63,13 @@ var SigninForm = React.createClass({
                       <input className="accesscode_input" type="text" required ref="newAccessCode" readOnly />
                     </OverlayTrigger>
                   </Well>
-                  <label>Enter your name.</label>&nbsp;<input type="text" autoFocus required ref="newUsername" />
+                  <label>Enter your name</label>&nbsp;<input type="text" autoFocus required ref="newUsername" />
                   <br />
-                  <label>Provide some context for this project (what kind of writing it is, what you'd like others to focus on, etc).</label>
+                  <label>Provide some context for this project (i.e. what kind of writing it is, what others should focus on...)</label>
                   <br/>
                   <textarea required ref="comment" />
                   <br/>
-                  <label>Optional: Share an initial version of the writing you have in mind.</label>
+                  <label>Optional: Share an initial version or starting point for the writing you have in mind</label>
                   <br/>
                   <textarea ref="content" />
                   <br/>
@@ -94,7 +94,8 @@ var SigninForm = React.createClass({
     );
   },
   
-  showIntro: function() {
+  showIntro: function(e) {
+    e.preventDefault();
     this.setState({
       showIntro: true,
       showNewForm: false,

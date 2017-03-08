@@ -46545,7 +46545,8 @@ var Post = React.createClass({
       showChangesCommand: false,
       showChanges: true,
       showReviseForm: false,
-      showCommentForm: false
+      showCommentForm: false,
+      showWriteButton: true
     };
   },
 
@@ -46675,7 +46676,7 @@ var Post = React.createClass({
               React.createElement('br', null),
               React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
               React.createElement('br', null),
-              React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your changes.' }),
+              React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
               React.createElement('br', null),
               React.createElement(
                 _reactBootstrap.Button,
@@ -46687,7 +46688,7 @@ var Post = React.createClass({
               'form',
               { onSubmit: this.addComment },
               React.createElement('br', null),
-              React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
+              React.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
               React.createElement('br', null),
               React.createElement(
                 _reactBootstrap.Button,
@@ -46707,8 +46708,7 @@ var Post = React.createClass({
           React.createElement(
             _reactBootstrap.Label,
             { className: 'title_header' },
-            React.createElement(FA, { name: 'bullhorn' }),
-            ' ANNOUNCE / DISCUSS'
+            'ANNOUNCE / DISCUSS'
           ),
           React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted ' + timeStamp } })
         );
@@ -46792,7 +46792,7 @@ var Post = React.createClass({
                   ' Comment'
                 )
               ),
-              React.createElement(
+              this.state.showWriteButton ? React.createElement(
                 _reactBootstrap.ButtonGroup,
                 null,
                 React.createElement(
@@ -46801,7 +46801,7 @@ var Post = React.createClass({
                   React.createElement(FA, { name: 'font' }),
                   ' Write'
                 )
-              )
+              ) : null
             ),
             React.createElement(
               ReactCSSTransitionGroup,
@@ -46812,7 +46812,7 @@ var Post = React.createClass({
                 React.createElement('br', null),
                 React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest an initial version of writing for the project.' }),
                 React.createElement('br', null),
-                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your writing.' }),
+                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your writing.' }),
                 React.createElement('br', null),
                 React.createElement(
                   _reactBootstrap.Button,
@@ -46824,7 +46824,7 @@ var Post = React.createClass({
                 'form',
                 { onSubmit: this.addComment },
                 React.createElement('br', null),
-                React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the context or discussion above.' }),
+                React.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the context or discussion above.' }),
                 React.createElement('br', null),
                 React.createElement(
                   _reactBootstrap.Button,
@@ -46944,7 +46944,7 @@ var Post = React.createClass({
                 React.createElement('br', null),
                 React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
                 React.createElement('br', null),
-                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain or comment on your changes.' }),
+                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
                 React.createElement('br', null),
                 React.createElement(
                   _reactBootstrap.Button,
@@ -46956,7 +46956,7 @@ var Post = React.createClass({
                 'form',
                 { onSubmit: this.addComment },
                 React.createElement('br', null),
-                React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
+                React.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
                 React.createElement('br', null),
                 React.createElement(
                   _reactBootstrap.Button,
@@ -46995,9 +46995,17 @@ var Post = React.createClass({
         this.refs.revisionContent.value = this.props.post.content;
       });
     } else {
-      this.setState({
-        showReviseForm: false
-      });
+      if (this.refs.revisionContent.value !== this.props.post.content) {
+        if (confirm("You haven't posted your revision yet.\nDo you still want to close this form?")) {
+          this.setState({
+            showReviseForm: false
+          });
+        }
+      } else {
+        this.setState({
+          showReviseForm: false
+        });
+      }
     }
   },
 
@@ -47008,9 +47016,17 @@ var Post = React.createClass({
         showReviseForm: false
       });
     } else {
-      this.setState({
-        showCommentForm: false
-      });
+      if (this.refs.commentOnly.value !== '') {
+        if (confirm("You haven't posted your comment yet.\nDo you still want to close this form?")) {
+          this.setState({
+            showCommentForm: false
+          });
+        }
+      } else {
+        this.setState({
+          showCommentForm: false
+        });
+      }
     }
   },
 
@@ -47055,9 +47071,7 @@ var Post = React.createClass({
       data: JSON.stringify(data),
       datatype: 'json',
       contentType: 'application/json'
-    }).done(function () {
-      this.refs.commentOnly.value = '';
-    }.bind(this));
+    });
 
     this.setState({
       showReviseForm: false,
@@ -47256,6 +47270,7 @@ var _reactBootstrap = __webpack_require__(278);
 
 var React = __webpack_require__(0);
 var FA = __webpack_require__(551);
+var ReactCSSTransitionGroup = __webpack_require__(260);
 var Scroll = __webpack_require__(318);
 var scroll = Scroll.animateScroll;
 var $ = __webpack_require__(59);
@@ -47284,18 +47299,22 @@ var PostForm = React.createClass({
           ' Announce / Discuss'
         )
       ),
-      this.state.showCommentForm ? React.createElement(
-        'form',
-        { onSubmit: this.addComment },
-        React.createElement('br', null),
-        React.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
-        React.createElement('br', null),
-        React.createElement(
-          _reactBootstrap.Button,
-          { block: true, bsStyle: 'success', type: 'submit' },
-          'Begin thread'
-        )
-      ) : false
+      React.createElement(
+        ReactCSSTransitionGroup,
+        { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+        this.state.showCommentForm ? React.createElement(
+          'form',
+          { onSubmit: this.addComment },
+          React.createElement('br', null),
+          React.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
+          React.createElement('br', null),
+          React.createElement(
+            _reactBootstrap.Button,
+            { block: true, bsStyle: 'success', type: 'submit' },
+            'Begin thread'
+          )
+        ) : false
+      )
     );
   },
 
@@ -47307,9 +47326,17 @@ var PostForm = React.createClass({
         scroll.scrollToBottom();
       });
     } else {
-      this.setState({
-        showCommentForm: false
-      });
+      if (this.refs.comment.value !== '') {
+        if (confirm("You haven't posted your thread yet.\nDo you still want to close this form?")) {
+          this.setState({
+            showCommentForm: false
+          });
+        }
+      } else {
+        this.setState({
+          showCommentForm: false
+        });
+      }
     }
   },
 
@@ -47356,19 +47383,24 @@ var Post = __webpack_require__(334);
 var FA = __webpack_require__(551);
 var ReactCSSTransitionGroup = __webpack_require__(260);
 var notification = new Audio('notification.mp3');
+var store = __webpack_require__(601);
 var Scroll = __webpack_require__(318);
 var scroll = Scroll.animateScroll;
+
+store.set('sound', { setting: 'on' });
 
 var Posts = React.createClass({
   displayName: 'Posts',
 
   getInitialState: function getInitialState() {
     return {
-      alertVisible: true
+      alertVisible: true,
+      soundIcon: React.createElement(FA, { name: 'volume-up' })
     };
   },
 
   render: function render() {
+
     var postsArray = this.props.posts;
     var verNumber = 0;
     var username = this.props.username;
@@ -47379,7 +47411,7 @@ var Posts = React.createClass({
         if (post.content !== 'general_comment' && post.content !== '') {
           verNumber++;
         }
-        return React.createElement(Post, { post: post, key: index, version: verNumber, yourUsername: username });
+        return React.createElement(Post, { post: post, key: index, version: verNumber, yourUsername: username, arrayLength: postsArray.length });
       }
     }.bind(this));
 
@@ -47399,6 +47431,11 @@ var Posts = React.createClass({
               { className: 'green' },
               'write'
             )
+          ),
+          React.createElement(
+            _reactBootstrap.Button,
+            { bsStyle: 'info', className: 'sound', onClick: this.setSound },
+            this.state.soundIcon
           )
         ),
         React.createElement(
@@ -47406,12 +47443,12 @@ var Posts = React.createClass({
           { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
           this.state.alertVisible ? React.createElement(
             _reactBootstrap.Alert,
-            { bsStyle: 'warning' },
+            { bsStyle: 'info' },
             React.createElement(
               'b',
               null,
               React.createElement(FA, { name: 'lightbulb-o' }),
-              ' Tip: During presentations, you can click on a post or comment to enlarge its text size!'
+              ' Tip: If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
             )
           ) : true
         ),
@@ -47436,6 +47473,11 @@ var Posts = React.createClass({
               'span',
               { className: 'green' },
               'write'
+            ),
+            React.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: 'info', className: 'sound', onClick: this.setSound },
+              this.state.soundIcon
             )
           )
         ),
@@ -47451,12 +47493,12 @@ var Posts = React.createClass({
           { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
           this.state.alertVisible ? React.createElement(
             _reactBootstrap.Alert,
-            { bsStyle: 'warning' },
+            { bsStyle: 'info' },
             React.createElement(
               'b',
               null,
               React.createElement(FA, { name: 'lightbulb-o' }),
-              ' Tip: During presentations, you can click on a post or comment to enlarge its text size!'
+              ' Tip: If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
             )
           ) : true
         ),
@@ -47474,6 +47516,23 @@ var Posts = React.createClass({
         React.createElement('br', null)
       );
     }
+  },
+
+  setSound: function setSound() {
+    if (store.get('sound').setting === 'on') {
+      store.set('sound', { setting: 'off' });
+      notification = new Audio();
+      this.setState({
+        soundIcon: React.createElement(FA, { name: 'volume-off' })
+      });
+    } else {
+      store.set('sound', { setting: 'on' });
+      notification = new Audio('notification.mp3');
+      this.setState({
+        soundIcon: React.createElement(FA, { name: 'volume-up' })
+      });
+    }
+    console.log(store.get('sound').setting);
   },
 
   scrollDown: function scrollDown() {
@@ -47559,21 +47618,25 @@ var SigninForm = React.createClass({
       null,
       React.createElement(
         _reactBootstrap.Jumbotron,
-        { onClick: this.showIntro },
+        null,
         React.createElement(
-          'h2',
-          null,
-          'Collabo',
+          'a',
+          { href: '#', onClick: this.showIntro },
           React.createElement(
-            'span',
-            { className: 'green' },
-            'write'
-          ),
-          ' ',
-          React.createElement(
-            'span',
-            { className: 'example' },
-            'a sentence.'
+            'h2',
+            null,
+            'Collabo',
+            React.createElement(
+              'span',
+              { className: 'green' },
+              'write'
+            ),
+            ' ',
+            React.createElement(
+              'span',
+              { className: 'example' },
+              'a sentence.'
+            )
           )
         )
       ),
@@ -47685,7 +47748,7 @@ var SigninForm = React.createClass({
               React.createElement(
                 'label',
                 null,
-                'Enter your name.'
+                'Enter your name'
               ),
               '\xA0',
               React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
@@ -47693,7 +47756,7 @@ var SigninForm = React.createClass({
               React.createElement(
                 'label',
                 null,
-                'Provide some context for this project (what kind of writing it is, what you\'d like others to focus on, etc).'
+                'Provide some context for this project (i.e. what kind of writing it is, what others should focus on...)'
               ),
               React.createElement('br', null),
               React.createElement('textarea', { required: true, ref: 'comment' }),
@@ -47701,7 +47764,7 @@ var SigninForm = React.createClass({
               React.createElement(
                 'label',
                 null,
-                'Optional: Share an initial version of the writing you have in mind.'
+                'Optional: Share an initial version or starting point for the writing you have in mind'
               ),
               React.createElement('br', null),
               React.createElement('textarea', { ref: 'content' }),
@@ -47737,7 +47800,8 @@ var SigninForm = React.createClass({
     );
   },
 
-  showIntro: function showIntro() {
+  showIntro: function showIntro(e) {
+    e.preventDefault();
     this.setState({
       showIntro: true,
       showNewForm: false,
@@ -48887,7 +48951,7 @@ exports = module.exports = __webpack_require__(145)();
 
 
 // module
-exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n.app_container {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.95;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {\n    box-shadow: 0 0 6px #dddddd;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-warning {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 50px;\n  }\n}", ""]);
+exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n.app_container {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-warning {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
 
 // exports
 
@@ -71737,6 +71801,1313 @@ var ReactDOM = __webpack_require__(20);
 var App = __webpack_require__(330);
 
 ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
+
+/***/ }),
+/* 598 */,
+/* 599 */,
+/* 600 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var assign = make_assign()
+var create = make_create()
+var trim = make_trim()
+var Global = (typeof window !== 'undefined' ? window : global)
+
+module.exports = {
+	assign: assign,
+	create: create,
+	trim: trim,
+	bind: bind,
+	slice: slice,
+	each: each,
+	map: map,
+	pluck: pluck,
+	isList: isList,
+	isFunction: isFunction,
+	isObject: isObject,
+	Global: Global,
+}
+
+function make_assign() {
+	if (Object.assign) {
+		return Object.assign
+	} else {
+		return function shimAssign(obj, props1, props2, etc) {
+			for (var i = 1; i < arguments.length; i++) {
+				each(Object(arguments[i]), function(val, key) {
+					obj[key] = val
+				})
+			}			
+			return obj
+		}
+	}
+}
+
+function make_create() {
+	if (Object.create) {
+		return function create(obj, assignProps1, assignProps2, etc) {
+			var assignArgsList = slice(arguments, 1)
+			return assign.apply(this, [Object.create(obj)].concat(assignArgsList))
+		}
+	} else {
+		function F() {} // eslint-disable-line no-inner-declarations
+		return function create(obj, assignProps1, assignProps2, etc) {
+			var assignArgsList = slice(arguments, 1)
+			F.prototype = obj
+			return assign.apply(this, [new F()].concat(assignArgsList))
+		}
+	}
+}
+
+function make_trim() {
+	if (String.prototype.trim) {
+		return function trim(str) {
+			return String.prototype.trim.call(str)
+		}
+	} else {
+		return function trim(str) {
+			return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')
+		}
+	}
+}
+
+function bind(obj, fn) {
+	return function() {
+		return fn.apply(obj, Array.prototype.slice.call(arguments, 0))
+	}
+}
+
+function slice(arr, index) {
+	return Array.prototype.slice.call(arr, index || 0)
+}
+
+function each(obj, fn) {
+	pluck(obj, function(key, val) {
+		fn(key, val)
+		return false
+	})
+}
+
+function map(obj, fn) {
+	var res = (isList(obj) ? [] : {})
+	pluck(obj, function(v, k) {
+		res[k] = fn(v, k)
+		return false
+	})
+	return res
+}
+
+function pluck(obj, fn) {
+	if (isList(obj)) {
+		for (var i=0; i<obj.length; i++) {
+			if (fn(obj[i], i)) {
+				return obj[i]
+			}
+		}
+	} else {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				if (fn(obj[key], key)) {
+					return obj[key]
+				}
+			}
+		}
+	}
+}
+
+function isList(val) {
+	return (val != null && typeof val != 'function' && typeof val.length == 'number')
+}
+
+function isFunction(val) {
+	return val && {}.toString.call(val) === '[object Function]'
+}
+
+function isObject(val) {
+	return val && {}.toString.call(val) === '[object Object]'
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(612)))
+
+/***/ }),
+/* 601 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var engine = __webpack_require__(604)
+
+var storages = __webpack_require__(605)
+var plugins = [__webpack_require__(602)]
+
+module.exports = engine.createStore(storages, plugins)
+
+
+/***/ }),
+/* 602 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = json2Plugin
+
+function json2Plugin() {
+	__webpack_require__(603)
+	return {}
+}
+
+
+/***/ }),
+/* 603 */
+/***/ (function(module, exports) {
+
+//  json2.js
+//  2016-10-28
+//  Public Domain.
+//  NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+//  See http://www.JSON.org/js.html
+//  This code should be minified before deployment.
+//  See http://javascript.crockford.com/jsmin.html
+
+//  USE YOUR OWN COPY. IT IS EXTREMELY UNWISE TO LOAD CODE FROM SERVERS YOU DO
+//  NOT CONTROL.
+
+//  This file creates a global JSON object containing two methods: stringify
+//  and parse. This file provides the ES5 JSON capability to ES3 systems.
+//  If a project might run on IE8 or earlier, then this file should be included.
+//  This file does nothing on ES5 systems.
+
+//      JSON.stringify(value, replacer, space)
+//          value       any JavaScript value, usually an object or array.
+//          replacer    an optional parameter that determines how object
+//                      values are stringified for objects. It can be a
+//                      function or an array of strings.
+//          space       an optional parameter that specifies the indentation
+//                      of nested structures. If it is omitted, the text will
+//                      be packed without extra whitespace. If it is a number,
+//                      it will specify the number of spaces to indent at each
+//                      level. If it is a string (such as "\t" or "&nbsp;"),
+//                      it contains the characters used to indent at each level.
+//          This method produces a JSON text from a JavaScript value.
+//          When an object value is found, if the object contains a toJSON
+//          method, its toJSON method will be called and the result will be
+//          stringified. A toJSON method does not serialize: it returns the
+//          value represented by the name/value pair that should be serialized,
+//          or undefined if nothing should be serialized. The toJSON method
+//          will be passed the key associated with the value, and this will be
+//          bound to the value.
+
+//          For example, this would serialize Dates as ISO strings.
+
+//              Date.prototype.toJSON = function (key) {
+//                  function f(n) {
+//                      // Format integers to have at least two digits.
+//                      return (n < 10)
+//                          ? "0" + n
+//                          : n;
+//                  }
+//                  return this.getUTCFullYear()   + "-" +
+//                       f(this.getUTCMonth() + 1) + "-" +
+//                       f(this.getUTCDate())      + "T" +
+//                       f(this.getUTCHours())     + ":" +
+//                       f(this.getUTCMinutes())   + ":" +
+//                       f(this.getUTCSeconds())   + "Z";
+//              };
+
+//          You can provide an optional replacer method. It will be passed the
+//          key and value of each member, with this bound to the containing
+//          object. The value that is returned from your method will be
+//          serialized. If your method returns undefined, then the member will
+//          be excluded from the serialization.
+
+//          If the replacer parameter is an array of strings, then it will be
+//          used to select the members to be serialized. It filters the results
+//          such that only members with keys listed in the replacer array are
+//          stringified.
+
+//          Values that do not have JSON representations, such as undefined or
+//          functions, will not be serialized. Such values in objects will be
+//          dropped; in arrays they will be replaced with null. You can use
+//          a replacer function to replace those with JSON values.
+
+//          JSON.stringify(undefined) returns undefined.
+
+//          The optional space parameter produces a stringification of the
+//          value that is filled with line breaks and indentation to make it
+//          easier to read.
+
+//          If the space parameter is a non-empty string, then that string will
+//          be used for indentation. If the space parameter is a number, then
+//          the indentation will be that many spaces.
+
+//          Example:
+
+//          text = JSON.stringify(["e", {pluribus: "unum"}]);
+//          // text is '["e",{"pluribus":"unum"}]'
+
+//          text = JSON.stringify(["e", {pluribus: "unum"}], null, "\t");
+//          // text is '[\n\t"e",\n\t{\n\t\t"pluribus": "unum"\n\t}\n]'
+
+//          text = JSON.stringify([new Date()], function (key, value) {
+//              return this[key] instanceof Date
+//                  ? "Date(" + this[key] + ")"
+//                  : value;
+//          });
+//          // text is '["Date(---current time---)"]'
+
+//      JSON.parse(text, reviver)
+//          This method parses a JSON text to produce an object or array.
+//          It can throw a SyntaxError exception.
+
+//          The optional reviver parameter is a function that can filter and
+//          transform the results. It receives each of the keys and values,
+//          and its return value is used instead of the original value.
+//          If it returns what it received, then the structure is not modified.
+//          If it returns undefined then the member is deleted.
+
+//          Example:
+
+//          // Parse the text. Values that look like ISO date strings will
+//          // be converted to Date objects.
+
+//          myData = JSON.parse(text, function (key, value) {
+//              var a;
+//              if (typeof value === "string") {
+//                  a =
+//   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
+//                  if (a) {
+//                      return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4],
+//                          +a[5], +a[6]));
+//                  }
+//              }
+//              return value;
+//          });
+
+//          myData = JSON.parse('["Date(09/09/2001)"]', function (key, value) {
+//              var d;
+//              if (typeof value === "string" &&
+//                      value.slice(0, 5) === "Date(" &&
+//                      value.slice(-1) === ")") {
+//                  d = new Date(value.slice(5, -1));
+//                  if (d) {
+//                      return d;
+//                  }
+//              }
+//              return value;
+//          });
+
+//  This is a reference implementation. You are free to copy, modify, or
+//  redistribute.
+
+/*jslint
+    eval, for, this
+*/
+
+/*property
+    JSON, apply, call, charCodeAt, getUTCDate, getUTCFullYear, getUTCHours,
+    getUTCMinutes, getUTCMonth, getUTCSeconds, hasOwnProperty, join,
+    lastIndex, length, parse, prototype, push, replace, slice, stringify,
+    test, toJSON, toString, valueOf
+*/
+
+
+// Create a JSON object only if one does not already exist. We create the
+// methods in a closure to avoid creating global variables.
+
+if (typeof JSON !== "object") {
+    JSON = {};
+}
+
+(function () {
+    "use strict";
+
+    var rx_one = /^[\],:{}\s]*$/;
+    var rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
+    var rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
+    var rx_four = /(?:^|:|,)(?:\s*\[)+/g;
+    var rx_escapable = /[\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+    var rx_dangerous = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+
+    function f(n) {
+        // Format integers to have at least two digits.
+        return n < 10
+            ? "0" + n
+            : n;
+    }
+
+    function this_value() {
+        return this.valueOf();
+    }
+
+    if (typeof Date.prototype.toJSON !== "function") {
+
+        Date.prototype.toJSON = function () {
+
+            return isFinite(this.valueOf())
+                ? this.getUTCFullYear() + "-" +
+                        f(this.getUTCMonth() + 1) + "-" +
+                        f(this.getUTCDate()) + "T" +
+                        f(this.getUTCHours()) + ":" +
+                        f(this.getUTCMinutes()) + ":" +
+                        f(this.getUTCSeconds()) + "Z"
+                : null;
+        };
+
+        Boolean.prototype.toJSON = this_value;
+        Number.prototype.toJSON = this_value;
+        String.prototype.toJSON = this_value;
+    }
+
+    var gap;
+    var indent;
+    var meta;
+    var rep;
+
+
+    function quote(string) {
+
+// If the string contains no control characters, no quote characters, and no
+// backslash characters, then we can safely slap some quotes around it.
+// Otherwise we must also replace the offending characters with safe escape
+// sequences.
+
+        rx_escapable.lastIndex = 0;
+        return rx_escapable.test(string)
+            ? "\"" + string.replace(rx_escapable, function (a) {
+                var c = meta[a];
+                return typeof c === "string"
+                    ? c
+                    : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
+            }) + "\""
+            : "\"" + string + "\"";
+    }
+
+
+    function str(key, holder) {
+
+// Produce a string from holder[key].
+
+        var i;          // The loop counter.
+        var k;          // The member key.
+        var v;          // The member value.
+        var length;
+        var mind = gap;
+        var partial;
+        var value = holder[key];
+
+// If the value has a toJSON method, call it to obtain a replacement value.
+
+        if (value && typeof value === "object" &&
+                typeof value.toJSON === "function") {
+            value = value.toJSON(key);
+        }
+
+// If we were called with a replacer function, then call the replacer to
+// obtain a replacement value.
+
+        if (typeof rep === "function") {
+            value = rep.call(holder, key, value);
+        }
+
+// What happens next depends on the value's type.
+
+        switch (typeof value) {
+        case "string":
+            return quote(value);
+
+        case "number":
+
+// JSON numbers must be finite. Encode non-finite numbers as null.
+
+            return isFinite(value)
+                ? String(value)
+                : "null";
+
+        case "boolean":
+        case "null":
+
+// If the value is a boolean or null, convert it to a string. Note:
+// typeof null does not produce "null". The case is included here in
+// the remote chance that this gets fixed someday.
+
+            return String(value);
+
+// If the type is "object", we might be dealing with an object or an array or
+// null.
+
+        case "object":
+
+// Due to a specification blunder in ECMAScript, typeof null is "object",
+// so watch out for that case.
+
+            if (!value) {
+                return "null";
+            }
+
+// Make an array to hold the partial results of stringifying this object value.
+
+            gap += indent;
+            partial = [];
+
+// Is the value an array?
+
+            if (Object.prototype.toString.apply(value) === "[object Array]") {
+
+// The value is an array. Stringify every element. Use null as a placeholder
+// for non-JSON values.
+
+                length = value.length;
+                for (i = 0; i < length; i += 1) {
+                    partial[i] = str(i, value) || "null";
+                }
+
+// Join all of the elements together, separated with commas, and wrap them in
+// brackets.
+
+                v = partial.length === 0
+                    ? "[]"
+                    : gap
+                        ? "[\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "]"
+                        : "[" + partial.join(",") + "]";
+                gap = mind;
+                return v;
+            }
+
+// If the replacer is an array, use it to select the members to be stringified.
+
+            if (rep && typeof rep === "object") {
+                length = rep.length;
+                for (i = 0; i < length; i += 1) {
+                    if (typeof rep[i] === "string") {
+                        k = rep[i];
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (
+                                gap
+                                    ? ": "
+                                    : ":"
+                            ) + v);
+                        }
+                    }
+                }
+            } else {
+
+// Otherwise, iterate through all of the keys in the object.
+
+                for (k in value) {
+                    if (Object.prototype.hasOwnProperty.call(value, k)) {
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (
+                                gap
+                                    ? ": "
+                                    : ":"
+                            ) + v);
+                        }
+                    }
+                }
+            }
+
+// Join all of the member texts together, separated with commas,
+// and wrap them in braces.
+
+            v = partial.length === 0
+                ? "{}"
+                : gap
+                    ? "{\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "}"
+                    : "{" + partial.join(",") + "}";
+            gap = mind;
+            return v;
+        }
+    }
+
+// If the JSON object does not yet have a stringify method, give it one.
+
+    if (typeof JSON.stringify !== "function") {
+        meta = {    // table of character substitutions
+            "\b": "\\b",
+            "\t": "\\t",
+            "\n": "\\n",
+            "\f": "\\f",
+            "\r": "\\r",
+            "\"": "\\\"",
+            "\\": "\\\\"
+        };
+        JSON.stringify = function (value, replacer, space) {
+
+// The stringify method takes a value and an optional replacer, and an optional
+// space parameter, and returns a JSON text. The replacer can be a function
+// that can replace values, or an array of strings that will select the keys.
+// A default replacer method can be provided. Use of the space parameter can
+// produce text that is more easily readable.
+
+            var i;
+            gap = "";
+            indent = "";
+
+// If the space parameter is a number, make an indent string containing that
+// many spaces.
+
+            if (typeof space === "number") {
+                for (i = 0; i < space; i += 1) {
+                    indent += " ";
+                }
+
+// If the space parameter is a string, it will be used as the indent string.
+
+            } else if (typeof space === "string") {
+                indent = space;
+            }
+
+// If there is a replacer, it must be a function or an array.
+// Otherwise, throw an error.
+
+            rep = replacer;
+            if (replacer && typeof replacer !== "function" &&
+                    (typeof replacer !== "object" ||
+                    typeof replacer.length !== "number")) {
+                throw new Error("JSON.stringify");
+            }
+
+// Make a fake root object containing our value under the key of "".
+// Return the result of stringifying the value.
+
+            return str("", {"": value});
+        };
+    }
+
+
+// If the JSON object does not yet have a parse method, give it one.
+
+    if (typeof JSON.parse !== "function") {
+        JSON.parse = function (text, reviver) {
+
+// The parse method takes a text and an optional reviver function, and returns
+// a JavaScript value if the text is a valid JSON text.
+
+            var j;
+
+            function walk(holder, key) {
+
+// The walk method is used to recursively walk the resulting structure so
+// that modifications can be made.
+
+                var k;
+                var v;
+                var value = holder[key];
+                if (value && typeof value === "object") {
+                    for (k in value) {
+                        if (Object.prototype.hasOwnProperty.call(value, k)) {
+                            v = walk(value, k);
+                            if (v !== undefined) {
+                                value[k] = v;
+                            } else {
+                                delete value[k];
+                            }
+                        }
+                    }
+                }
+                return reviver.call(holder, key, value);
+            }
+
+
+// Parsing happens in four stages. In the first stage, we replace certain
+// Unicode characters with escape sequences. JavaScript handles many characters
+// incorrectly, either silently deleting them, or treating them as line endings.
+
+            text = String(text);
+            rx_dangerous.lastIndex = 0;
+            if (rx_dangerous.test(text)) {
+                text = text.replace(rx_dangerous, function (a) {
+                    return "\\u" +
+                            ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
+                });
+            }
+
+// In the second stage, we run the text against regular expressions that look
+// for non-JSON patterns. We are especially concerned with "()" and "new"
+// because they can cause invocation, and "=" because it can cause mutation.
+// But just to be safe, we want to reject all unexpected forms.
+
+// We split the second stage into 4 regexp operations in order to work around
+// crippling inefficiencies in IE's and Safari's regexp engines. First we
+// replace the JSON backslash pairs with "@" (a non-JSON character). Second, we
+// replace all simple value tokens with "]" characters. Third, we delete all
+// open brackets that follow a colon or comma or that begin the text. Finally,
+// we look to see that the remaining characters are only whitespace or "]" or
+// "," or ":" or "{" or "}". If that is so, then the text is safe for eval.
+
+            if (
+                rx_one.test(
+                    text
+                        .replace(rx_two, "@")
+                        .replace(rx_three, "]")
+                        .replace(rx_four, "")
+                )
+            ) {
+
+// In the third stage we use the eval function to compile the text into a
+// JavaScript structure. The "{" operator is subject to a syntactic ambiguity
+// in JavaScript: it can begin a block or an object literal. We wrap the text
+// in parens to eliminate the ambiguity.
+
+                j = eval("(" + text + ")");
+
+// In the optional fourth stage, we recursively walk the new structure, passing
+// each name/value pair to a reviver function for possible transformation.
+
+                return (typeof reviver === "function")
+                    ? walk({"": j}, "")
+                    : j;
+            }
+
+// If the text is not JSON parseable, then a SyntaxError is thrown.
+
+            throw new SyntaxError("JSON.parse");
+        };
+    }
+}());
+
+/***/ }),
+/* 604 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(600)
+var slice = util.slice
+var pluck = util.pluck
+var each = util.each
+var create = util.create
+var isList = util.isList
+var isFunction = util.isFunction
+var isObject = util.isObject
+
+module.exports = {
+	createStore: createStore,
+}
+
+var storeAPI = {
+	version: '2.0.4',
+	enabled: false,
+	storage: null,
+
+	// addStorage adds another storage to this store. The store
+	// will use the first storage it receives that is enabled, so
+	// call addStorage in the order of preferred storage.
+	addStorage: function(storage) {
+		if (this.enabled) { return }
+		if (this._testStorage(storage)) {
+			this._storage.resolved = storage
+			this.enabled = true
+			this.storage = storage.name
+		}
+	},
+
+	// addPlugin will add a plugin to this store.
+	addPlugin: function(plugin) {
+		var self = this
+
+		// If the plugin is an array, then add all plugins in the array.
+		// This allows for a plugin to depend on other plugins.
+		if (isList(plugin)) {
+			each(plugin, function(plugin) {
+				self.addPlugin(plugin)
+			})
+			return
+		}
+
+		// Keep track of all plugins we've seen so far, so that we
+		// don't add any of them twice.
+		var seenPlugin = pluck(this._seenPlugins, function(seenPlugin) { return (plugin === seenPlugin) })
+		if (seenPlugin) {
+			return
+		}
+		this._seenPlugins.push(plugin)
+
+		// Check that the plugin is properly formed
+		if (!isFunction(plugin)) {
+			throw new Error('Plugins must be function values that return objects')
+		}
+
+		var pluginProperties = plugin.call(this)
+		if (!isObject(pluginProperties)) {
+			throw new Error('Plugins must return an object of function properties')
+		}
+
+		// Add the plugin function properties to this store instance.
+		each(pluginProperties, function(pluginFnProp, propName) {
+			if (!isFunction(pluginFnProp)) {
+				throw new Error('Bad plugin property: '+propName+' from plugin '+plugin.name+'. Plugins should only return functions.')
+			}
+			self._assignPluginFnProp(pluginFnProp, propName)
+		})
+	},
+
+	// get returns the value of the given key. If that value
+	// is undefined, it returns optionalDefaultValue instead.
+	get: function(key, optionalDefaultValue) {
+		var data = this._storage().read(this._namespacePrefix + key)
+		return this._deserialize(data, optionalDefaultValue)
+	},
+
+	// set will store the given value at key and returns value.
+	// Calling set with value === undefined is equivalent to calling remove.
+	set: function(key, value) {
+		if (value === undefined) {
+			return this.remove(key)
+		}
+		this._storage().write(this._namespacePrefix + key, this._serialize(value))
+		return value
+	},
+
+	// remove deletes the key and value stored at the given key.
+	remove: function(key) {
+		this._storage().remove(this._namespacePrefix + key)
+	},
+
+	// each will call the given callback once for each key-value pair
+	// in this store.
+	each: function(callback) {
+		var self = this
+		this._storage().each(function(val, namespacedKey) {
+			callback(self._deserialize(val), namespacedKey.replace(self._namespaceRegexp, ''))
+		})
+	},
+
+	// clearAll will remove all the stored key-value pairs in this store.
+	clearAll: function() {
+		this._storage().clearAll()
+	},
+
+	// additional functionality that can't live in plugins
+	// ---------------------------------------------------
+
+	// hasNamespace returns true if this store instance has the given namespace.
+	hasNamespace: function(namespace) {
+		return (this._namespacePrefix == '__storejs_'+namespace+'_')
+	},
+
+	// namespace clones the current store and assigns it the given namespace
+	namespace: function(namespace) {
+		if (!this._legalNamespace.test(namespace)) {
+			throw new Error('store.js namespaces can only have alhpanumerics + underscores and dashes')
+		}
+		// create a prefix that is very unlikely to collide with un-namespaced keys
+		var namespacePrefix = '__storejs_'+namespace+'_'
+		return create(this, {
+			_namespacePrefix: namespacePrefix,
+			_namespaceRegexp: namespacePrefix ? new RegExp('^'+namespacePrefix) : null
+		})
+	},
+
+	// createStore creates a store.js instance with the first
+	// functioning storage in the list of storage candidates,
+	// and applies the the given mixins to the instance.
+	createStore: function(storages, plugins) {
+		return createStore(storages, plugins)
+	},
+}
+
+function createStore(storages, plugins) {
+	var _privateStoreProps = {
+		_seenPlugins: [],
+		_namespacePrefix: '',
+		_namespaceRegexp: null,
+		_legalNamespace: /^[a-zA-Z0-9_\-]+$/, // alpha-numeric + underscore and dash
+
+		_storage: function() {
+			if (!this.enabled) {
+				throw new Error("store.js: No supported storage has been added! "+
+					"Add one (e.g store.addStorage(require('store/storages/cookieStorage')) "+
+					"or use a build with more built-in storages (e.g "+
+					"https://github.com/marcuswestin/store.js/tree/master/dist/store.legacy.min.js)")
+			}
+			return this._storage.resolved
+		},
+
+		_testStorage: function(storage) {
+			try {
+				var testStr = '__storejs__test__'
+				storage.write(testStr, testStr)
+				var ok = (storage.read(testStr) === testStr)
+				storage.remove(testStr)
+				return ok
+			} catch(e) {
+				return false
+			}
+		},
+
+		_assignPluginFnProp: function(pluginFnProp, propName) {
+			var oldFn = this[propName]
+			this[propName] = function pluginFn() {
+				var args = slice(arguments, 0)
+				var self = this
+
+				// super_fn calls the old function which was overwritten by
+				// this mixin.
+				function super_fn() {
+					if (!oldFn) { return }
+					each(arguments, function(arg, i) {
+						args[i] = arg
+					})
+					return oldFn.apply(self, args)
+				}
+
+				// Give mixing function access to super_fn by prefixing all mixin function
+				// arguments with super_fn.
+				var newFnArgs = [super_fn].concat(args)
+
+				return pluginFnProp.apply(self, newFnArgs)
+			}
+		},
+
+		_serialize: function(obj) {
+			return JSON.stringify(obj)
+		},
+
+		_deserialize: function(strVal, defaultVal) {
+			if (!strVal) { return defaultVal }
+			// It is possible that a raw string value has been previously stored
+			// in a storage without using store.js, meaning it will be a raw
+			// string value instead of a JSON serialized string. By defaulting
+			// to the raw string value in case of a JSON parse error, we allow
+			// for past stored values to be forwards-compatible with store.js
+			var val = ''
+			try { val = JSON.parse(strVal) }
+			catch(e) { val = strVal }
+
+			return (val !== undefined ? val : defaultVal)
+		},
+	}
+
+	var store = create(_privateStoreProps, storeAPI)
+	each(storages, function(storage) {
+		store.addStorage(storage)
+	})
+	each(plugins, function(plugin) {
+		store.addPlugin(plugin)
+	})
+	return store
+}
+
+
+/***/ }),
+/* 605 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+	// Listed in order of usage preference
+	'localStorage': __webpack_require__(607),
+	'oldFF-globalStorage': __webpack_require__(609),
+	'oldIE-userDataStorage': __webpack_require__(610),
+	'cookieStorage': __webpack_require__(606),
+	'sessionStorage': __webpack_require__(611),
+	'memoryStorage': __webpack_require__(608),
+}
+
+
+/***/ }),
+/* 606 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// cookieStorage is useful Safari private browser mode, where localStorage
+// doesn't work but cookies do. This implementation is adopted from
+// https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage
+
+var util = __webpack_require__(600)
+var Global = util.Global
+var trim = util.trim
+
+module.exports = {
+	name: 'cookieStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var doc = Global.document
+
+function read(key) {
+	if (!key || !_has(key)) { return null }
+	var regexpStr = "(?:^|.*;\\s*)" +
+		escape(key).replace(/[\-\.\+\*]/g, "\\$&") +
+		"\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"
+	return unescape(doc.cookie.replace(new RegExp(regexpStr), "$1"))
+}
+
+function each(callback) {
+	var cookies = doc.cookie.split(/; ?/g)
+	for (var i = cookies.length - 1; i >= 0; i--) {
+		if (!trim(cookies[i])) {
+			continue
+		}
+		var kvp = cookies[i].split('=')
+		var key = unescape(kvp[0])
+		var val = unescape(kvp[1])
+		callback(val, key)
+	}
+}
+
+function write(key, data) {
+	if(!key) { return }
+	doc.cookie = escape(key) + "=" + escape(data) + "; expires=Tue, 19 Jan 2038 03:14:07 GMT; path=/"
+}
+
+function remove(key) {
+	if (!key || !_has(key)) {
+		return
+	}
+	doc.cookie = escape(key) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/"
+}
+
+function clearAll() {
+	each(function(_, key) {
+		remove(key)
+	})
+}
+
+function _has(key) {
+	return (new RegExp("(?:^|;\\s*)" + escape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(doc.cookie)
+}
+
+
+/***/ }),
+/* 607 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(600)
+var Global = util.Global
+
+module.exports = {
+	name: 'localStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+function localStorage() {
+	return Global.localStorage
+}
+
+function read(key) {
+	return localStorage().getItem(key)
+}
+
+function write(key, data) {
+	return localStorage().setItem(key, data)
+}
+
+function each(fn) {
+	for (var i = localStorage().length - 1; i >= 0; i--) {
+		var key = localStorage().key(i)
+		fn(read(key), key)
+	}
+}
+
+function remove(key) {
+	return localStorage().removeItem(key)
+}
+
+function clearAll() {
+	return localStorage().clear()
+}
+
+
+/***/ }),
+/* 608 */
+/***/ (function(module, exports) {
+
+// memoryStorage is a useful last fallback to ensure that the store
+// is functions (meaning store.get(), store.set(), etc will all function).
+// However, stored values will not persist when the browser navigates to
+// a new page or reloads the current page.
+
+module.exports = {
+	name: 'memoryStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var memoryStorage = {}
+
+function read(key) {
+	return memoryStorage[key]
+}
+
+function write(key, data) {
+	memoryStorage[key] = data
+}
+
+function each(callback) {
+	for (var key in memoryStorage) {
+		if (memoryStorage.hasOwnProperty(key)) {
+			callback(memoryStorage[key], key)
+		}
+	}
+}
+
+function remove(key) {
+	delete memoryStorage[key]
+}
+
+function clearAll(key) {
+	memoryStorage = {}
+}
+
+
+/***/ }),
+/* 609 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// oldFF-globalStorage provides storage for Firefox
+// versions 6 and 7, where no localStorage, etc
+// is available.
+
+var util = __webpack_require__(600)
+var Global = util.Global
+
+module.exports = {
+	name: 'oldFF-globalStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var globalStorage = Global.globalStorage
+
+function read(key) {
+	return globalStorage[key]
+}
+
+function write(key, data) {
+	globalStorage[key] = data
+}
+
+function each(fn) {
+	for (var i = globalStorage.length - 1; i >= 0; i--) {
+		var key = globalStorage.key(i)
+		fn(globalStorage[key], key)
+	}
+}
+
+function remove(key) {
+	return globalStorage.removeItem(key)
+}
+
+function clearAll() {
+	each(function(key, _) {
+		delete globalStorage[key]
+	})
+}
+
+
+/***/ }),
+/* 610 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// oldIE-userDataStorage provides storage for Internet Explorer
+// versions 6 and 7, where no localStorage, sessionStorage, etc
+// is available.
+
+var util = __webpack_require__(600)
+var Global = util.Global
+
+module.exports = {
+	name: 'oldIE-userDataStorage',
+	write: write,
+	read: read,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var storageName = 'storejs'
+var doc = Global.document
+var _withStorageEl = _makeIEStorageElFunction()
+var disable = (Global.navigator ? Global.navigator.userAgent : '').match(/ (MSIE 8|MSIE 9|MSIE 10)\./) // MSIE 9.x, MSIE 10.x
+
+function write(unfixedKey, data) {
+	if (disable) { return }
+	var fixedKey = fixKey(unfixedKey)
+	_withStorageEl(function(storageEl) {
+		storageEl.setAttribute(fixedKey, data)
+		storageEl.save(storageName)
+	})
+}
+
+function read(unfixedKey) {
+	if (disable) { return }
+	var fixedKey = fixKey(unfixedKey)
+	var res = null
+	_withStorageEl(function(storageEl) {
+		res = storageEl.getAttribute(fixedKey)
+	})
+	return res
+}
+
+function each(callback) {
+	_withStorageEl(function(storageEl) {
+		var attributes = storageEl.XMLDocument.documentElement.attributes
+		for (var i=attributes.length-1; i>=0; i--) {
+			var attr = attributes[i]
+			callback(storageEl.getAttribute(attr.name), attr.name)
+		}
+	})
+}
+
+function remove(unfixedKey) {
+	var fixedKey = fixKey(unfixedKey)
+	_withStorageEl(function(storageEl) {
+		storageEl.removeAttribute(fixedKey)
+		storageEl.save(storageName)
+	})
+}
+
+function clearAll() {
+	_withStorageEl(function(storageEl) {
+		var attributes = storageEl.XMLDocument.documentElement.attributes
+		storageEl.load(storageName)
+		for (var i=attributes.length-1; i>=0; i--) {
+			storageEl.removeAttribute(attributes[i].name)
+		}
+		storageEl.save(storageName)
+	})
+}
+
+// Helpers
+//////////
+
+// In IE7, keys cannot start with a digit or contain certain chars.
+// See https://github.com/marcuswestin/store.js/issues/40
+// See https://github.com/marcuswestin/store.js/issues/83
+var forbiddenCharsRegex = new RegExp("[!\"#$%&'()*+,/\\\\:;<=>?@[\\]^`{|}~]", "g")
+function fixKey(key) {
+	return key.replace(/^\d/, '___$&').replace(forbiddenCharsRegex, '___')
+}
+
+function _makeIEStorageElFunction() {
+	if (!doc || !doc.documentElement || !doc.documentElement.addBehavior) {
+		return null
+	}
+	var scriptTag = 'script',
+		storageOwner,
+		storageContainer,
+		storageEl
+
+	// Since #userData storage applies only to specific paths, we need to
+	// somehow link our data to a specific path.  We choose /favicon.ico
+	// as a pretty safe option, since all browsers already make a request to
+	// this URL anyway and being a 404 will not hurt us here.  We wrap an
+	// iframe pointing to the favicon in an ActiveXObject(htmlfile) object
+	// (see: http://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
+	// since the iframe access rules appear to allow direct access and
+	// manipulation of the document element, even for a 404 page.  This
+	// document can be used instead of the current document (which would
+	// have been limited to the current path) to perform #userData storage.
+	try {
+		/* global ActiveXObject */
+		storageContainer = new ActiveXObject('htmlfile')
+		storageContainer.open()
+		storageContainer.write('<'+scriptTag+'>document.w=window</'+scriptTag+'><iframe src="/favicon.ico"></iframe>')
+		storageContainer.close()
+		storageOwner = storageContainer.w.frames[0].document
+		storageEl = storageOwner.createElement('div')
+	} catch(e) {
+		// somehow ActiveXObject instantiation failed (perhaps some special
+		// security settings or otherwse), fall back to per-path storage
+		storageEl = doc.createElement('div')
+		storageOwner = doc.body
+	}
+
+	return function(storeFunction) {
+		var args = [].slice.call(arguments, 0)
+		args.unshift(storageEl)
+		// See http://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
+		// and http://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
+		storageOwner.appendChild(storageEl)
+		storageEl.addBehavior('#default#userData')
+		storageEl.load(storageName)
+		storeFunction.apply(this, args)
+		storageOwner.removeChild(storageEl)
+		return
+	}
+}
+
+
+/***/ }),
+/* 611 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(600)
+var Global = util.Global
+
+module.exports = {
+	name: 'sessionStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+function sessionStorage() {
+	return Global.sessionStorage
+}
+
+function read(key) {
+	return sessionStorage().getItem(key)
+}
+
+function write(key, data) {
+	return sessionStorage().setItem(key, data)
+}
+
+function each(fn) {
+	for (var i = sessionStorage().length - 1; i >= 0; i--) {
+		var key = sessionStorage().key(i)
+		fn(read(key), key)
+	}
+}
+
+function remove(key) {
+	return sessionStorage().removeItem(key)
+}
+
+function clearAll() {
+	return sessionStorage().clear()
+}
+
+
+/***/ }),
+/* 612 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ })
 /******/ ]);

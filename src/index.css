@@ -91,6 +91,7 @@ del + ins::before {
 .writing {
   padding: 7px 10px;
   transition: font-size 0.2s ease;
+  font-size: 115%;
 }
 
 p {
@@ -186,7 +187,7 @@ input.button_combined {
 }
 
 button {
-  opacity: 0.95;
+  opacity: 0.90;
   transition: background 0.5s ease !important;
 }
 
@@ -198,13 +199,13 @@ span:focus {
   outline: none;
 }
 
+.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {
+    box-shadow: 1px 1px 6px #cccccc;
+}
+
 div, button, input, textarea {
   transition: box-shadow 0.5s ease;
   border-radius: 0 !important;
-}
-
-.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {
-    box-shadow: 0 0 6px #dddddd;
 }
 
 button:focus, input:focus, textarea:focus{
@@ -301,6 +302,23 @@ h5 {
   color: white;
 }
 
+.comment_field {
+  height: 100px ;
+}
+
+a:link, a:hover, a:active, a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+.sound {
+  float: right;
+  height: 35px;
+  width: 35px;
+  text-align: left;
+  padding-left: 10px;
+}
+
 @media only screen and (min-device-width : 320px) and (max-device-width : 568px) { 
   h5 {
     padding: 0 4px;
@@ -337,6 +355,6 @@ h5 {
   }
   
   .label {
-    margin-right: 50px;
+    margin-right: 100px;
   }
 }
