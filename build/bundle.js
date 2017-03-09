@@ -47112,14 +47112,18 @@ var Post = React.createClass({
                   'div',
                   null,
                   React.createElement(
-                    'div',
-                    { className: 'changes_command', onClick: this.showChanges },
-                    '+ Show changes made from ',
+                    'a',
+                    { href: '#', onClick: this.showChanges },
                     React.createElement(
-                      _reactBootstrap.Label,
-                      { bsStyle: 'default', className: 'change_version' },
-                      'VERSION ',
-                      editedFrom
+                      'div',
+                      { className: 'changes_command' },
+                      '+ Show changes made from ',
+                      React.createElement(
+                        _reactBootstrap.Label,
+                        { bsStyle: 'default', className: 'change_version' },
+                        'VERSION ',
+                        editedFrom
+                      )
                     )
                   ),
                   React.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
@@ -47128,14 +47132,18 @@ var Post = React.createClass({
                   'div',
                   null,
                   React.createElement(
-                    'div',
-                    { className: 'changes_command', onClick: this.hideChanges },
-                    '- Hide changes from ',
+                    'a',
+                    { href: '#', onClick: this.hideChanges },
                     React.createElement(
-                      _reactBootstrap.Label,
-                      { bsStyle: 'default', className: 'change_version' },
-                      'VERSION ',
-                      editedFrom
+                      'div',
+                      { className: 'changes_command', onClick: this.hideChanges },
+                      '- Hide changes from ',
+                      React.createElement(
+                        _reactBootstrap.Label,
+                        { bsStyle: 'default', className: 'change_version' },
+                        'VERSION ',
+                        editedFrom
+                      )
                     )
                   ),
                   React.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: changes } })
@@ -47218,14 +47226,16 @@ var Post = React.createClass({
     }
   },
 
-  showChanges: function showChanges() {
+  showChanges: function showChanges(e) {
+    e.preventDefault();
     this.setState({
       showChangesCommand: false,
       showChanges: true
     });
   },
 
-  hideChanges: function hideChanges() {
+  hideChanges: function hideChanges(e) {
+    e.preventDefault();
     this.setState({
       showChangesCommand: true,
       showChanges: false
