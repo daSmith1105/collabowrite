@@ -46952,14 +46952,16 @@ var Post = function (_React$Component) {
   _createClass(Post, [{
     key: 'render',
     value: function render() {
+      //Time variables
       var now = (0, _moment2.default)();
-      var postInsertedAt = this.props.post.insertedAt;
+      var postInsertedAt = (0, _moment2.default)(this.props.post.insertedAt);
       var timeStamp = '';
+
       //Create post time stamp and bold if within the hour
-      if ((0, _moment2.default)(postInsertedAt).add(60, 'minutes').isBefore(now)) {
-        timeStamp = (0, _moment2.default)(postInsertedAt).fromNow();
+      if (postInsertedAt.add(60, 'minutes').isBefore(now)) {
+        timeStamp = postInsertedAt.fromNow();
       } else {
-        timeStamp = '<b>' + (0, _moment2.default)(postInsertedAt).fromNow() + '</b>';
+        timeStamp = '<b>' + postInsertedAt.fromNow() + '</b>';
         if (timeStamp === '<b>in a few seconds</b>') {
           timeStamp === '<b>a few seconds ago</b>';
         }
@@ -46972,6 +46974,7 @@ var Post = function (_React$Component) {
       var prevContent = this.props.post.prevContent;
       var changes = '"' + (0, _jsdiff2.default)(prevContent, content).trim() + '"';
       var editedFrom = this.props.post.editedFrom;
+      var version = this.props.version;
 
       //Comment-specific variables
       var commentsArray = this.props.post.comments;
@@ -46989,7 +46992,7 @@ var Post = function (_React$Component) {
         }
       }
 
-      //HTML for most recent or newly added comments
+      //Generate HTML for most recent or newly added comments
       if (this.props.post.updated) {
         //Add p class for css highlighting function
         stringifyComments('<p class="newComment">', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
@@ -47001,390 +47004,221 @@ var Post = function (_React$Component) {
         }
       }
 
-      //For original version
-      if (this.props.version == 1 || editedFrom == 0 && content !== '' && content !== 'general_comment') {
-        var postTitle = _react2.default.createElement(
+      //Post componenet elements
+      var postTitle = null;
+
+      //Generate post title
+      function setPostTitle(bsStyle, labelText, postInfo) {
+        return _react2.default.createElement(
           'div',
           { className: 'post_title' },
           _react2.default.createElement(
             _reactBootstrap.Label,
-            { bsStyle: 'info', className: 'title_header' },
-            'VERSION ',
-            this.props.version
+            { bsStyle: bsStyle, className: 'title_header' },
+            labelText
           ),
-          _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Original posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
+          _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: postInfo } })
         );
+      }
 
+      //Generate post type
+      function renderPostType(bsStyle, changesCommand, commentsHeader, postFunctions) {
         return _react2.default.createElement(
           'li',
           { className: 'postitem' },
           _react2.default.createElement(
             _reactBootstrap.Panel,
-            { header: postTitle, bsStyle: 'info' },
+            { header: postTitle, bsStyle: bsStyle },
             _react2.default.createElement(
               _reactBootstrap.ListGroup,
               { fill: true },
+              changesCommand,
               _react2.default.createElement(
                 _reactBootstrap.ListGroupItem,
                 null,
-                _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                null,
-                _react2.default.createElement(
-                  'div',
-                  { className: 'comments_header' },
-                  _react2.default.createElement(
-                    'b',
-                    null,
-                    _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
-                    ' Comments'
-                  ),
-                  ' -'
-                ),
+                commentsHeader,
                 _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
               )
             ),
-            _react2.default.createElement(
-              _reactBootstrap.ButtonGroup,
-              { justified: true },
-              _react2.default.createElement(
-                _reactBootstrap.ButtonGroup,
-                null,
-                _react2.default.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'success', onClick: this.showCommentForm },
-                  _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
-                  ' Comment'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ButtonGroup,
-                null,
-                _react2.default.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'info', onClick: this.showReviseForm },
-                  _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
-                  ' Revise'
-                )
-              )
-            ),
-            _react2.default.createElement(
-              _reactAddonsCssTransitionGroup2.default,
-              { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-              this.state.showReviseForm ? _react2.default.createElement(
-                'form',
-                { onSubmit: this.addRevision },
-                _react2.default.createElement('br', null),
-                _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement(
-                  _reactBootstrap.Button,
-                  { block: true, bsStyle: 'info', type: 'submit' },
-                  'Post revision'
-                )
-              ) : false,
-              this.state.showCommentForm ? _react2.default.createElement(
-                'form',
-                { onSubmit: this.addComment },
-                _react2.default.createElement('br', null),
-                _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement(
-                  _reactBootstrap.Button,
-                  { block: true, bsStyle: 'success', type: 'submit' },
-                  'Post comment'
-                )
-              ) : false
-            )
+            postFunctions
           )
         );
-      } else {
-        if (content === 'general_comment') {
-          //For discussion thread comments        
-          postTitle = _react2.default.createElement(
-            'div',
-            { className: 'post_title' },
-            _react2.default.createElement(
-              _reactBootstrap.Label,
-              { className: 'title_header' },
-              'ANNOUNCE / DISCUSS'
-            ),
-            _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted ' + timeStamp } })
-          );
-          return _react2.default.createElement(
-            'li',
-            { className: 'postitem' },
-            _react2.default.createElement(
-              _reactBootstrap.Panel,
-              { header: postTitle, className: 'general_comment' },
-              _react2.default.createElement(
-                _reactBootstrap.ListGroup,
-                { fill: true },
-                _react2.default.createElement(
-                  _reactBootstrap.ListGroupItem,
-                  null,
-                  _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
-                )
-              ),
-              _react2.default.createElement(
-                'form',
-                { onSubmit: this.addComment },
-                _react2.default.createElement(
-                  _reactBootstrap.FormGroup,
-                  { className: 'button_combined' },
-                  _react2.default.createElement(
-                    _reactBootstrap.InputGroup,
-                    null,
-                    _react2.default.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
-                    _react2.default.createElement(
-                      _reactBootstrap.InputGroup.Button,
-                      null,
-                      _react2.default.createElement(
-                        _reactBootstrap.Button,
-                        { type: 'submit' },
-                        _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' })
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          );
-        } else if (content === '') {
-          //For initial post without content
-          postTitle = _react2.default.createElement(
-            'div',
-            { className: 'post_title' },
-            _react2.default.createElement(
-              _reactBootstrap.Label,
-              { bsStyle: 'warning', className: 'title_header' },
-              'CONTEXT'
-            ),
-            _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
-          );
+      }
 
-          return _react2.default.createElement(
-            'li',
-            { className: 'postitem' },
-            _react2.default.createElement(
-              _reactBootstrap.Panel,
-              { header: postTitle, bsStyle: 'warning' },
-              _react2.default.createElement(
-                _reactBootstrap.ListGroup,
-                { fill: true },
-                _react2.default.createElement(
-                  _reactBootstrap.ListGroupItem,
-                  null,
-                  _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ButtonGroup,
-                { justified: true },
-                _react2.default.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'success', onClick: this.showCommentForm },
-                    _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
-                    ' Comment'
-                  )
-                ),
-                this.state.showWriteButton ? _react2.default.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'info', onClick: this.showReviseForm },
-                    _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
-                    ' Write'
-                  )
-                ) : null
-              ),
-              _react2.default.createElement(
-                _reactAddonsCssTransitionGroup2.default,
-                { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-                this.state.showReviseForm ? _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.addRevision },
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest an initial version of writing for the project.' }),
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your writing.' }),
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { block: true, type: 'submit', bsStyle: 'info' },
-                    'Post writing'
-                  )
-                ) : false,
-                this.state.showCommentForm ? _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.addComment },
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the context or discussion above.' }),
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { block: true, type: 'submit', bsStyle: 'success' },
-                    'Post comment'
-                  )
-                ) : false
-              )
-            )
-          );
-        } else {
-          //For revisions
-          postTitle = _react2.default.createElement(
-            'div',
-            { className: 'post_title' },
-            _react2.default.createElement(
-              _reactBootstrap.Label,
-              { bsStyle: 'success', className: 'title_header' },
-              'VERSION ',
-              this.props.version
-            ),
-            _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp } })
-          );
+      //Content element
+      var postContent = _react2.default.createElement(
+        _reactBootstrap.ListGroupItem,
+        null,
+        _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
+      );
 
-          return _react2.default.createElement(
-            'li',
-            { className: 'postitem' },
+      //Elements for showing/hiding changes from previous version    
+      var changesFromPrev = _react2.default.createElement(
+        _reactBootstrap.ListGroupItem,
+        null,
+        this.state.showChangesCommand ? _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'a',
+            { href: '#', onClick: this.showChanges },
             _react2.default.createElement(
-              _reactBootstrap.Panel,
-              { header: postTitle, bsStyle: 'success' },
+              'div',
+              { className: 'changes_command' },
+              '+ Show changes made from ',
               _react2.default.createElement(
-                _reactBootstrap.ListGroup,
-                { fill: true },
-                _react2.default.createElement(
-                  _reactBootstrap.ListGroupItem,
-                  null,
-                  this.state.showChangesCommand ? _react2.default.createElement(
-                    'div',
-                    null,
-                    _react2.default.createElement(
-                      'a',
-                      { href: '#', onClick: this.showChanges },
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'changes_command' },
-                        '+ Show changes made from ',
-                        _react2.default.createElement(
-                          _reactBootstrap.Label,
-                          { bsStyle: 'default', className: 'change_version' },
-                          'VERSION ',
-                          editedFrom
-                        )
-                      )
-                    ),
-                    _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
-                  ) : false,
-                  this.state.showChanges ? _react2.default.createElement(
-                    'div',
-                    null,
-                    _react2.default.createElement(
-                      'a',
-                      { href: '#', onClick: this.hideChanges },
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'changes_command', onClick: this.hideChanges },
-                        '- Hide changes from ',
-                        _react2.default.createElement(
-                          _reactBootstrap.Label,
-                          { bsStyle: 'default', className: 'change_version' },
-                          'VERSION ',
-                          editedFrom
-                        )
-                      )
-                    ),
-                    _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: changes } })
-                  ) : true
-                ),
-                _react2.default.createElement(
-                  _reactBootstrap.ListGroupItem,
-                  null,
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'comments_header' },
-                    _react2.default.createElement(
-                      'b',
-                      null,
-                      _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
-                      ' Comments'
-                    ),
-                    ' -'
-                  ),
-                  _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ButtonGroup,
-                { justified: true },
-                _react2.default.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'success', onClick: this.showCommentForm },
-                    _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
-                    ' Comment'
-                  )
-                ),
-                _react2.default.createElement(
-                  _reactBootstrap.ButtonGroup,
-                  null,
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { bsStyle: 'info', onClick: this.showReviseForm },
-                    _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
-                    ' Revise'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactAddonsCssTransitionGroup2.default,
-                { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-                this.state.showReviseForm ? _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.addRevision },
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { block: true, type: 'submit', bsStyle: 'info' },
-                    'Post revision'
-                  )
-                ) : false,
-                this.state.showCommentForm ? _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.addComment },
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
-                  _react2.default.createElement('br', null),
-                  _react2.default.createElement(
-                    _reactBootstrap.Button,
-                    { block: true, type: 'submit', bsStyle: 'success' },
-                    'Post comment'
-                  )
-                ) : false
+                _reactBootstrap.Label,
+                { bsStyle: 'default', className: 'change_version' },
+                'VERSION ',
+                editedFrom
               )
             )
-          );
-        }
+          ),
+          _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
+        ) : false,
+        this.state.showChanges ? _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'a',
+            { href: '#', onClick: this.hideChanges },
+            _react2.default.createElement(
+              'div',
+              { className: 'changes_command', onClick: this.hideChanges },
+              '- Hide changes from ',
+              _react2.default.createElement(
+                _reactBootstrap.Label,
+                { bsStyle: 'default', className: 'change_version' },
+                'VERSION ',
+                editedFrom
+              )
+            )
+          ),
+          _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: changes } })
+        ) : true
+      );
+
+      //Header to separate comments from content
+      var commentsHeaderHTML = _react2.default.createElement(
+        'div',
+        { className: 'comments_header' },
+        _react2.default.createElement(
+          'b',
+          null,
+          _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
+          ' Comments'
+        ),
+        ' -'
+      );
+
+      //Elements for comment and post functions
+      var commentAndPost = _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          _reactBootstrap.ButtonGroup,
+          { justified: true },
+          _react2.default.createElement(
+            _reactBootstrap.ButtonGroup,
+            null,
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: 'success', onClick: this.showCommentForm },
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
+              ' Comment'
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.ButtonGroup,
+            null,
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: 'info', onClick: this.showReviseForm },
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
+              ' Suggest / Revise'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _reactAddonsCssTransitionGroup2.default,
+          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+          this.state.showReviseForm ? _react2.default.createElement(
+            'form',
+            { onSubmit: this.addRevision },
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Share your writing here.' }),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { block: true, type: 'submit', bsStyle: 'info' },
+              'Post your writing'
+            )
+          ) : false,
+          this.state.showCommentForm ? _react2.default.createElement(
+            'form',
+            { onSubmit: this.addComment },
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the post above.' }),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { block: true, type: 'submit', bsStyle: 'success' },
+              'Post comment'
+            )
+          ) : false
+        )
+      );
+
+      //Elements for comment only function for discussion thread
+      var onlyComment = _react2.default.createElement(
+        'form',
+        { onSubmit: this.addComment },
+        _react2.default.createElement(
+          _reactBootstrap.FormGroup,
+          { className: 'button_combined' },
+          _react2.default.createElement(
+            _reactBootstrap.InputGroup,
+            null,
+            _react2.default.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
+            _react2.default.createElement(
+              _reactBootstrap.InputGroup.Button,
+              null,
+              _react2.default.createElement(
+                _reactBootstrap.Button,
+                { type: 'submit' },
+                _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' })
+              )
+            )
+          )
+        )
+      );
+
+      //Render different post types
+      if (content === '') {
+        //Context post
+        postTitle = setPostTitle("warning", "CONTEXT", 'Provided by <span class="displayed_username">' + username + '</span> ' + timeStamp);
+        return renderPostType("warning", '', '', commentAndPost);
+      } else if (version === 1 || editedFrom === 0 && content !== '' && content !== 'general_comment') {
+        //Originals
+        postTitle = setPostTitle("info", "VERSION " + version + " - ORIGINAL", 'Suggested by <span class="displayed_username">' + username + '</span> ' + timeStamp);
+        return renderPostType("info", postContent, commentsHeaderHTML, commentAndPost);
+      } else if (editedFrom !== 0) {
+        //Revisions
+        postTitle = setPostTitle("success", "VERSION " + version + " - REVISION", 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp);
+        return renderPostType("success", changesFromPrev, commentsHeaderHTML, commentAndPost);
+      } else if (content === "general_comment") {
+        //Discussion threads
+        postTitle = setPostTitle("default", "ANNOUNCEMENT / DISCUSSION", 'Initiated by <span class="displayed_username">' + username + '</span> ' + timeStamp);
+        return renderPostType("default", '', '', onlyComment);
       }
     }
   }, {
     key: 'showChanges',
     value: function showChanges(e) {
       e.preventDefault();
+
       this.setState({
         showChangesCommand: false,
         showChanges: true
@@ -47394,6 +47228,7 @@ var Post = function (_React$Component) {
     key: 'hideChanges',
     value: function hideChanges(e) {
       e.preventDefault();
+
       this.setState({
         showChangesCommand: true,
         showChanges: false
@@ -47402,7 +47237,6 @@ var Post = function (_React$Component) {
   }, {
     key: 'showReviseForm',
     value: function showReviseForm() {
-
       if (this.state.showReviseForm == false) {
         this.setState({
           showReviseForm: true,
@@ -47480,6 +47314,7 @@ var Post = function (_React$Component) {
       e.preventDefault();
 
       var _id = this.props.post._id;
+
       var data = {
         username: this.props.yourUsername,
         comment: this.refs.commentOnly.value
@@ -47501,6 +47336,7 @@ var Post = function (_React$Component) {
     key: 'goBack',
     value: function goBack(e) {
       e.preventDefault();
+
       this.setState({
         showReviseForm: false,
         showCommentForm: false
@@ -47512,7 +47348,7 @@ var Post = function (_React$Component) {
 }(_react2.default.Component);
 
 if ((0, _jquery2.default)(window).width() > 767) {
-  //Enlarge text when clicked
+  //Enlarge post or comment text when clicked
   (0, _jquery2.default)('body').on('click', '.writing, p', function () {
     (0, _jquery2.default)(this).toggleClass('large_text');
   });

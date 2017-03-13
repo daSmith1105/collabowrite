@@ -32,14 +32,16 @@ class Post extends React.Component {
   }
   
   render() {
+    //Time variables
     const now = moment();
-    const postInsertedAt = this.props.post.insertedAt;
+    const postInsertedAt = moment(this.props.post.insertedAt);
     let timeStamp = '';
+    
     //Create post time stamp and bold if within the hour
-    if (moment(postInsertedAt).add(60, 'minutes').isBefore(now)) {
-      timeStamp = moment(postInsertedAt).fromNow();
+    if (postInsertedAt.add(60, 'minutes').isBefore(now)) {
+      timeStamp = postInsertedAt.fromNow();
     } else {
-      timeStamp = '<b>' + moment(postInsertedAt).fromNow() + '</b>';
+      timeStamp = '<b>' + postInsertedAt.fromNow() + '</b>';
       if (timeStamp === '<b>in a few seconds</b>') {
         timeStamp === '<b>a few seconds ago</b>';
       }
@@ -52,12 +54,14 @@ class Post extends React.Component {
     const prevContent = this.props.post.prevContent;
     const changes = '"' + diffString(prevContent, content).trim() + '"';
     const editedFrom = this.props.post.editedFrom;
+    const version = this.props.version;
     
     //Comment-specific variables
     const commentsArray = this.props.post.comments;
     let commentsHTML = '';
     const stringifyComments = function(pClass, index, openBold, closeBold) {
-      return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: '+ commentsArray[index].comment + '<span class="comment_timestamp">'
+      return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username
+      + '</span>: '+ commentsArray[index].comment + '<span class="comment_timestamp">'
       + openBold + moment(commentsArray[index].insertedAt).fromNow() + closeBold
       + '</span></p>';
     };
@@ -71,7 +75,7 @@ class Post extends React.Component {
       }
     }
     
-    //HTML for most recent or newly added comments
+    //Generate HTML for most recent or newly added comments
     if (this.props.post.updated) {
       //Add p class for css highlighting function
       stringifyComments('<p class="newComment">', commentsArray.length-1, '<b class="newComment_time">', '</b>');
@@ -83,198 +87,141 @@ class Post extends React.Component {
       }
     }
     
-    //For original version
-    if (this.props.version == 1 || editedFrom == 0 && content !=='' && content !=='general_comment') {
-      var postTitle = (
+    //Post componenet elements
+    let postTitle = null;
+    
+    //Generate post title
+    function setPostTitle(bsStyle, labelText, postInfo) {
+      return (
         <div className="post_title">
-          <Label bsStyle="info" className="title_header">VERSION {this.props.version}</Label>
-          <div className="byline" dangerouslySetInnerHTML={{__html: 'Original posted by <span class="displayed_username">' + username + '</span> ' + timeStamp}}></div>
+          <Label bsStyle={bsStyle} className="title_header">{labelText}</Label>
+          <div className="byline" dangerouslySetInnerHTML={{__html: postInfo}}></div>
         </div>
       );
-      
+    }
+
+    //Generate post type
+    function renderPostType(bsStyle, changesCommand, commentsHeader, postFunctions) {
       return (
         <li className="postitem">
-          <Panel header={postTitle} bsStyle="info">
+          <Panel header={postTitle} bsStyle={bsStyle}>
             <ListGroup fill>
+              {changesCommand}
               <ListGroupItem>
-                <div className="writing" dangerouslySetInnerHTML={{__html: contentInQuotes}}></div>
-              </ListGroupItem>
-              <ListGroupItem>
-                <div className="comments_header"><b><FA name='comments' className="gray_icon" /> Comments</b> -</div>
+                {commentsHeader}
                 <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
               </ListGroupItem>
             </ListGroup>
-            <ButtonGroup justified>
-              <ButtonGroup>
-                <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
-              </ButtonGroup>
-              <ButtonGroup>
-                <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Revise</Button>
-              </ButtonGroup>
-            </ButtonGroup>
-            <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-              {this.state.showReviseForm ?
-                <form onSubmit={this.addRevision}>
-                  <br />
-                  <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-                  <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain your changes." /><br/>
-                  <Button block bsStyle="info" type="submit">Post revision</Button>
-                </form>
-              : false}
-              {this.state.showCommentForm ?
-                <form onSubmit={this.addComment}>
-                  <br />
-                  <textarea autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
-                  <Button block bsStyle="success" type="submit">Post comment</Button>
-                </form>
-              : false}
-            </ReactCSSTransitionGroup>
+            {postFunctions}
           </Panel>
-        </li>        
+        </li>
       );
-    } else {
-      if (content === 'general_comment') {
-        //For discussion thread comments        
-        postTitle = (
-          <div className="post_title">
-            <Label className="title_header">ANNOUNCE / DISCUSS</Label>
-            <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted ' + timeStamp}}></div>
-          </div>          
-        );
-        return (
-          <li className="postitem">
-            <Panel header={postTitle} className="general_comment">
-              <ListGroup fill>
-                <ListGroupItem>
-                  <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
-                </ListGroupItem>
-              </ListGroup>
-                <form onSubmit={this.addComment}>
-                  <FormGroup className="button_combined">
-                    <InputGroup>
-                      <input className="button_combined" type="text" required ref="commentOnly" placeholder="Comment on this thread." />
-                      <InputGroup.Button>
-                        <Button type="submit"><FA name="comment" /></Button>
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </FormGroup>  
-                </form>
-            </Panel>
-          </li> 
-        );  
-      } else if (content === '') {
-        //For initial post without content
-        postTitle = (
-          <div className="post_title">
-            <Label bsStyle="warning" className="title_header">CONTEXT</Label>
-            <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp}}></div>
+    }      
+
+    //Content element
+    const postContent = (
+      <ListGroupItem>
+        <div className="writing" dangerouslySetInnerHTML={{__html: contentInQuotes}}></div>
+      </ListGroupItem>      
+    );
+    
+    //Elements for showing/hiding changes from previous version    
+    const changesFromPrev = (
+      <ListGroupItem>
+        {this.state.showChangesCommand ?
+          <div>
+            <a href="#" onClick={this.showChanges}>
+              <div className="changes_command">
+                + Show changes made from <Label bsStyle="default" className="change_version">VERSION {editedFrom}</Label>
+              </div>
+            </a>
+            <div className="writing" dangerouslySetInnerHTML={{__html: contentInQuotes}}></div>
           </div>
-        );
-      
-        return (
-          <li className="postitem">
-            <Panel header={postTitle} bsStyle="warning">
-              <ListGroup fill>
-                <ListGroupItem>
-                  <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
-                </ListGroupItem>
-              </ListGroup>
-              <ButtonGroup justified>
-                <ButtonGroup>
-                  <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
-                </ButtonGroup>
-                {this.state.showWriteButton ?
-                  <ButtonGroup>
-                    <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Write</Button>
-                  </ButtonGroup>
-                : null}
-              </ButtonGroup>
-              <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-                {this.state.showReviseForm ?
-                  <form onSubmit={this.addRevision}>
-                    <br />
-                    <textarea autoFocus spellCheck="true" required ref="revisionContent" placeholder="Suggest an initial version of writing for the project."/><br/>
-                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain your writing." /><br/>
-                    <Button block type="submit" bsStyle="info">Post writing</Button>
-                  </form>
-                : false}
-                {this.state.showCommentForm ?
-                  <form onSubmit={this.addComment}>
-                    <br />
-                    <textarea autoFocus required ref="commentOnly" placeholder="Comment on the context or discussion above." /><br/>
-                    <Button block type="submit" bsStyle="success">Post comment</Button>
-                  </form>
-                : false}
-              </ReactCSSTransitionGroup>
-            </Panel>
-          </li>                
-        );
-      } else {
-        //For revisions
-        postTitle = (
-          <div className="post_title">
-            <Label bsStyle="success" className="title_header">VERSION {this.props.version}</Label>
-            <div className="byline" dangerouslySetInnerHTML={{__html: 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp}}></div>
+        : false}
+        {this.state.showChanges ?
+          <div>
+            <a href="#" onClick={this.hideChanges}>
+              <div className="changes_command" onClick={this.hideChanges}>
+                - Hide changes from <Label bsStyle="default" className="change_version">VERSION {editedFrom}</Label>
+              </div>
+            </a>
+            <div className="writing" dangerouslySetInnerHTML={{__html: changes}}></div>
           </div>
-        );        
-        
-        return (
-          <li className="postitem">
-            <Panel header={postTitle} bsStyle="success">
-              <ListGroup fill>
-                <ListGroupItem>
-                  {this.state.showChangesCommand ?
-                    <div>
-                      <a href="#" onClick={this.showChanges}><div className="changes_command">+ Show changes made from <Label bsStyle="default" className="change_version">VERSION {editedFrom}</Label></div></a>                      
-                      <div className="writing" dangerouslySetInnerHTML={{__html: contentInQuotes}}></div>
-                    </div>
-                  : false}
-                  {this.state.showChanges ?
-                    <div>
-                      <a href="#" onClick={this.hideChanges}><div className="changes_command" onClick={this.hideChanges}>- Hide changes from <Label bsStyle="default" className="change_version">VERSION {editedFrom}</Label></div></a>
-                      <div className="writing" dangerouslySetInnerHTML={{__html: changes}}></div>
-                    </div>
-                  : true}
-                </ListGroupItem>
-                <ListGroupItem>
-                  <div className="comments_header"><b><FA name='comments' className="gray_icon" /> Comments</b> -</div>
-                  <div className="comments" dangerouslySetInnerHTML={{__html: commentsHTML}}></div>
-                </ListGroupItem>
-              </ListGroup>
-              <ButtonGroup justified>
-                <ButtonGroup>
-                  <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
-                </ButtonGroup>
-                <ButtonGroup>
-                  <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Revise</Button>
-                </ButtonGroup>
-              </ButtonGroup>
-              <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-                {this.state.showReviseForm ?
-                  <form onSubmit={this.addRevision}>
-                    <br />
-                    <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-                    <textarea spellCheck="true" required ref="revisionComment" placeholder="Explain your changes." /><br/>
-                    <Button block type="submit" bsStyle="info">Post revision</Button>
-                  </form>
-                : false}
-                {this.state.showCommentForm ?
-                  <form onSubmit={this.addComment}>
-                    <br />
-                    <textarea autoFocus required ref="commentOnly" placeholder="Comment on the revision above." /><br/>
-                    <Button block type="submit" bsStyle="success">Post comment</Button>
-                  </form>
-                : false}
-              </ReactCSSTransitionGroup>
-            </Panel>
-          </li>              
-        );
-      }
+        : true}
+      </ListGroupItem>
+    );
+    
+    //Header to separate comments from content
+    const commentsHeaderHTML = (<div className="comments_header"><b><FA name='comments' className="gray_icon" /> Comments</b> -</div>);
+    
+    //Elements for comment and post functions
+    const commentAndPost = (
+      <div>
+        <ButtonGroup justified>
+          <ButtonGroup>
+            <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
+          </ButtonGroup>
+          <ButtonGroup>
+            <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Suggest / Revise</Button>
+          </ButtonGroup>
+        </ButtonGroup>
+        <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+          {this.state.showReviseForm ?
+            <form onSubmit={this.addRevision}>
+              <br />
+              <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
+              <textarea spellCheck="true" required ref="revisionComment" placeholder="Share your writing here." /><br/>
+              <Button block type="submit" bsStyle="info">Post your writing</Button>
+            </form>
+          : false}
+          {this.state.showCommentForm ?
+            <form onSubmit={this.addComment}>
+              <br />
+              <textarea autoFocus required ref="commentOnly" placeholder="Comment on the post above." /><br/>
+              <Button block type="submit" bsStyle="success">Post comment</Button>
+            </form>
+          : false}
+        </ReactCSSTransitionGroup>
+      </div>
+    );
+    
+    //Elements for comment only function for discussion thread
+    const onlyComment = (
+      <form onSubmit={this.addComment}>
+        <FormGroup className="button_combined">
+          <InputGroup>
+            <input className="button_combined" type="text" required ref="commentOnly" placeholder="Comment on this thread." />
+            <InputGroup.Button>
+              <Button type="submit"><FA name="comment" /></Button>
+            </InputGroup.Button>
+          </InputGroup>
+        </FormGroup>  
+      </form>
+    );    
+    
+    //Render different post types
+    if (content === '') {
+      //Context post
+      postTitle = setPostTitle("warning", "CONTEXT", 'Provided by <span class="displayed_username">' + username + '</span> ' + timeStamp);
+      return renderPostType("warning", '', '', commentAndPost);
+    } else if (version === 1 || editedFrom === 0 && content !== '' && content !== 'general_comment') {
+      //Originals
+      postTitle = setPostTitle("info", "VERSION " + version + " - ORIGINAL", 'Suggested by <span class="displayed_username">' + username + '</span> ' + timeStamp);
+      return renderPostType("info", postContent, commentsHeaderHTML, commentAndPost);
+    } else if (editedFrom !== 0 ) {
+      //Revisions
+      postTitle = setPostTitle("success", "VERSION " + version + " - REVISION", 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp);
+      return renderPostType("success", changesFromPrev, commentsHeaderHTML, commentAndPost);
+    } else if (content === "general_comment") {
+      //Discussion threads
+      postTitle = setPostTitle("default", "ANNOUNCEMENT / DISCUSSION", 'Initiated by <span class="displayed_username">' + username + '</span> ' + timeStamp);
+      return renderPostType("default", '', '', onlyComment);
     }
   }
   
   showChanges(e) {
     e.preventDefault();
+    
     this.setState({
       showChangesCommand: false,
       showChanges: true
@@ -283,6 +230,7 @@ class Post extends React.Component {
   
   hideChanges(e) {
     e.preventDefault();
+    
     this.setState({
       showChangesCommand: true,
       showChanges: false
@@ -290,7 +238,6 @@ class Post extends React.Component {
   }
   
   showReviseForm(){
-    
     if (this.state.showReviseForm == false) {
       this.setState({
         showReviseForm: true,
@@ -310,8 +257,7 @@ class Post extends React.Component {
           showReviseForm: false
         });
       }
-    }    
-    
+    }
   }
   
   showCommentForm() {
@@ -367,6 +313,7 @@ class Post extends React.Component {
     e.preventDefault();
     
     var _id = this.props.post._id;
+    
     var data = {
       username: this.props.yourUsername,
       comment: this.refs.commentOnly.value
@@ -387,6 +334,7 @@ class Post extends React.Component {
   
   goBack(e) {
     e.preventDefault();
+    
     this.setState({
       showReviseForm: false,
       showCommentForm: false
@@ -395,7 +343,7 @@ class Post extends React.Component {
 }
 
 if ($(window).width() > 767) {
-  //Enlarge text when clicked
+  //Enlarge post or comment text when clicked
   $('body').on('click', '.writing, p', function() {
     $(this).toggleClass('large_text');
   });

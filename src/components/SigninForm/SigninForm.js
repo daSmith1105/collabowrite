@@ -128,7 +128,7 @@ class SigninForm extends React.Component{
       showJoinForm: false,
     });
     
-    let candidateCode ='';
+    let candidateCode = '';
     
     function generateCode() {
       const possible = "abcdefghijkmnpqrtuvwxyz234678";
