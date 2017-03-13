@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import diffString from './jsdiff';
 import { Label, Panel, ListGroup, ListGroupItem, ButtonGroup, Button, FormGroup, InputGroup } from 'react-bootstrap';
+import ConfirmMessage from '../ConfirmMessage/ConfirmMessage'
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import $ from 'jquery';
@@ -19,7 +20,8 @@ class Post extends React.Component {
       showChanges: true,
       showReviseForm: false,
       showCommentForm: false,
-      showWriteButton: true      
+      showWriteButton: true,
+      showModal: false
     };
     
     this.showChanges = this.showChanges.bind(this);
@@ -29,6 +31,8 @@ class Post extends React.Component {
     this.addRevision = this.addRevision.bind(this);
     this.addComment = this.addComment.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.closeForm = this.closeForm.bind(this);
+    this.closeConfirm = this.closeConfirm.bind(this);
   }
   
   render() {
@@ -101,7 +105,7 @@ class Post extends React.Component {
     }
 
     //Generate post type
-    function renderPostType(bsStyle, changesCommand, commentsHeader, postFunctions) {
+    const renderPostType = function(bsStyle, changesCommand, commentsHeader, postFunctions) {
       return (
         <li className="postitem">
           <Panel header={postTitle} bsStyle={bsStyle}>
@@ -114,9 +118,10 @@ class Post extends React.Component {
             </ListGroup>
             {postFunctions}
           </Panel>
+          <ConfirmMessage showModal={this.state.showModal} closeConfirm={this.closeConfirm} closeForm={this.closeForm} />
         </li>
       );
-    }      
+    }.bind(this);
 
     //Content element
     const postContent = (
@@ -162,15 +167,15 @@ class Post extends React.Component {
             <Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button>   
           </ButtonGroup>
           <ButtonGroup>
-            <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Suggest / Revise</Button>
+            <Button bsStyle="info" onClick={this.showReviseForm}><FA name="font" /> Write</Button>
           </ButtonGroup>
         </ButtonGroup>
         <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
           {this.state.showReviseForm ?
             <form onSubmit={this.addRevision}>
               <br />
-              <textarea autoFocus spellCheck="true" required ref="revisionContent" /><br/>
-              <textarea spellCheck="true" required ref="revisionComment" placeholder="Share your writing here." /><br/>
+              <textarea autoFocus spellCheck="true" required ref="revisionContent" placeholder="Suggest your version for the project writing." /><br/>
+              <textarea spellCheck="true" required ref="revisionComment" placeholder="Comment on your writing above." /><br/>
               <Button block type="submit" bsStyle="info">Post your writing</Button>
             </form>
           : false}
@@ -247,11 +252,7 @@ class Post extends React.Component {
       });
     } else {
       if (this.refs.revisionContent.value !== this.props.post.content) {
-        if (confirm("You haven't posted your revision yet.\nDo you still want to close this form?")) {
-          this.setState({
-            showReviseForm: false
-          });          
-        }
+        this.setState({ showModal: true });
       } else {
         this.setState({
           showReviseForm: false
@@ -268,11 +269,7 @@ class Post extends React.Component {
       });
     } else {
       if (this.refs.commentOnly.value !== '') {
-        if (confirm("You haven't posted your comment yet.\nDo you still want to close this form?")) {
-          this.setState({
-            showCommentForm: false
-          });          
-        }
+        this.setState({ showModal: true });
       } else {
         this.setState({
           showCommentForm: false
@@ -339,6 +336,18 @@ class Post extends React.Component {
       showReviseForm: false,
       showCommentForm: false
     });
+  }
+  
+  closeForm() {
+    this.setState({
+      showReviseForm: false,
+      showCommentForm: false,
+      showModal: false
+    });  
+  }
+
+  closeConfirm() {
+    this.setState({ showModal: false });
   }
 }
 

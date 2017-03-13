@@ -2,6 +2,7 @@ import React from 'react';
 import { Well, Button } from 'react-bootstrap';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import ConfirmMessage from '../ConfirmMessage/ConfirmMessage';
 import $ from 'jquery';
 import Scroll from 'react-scroll';
 
@@ -13,11 +14,14 @@ class PostForm extends React.Component {
     
     this.state = {
       showButtons: true,
-      showCommentForm: false      
+      showCommentForm: false,
+      showModal: false
     };
     
     this.showCommentForm = this.showCommentForm.bind(this);
     this.addComment = this.addComment.bind(this);
+    this.closeForm = this.closeForm.bind(this);
+    this.closeConfirm = this.closeConfirm.bind(this);
   }
   
   render() {
@@ -33,6 +37,7 @@ class PostForm extends React.Component {
             </form>
           : false}
         </ReactCSSTransitionGroup>
+        <ConfirmMessage showModal={this.state.showModal} closeConfirm={this.closeConfirm} closeForm={this.closeForm} />
       </Well>
     );
   }
@@ -46,11 +51,7 @@ class PostForm extends React.Component {
       });
     } else {
       if (this.refs.comment.value !== '') {
-        if (confirm("You haven't posted your thread yet.\nDo you still want to close this form?")) {
-          this.setState({
-            showCommentForm: false
-          });          
-        }
+        this.setState({ showModal: true }); 
       } else {
         this.setState({
           showCommentForm: false
@@ -83,6 +84,17 @@ class PostForm extends React.Component {
     }, function() {
       scroll.scrollToBottom();
     });
+  }
+  
+  closeForm() {
+    this.setState({
+      showCommentForm: false,
+      showModal: false
+    });  
+  }
+
+  closeConfirm() {
+    this.setState({ showModal: false });
   }
 }
 
