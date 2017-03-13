@@ -1,27 +1,29 @@
-var React = require('react');
-var FA = require('react-fontawesome');
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var $ = require('jquery');
+import React from 'react';
+import { Tooltip, ButtonGroup, Button, Jumbotron, Panel, Well, OverlayTrigger } from 'react-bootstrap';
+import FA from 'react-fontawesome';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import $ from 'jquery';
 
-import { Jumbotron, Panel, Well, Button, ButtonGroup, Tooltip, OverlayTrigger } from 'react-bootstrap';
-
-
-var SigninForm = React.createClass({
-  getInitialState: function() {
-    return {
+class SigninForm extends React.Component{
+  constructor() {
+    super();
+    
+    this.state = {
       showIntro: true,
       showNewForm: false,
-      showJoinForm: false
+      showJoinForm: false      
     };
-  },
+    
+    this.showIntro = this.showIntro.bind(this);
+    this.showDemo = this.showDemo.bind(this);
+    this.showNewForm = this.showNewForm.bind(this);
+    this.showJoinForm = this.showJoinForm.bind(this);
+    this.createNewPost = this.createNewPost.bind(this);
+    this.storeSigninVars = this.storeSigninVars.bind(this);
+  }
   
-  render: function() {
-    
-    var tooltip = (
-      <Tooltip id="tooltip"><b><FA name="lightbulb-o" /> Tip</b>: Share only with your group members since this is what your project members will use to log into the project.</Tooltip>
-    );
-    
-    var buttons = (
+  render() {
+    const buttons = (
       <div>
         <ButtonGroup justified>
           <ButtonGroup>
@@ -32,6 +34,12 @@ var SigninForm = React.createClass({
           </ButtonGroup>
         </ButtonGroup>
       </div>
+    );
+    
+    const tooltip = (
+      <Tooltip id="tooltip">
+        <b><FA name="lightbulb-o" /> Tip</b>: Share only with your group members since this is what your project members will use to log into the project.
+      </Tooltip>
     );
     
     return (
@@ -92,18 +100,18 @@ var SigninForm = React.createClass({
         </Panel>
       </div>
     );
-  },
+  }
   
-  showIntro: function(e) {
+  showIntro(e) {
     e.preventDefault();
     this.setState({
       showIntro: true,
       showNewForm: false,
       showJoinForm: false
     });
-  },
+  }
   
-  showDemo: function() {
+  showDemo() {
     $.get('/api/posts/1234', function(data){
       if (data.length === 0) {
         alert('The project access code you typed in is not valid. Please check again!');
@@ -111,25 +119,22 @@ var SigninForm = React.createClass({
         this.props.onSignin('1234', 'Test user');
       }
     }.bind(this));
-  },
+  }
   
-  showNewForm: function() {
+  showNewForm() {
     this.setState({
       showIntro: false,
       showNewForm: true,
       showJoinForm: false,
     });
     
-    var candidateCode;
-    var generateCode = function() {
-      candidateCode = '';
-      var possible = "abcdefghijkmnpqrtuvwxyz234678";
-  
-      for( var i=0; i < 4; i++ )
-          candidateCode += possible.charAt(Math.floor(Math.random() * possible.length));
-  
+    let candidateCode ='';
+    
+    function generateCode() {
+      const possible = "abcdefghijkmnpqrtuvwxyz234678";
+      for (var i=0; i < 4; i++) candidateCode += possible.charAt(Math.floor(Math.random() * possible.length));
       return candidateCode;
-    };
+    }
     
     generateCode();
     
@@ -141,22 +146,22 @@ var SigninForm = React.createClass({
         this.refs.newAccessCode.value = candidateCode;
       }
     }.bind(this));
-  },
+  }
   
-  showJoinForm: function() {
+  showJoinForm() {
     this.setState({
       showIntro: false,
       showJoinForm: true,
       showNewForm: false
     });
-  },
+  }
   
-  createNewPost: function(e) {
+  createNewPost(e) {
     e.preventDefault();
     
     this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
     
-    var data = {
+    let data = {
       accessCode: this.refs.newAccessCode.value,
       username: this.refs.newUsername.value,
       content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
@@ -165,9 +170,7 @@ var SigninForm = React.createClass({
       comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
     };
     
-    if (data.content === '') {
-      data.content = '';
-    }
+    if (data.content === '') data.content = '';
 
     $.ajax('/api/post', {
       type: 'POST',
@@ -175,10 +178,11 @@ var SigninForm = React.createClass({
       datatype: 'json',
       contentType: 'application/json'
     });
-  },
+  }
   
-  storeSigninVars: function(e) {
+  storeSigninVars(e) {
     e.preventDefault();
+    
     $.get('/api/posts/' + this.refs.accessCode.value, function(data){
       if (data.length === 0) {
         alert('The project access code you typed in is not valid. Please check again!');
@@ -187,7 +191,7 @@ var SigninForm = React.createClass({
       }
     }.bind(this));
   }
-});
+}
 
 var examples = [ "a topic sentence", "a thesis statement", "a mission statement", "instructions", "product descriptions", "translations", "a plotline", "a headline", "a tagline", "a catchphrase", "a paraphrase", "a paragraph", "a sentence"];
 
@@ -200,4 +204,4 @@ if ($(window).width() > 767) {
   }, 1500);    
 }
 
-module.exports = SigninForm;
+export default SigninForm;

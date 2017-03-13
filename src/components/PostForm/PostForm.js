@@ -1,21 +1,26 @@
-var React = require('react');
-var FA = require('react-fontawesome');
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var Scroll = require('react-scroll');
-var scroll = Scroll.animateScroll;
-var $ = require('jquery');
-
+import React from 'react';
 import { Well, Button } from 'react-bootstrap';
+import FA from 'react-fontawesome';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import $ from 'jquery';
+import Scroll from 'react-scroll';
 
-var PostForm = React.createClass({
-  getInitialState: function() {
-    return {
+const scroll = Scroll.animateScroll;
+
+class PostForm extends React.Component {
+  constructor() {
+    super();
+    
+    this.state = {
       showButtons: true,
-      showCommentForm: false
+      showCommentForm: false      
     };
-  },
-
-  render: function(){
+    
+    this.showCommentForm = this.showCommentForm.bind(this);
+    this.addComment = this.addComment.bind(this);
+  }
+  
+  render() {
     return (
       <Well>
         <Button block bsSize="large" onClick={this.showCommentForm}><b><FA name="bullhorn" /> Announce / Discuss</b></Button>   
@@ -30,13 +35,13 @@ var PostForm = React.createClass({
         </ReactCSSTransitionGroup>
       </Well>
     );
-  },
+  }
   
-  showCommentForm: function(){
+  showCommentForm() {
     if (this.state.showCommentForm == false) {
       this.setState({
         showCommentForm: true,
-      }, function (){
+      }, function() {
         scroll.scrollToBottom();      
       });
     } else {
@@ -52,12 +57,12 @@ var PostForm = React.createClass({
         });
       }
     }     
-  },
+  }
   
-  addComment: function (e){
+  addComment(e) {
     e.preventDefault();
   
-    var data = {
+    let data = {
       accessCode: this.props.accessCode,
       username: this.props.username,
       content: 'general_comment',
@@ -75,10 +80,10 @@ var PostForm = React.createClass({
     
     this.setState({
       showCommentForm: false
-    }, function(){
+    }, function() {
       scroll.scrollToBottom();
     });
   }
-});
+}
 
-module.exports = PostForm;
+export default PostForm;

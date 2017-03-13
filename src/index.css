@@ -4,13 +4,8 @@ body {
   background-attachment: fixed;
 }
 
-.app_container {
+#app {
   padding-top: 20px;
-}
-
-.postlist {
-	list-style: none;
-	padding: 0;
 }
 
 .evt-transition-enter {
@@ -29,6 +24,11 @@ body {
 .evt-transition-leave.evt-transition-leave-active {
     opacity: 0.01;
     transition: opacity 500ms ease-in;
+}
+
+.postlist {
+	list-style: none;
+	padding: 0;
 }
 
 
@@ -199,7 +199,7 @@ span:focus {
   outline: none;
 }
 
-.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {
+.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {
     box-shadow: 1px 1px 6px #cccccc;
 }
 
@@ -350,7 +350,7 @@ a:link, a:hover, a:active, a:visited {
     height: 150px;
   }
 
-  .alert-warning {
+  .alert-info {
     display: none;
   }
   

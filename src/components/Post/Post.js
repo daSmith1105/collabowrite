@@ -1,57 +1,69 @@
-var React = require('react');
-var moment = require('moment');
-var diffString = require('./jsdiff');
-var FA = require('react-fontawesome');
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-var Scroll = require('react-scroll');
-var scroll = Scroll.animateScroll;
-var $ = require('jquery');
+import React from 'react';
+import moment from 'moment';
+import diffString from './jsdiff';
+import { Label, Panel, ListGroup, ListGroupItem, ButtonGroup, Button, FormGroup, InputGroup } from 'react-bootstrap';
+import FA from 'react-fontawesome';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import $ from 'jquery';
+import Scroll from 'react-scroll';
 
-import { Button, ButtonGroup, Panel, Label, ListGroup, ListGroupItem, FormGroup, InputGroup } from 'react-bootstrap';
+const scroll = Scroll.animateScroll;
 
-var Post = React.createClass({
-  getInitialState: function() {
-    return {
+class Post extends React.Component {
+  constructor() {
+    super();
+    
+    this.state = {
       alertVisible: true,
       showChangesCommand: false,
       showChanges: true,
       showReviseForm: false,
       showCommentForm: false,
-      showWriteButton: true
+      showWriteButton: true      
     };
-  },
+    
+    this.showChanges = this.showChanges.bind(this);
+    this.hideChanges = this.hideChanges.bind(this);
+    this.showReviseForm = this.showReviseForm.bind(this);
+    this.showCommentForm = this.showCommentForm.bind(this);
+    this.addRevision = this.addRevision.bind(this);
+    this.addComment = this.addComment.bind(this);
+    this.goBack = this.goBack.bind(this);
+  }
   
-  render: function() {
+  render() {
+    const now = moment();
+    const postInsertedAt = this.props.post.insertedAt;
+    let timeStamp = '';
     //Create post time stamp and bold if within the hour
-    var now = moment();
-    var postInsertedAt = this.props.post.insertedAt;
     if (moment(postInsertedAt).add(60, 'minutes').isBefore(now)) {
-      var timeStamp = moment(this.props.post.insertedAt).fromNow();
+      timeStamp = moment(postInsertedAt).fromNow();
     } else {
-      timeStamp = '<b>' + moment(this.props.post.insertedAt).fromNow() + '</b>';
+      timeStamp = '<b>' + moment(postInsertedAt).fromNow() + '</b>';
       if (timeStamp === '<b>in a few seconds</b>') {
         timeStamp === '<b>a few seconds ago</b>';
       }
     }
     
     //Post variables
-    var username = this.props.post.username;
-    var content = this.props.post.content;
-    var contentInQuotes = '"' + content + '"';
-    var prevContent = this.props.post.prevContent;
-    var changes = '"' + diffString(prevContent, content).trim() + '"';
-    var editedFrom = this.props.post.editedFrom;
+    const username = this.props.post.username;
+    const content = this.props.post.content;
+    const contentInQuotes = '"' + content + '"';
+    const prevContent = this.props.post.prevContent;
+    const changes = '"' + diffString(prevContent, content).trim() + '"';
+    const editedFrom = this.props.post.editedFrom;
     
-    var commentsArray = this.props.post.comments;
-    var commentsHTML = '';
-    var stringifyComments = function(pClass, index, openBold, closeBold) {
+    //Comment-specific variables
+    const commentsArray = this.props.post.comments;
+    let commentsHTML = '';
+    const stringifyComments = function(pClass, index, openBold, closeBold) {
       return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: '+ commentsArray[index].comment + '<span class="comment_timestamp">'
       + openBold + moment(commentsArray[index].insertedAt).fromNow() + closeBold
       + '</span></p>';
     };
     
     //Generate HTML from comments array
-    for (var i=0; i < commentsArray.length-1; i++) {
+    for (let i = 0; i < commentsArray.length-1; i++) {
       if (moment(commentsArray[i].insertedAt).add(60, 'minutes').isBefore(now)) {
         stringifyComments('<p>', i, '', '');
       } else {
@@ -71,12 +83,12 @@ var Post = React.createClass({
       }
     }
     
-    //For original post
-    if (this.props.version == 1) {
+    //For original version
+    if (this.props.version == 1 || editedFrom == 0 && content !=='' && content !=='general_comment') {
       var postTitle = (
         <div className="post_title">
           <Label bsStyle="info" className="title_header">VERSION {this.props.version}</Label>
-          <div className="byline" dangerouslySetInnerHTML={{__html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp}}></div>
+          <div className="byline" dangerouslySetInnerHTML={{__html: 'Original posted by <span class="displayed_username">' + username + '</span> ' + timeStamp}}></div>
         </div>
       );
       
@@ -259,25 +271,25 @@ var Post = React.createClass({
         );
       }
     }
-  },
+  }
   
-  showChanges: function(e) {
+  showChanges(e) {
     e.preventDefault();
     this.setState({
       showChangesCommand: false,
       showChanges: true
     });
-  },
+  }
   
-  hideChanges: function(e) {
+  hideChanges(e) {
     e.preventDefault();
     this.setState({
       showChangesCommand: true,
       showChanges: false
     });    
-  },
+  }
   
-  showReviseForm: function(){
+  showReviseForm(){
     
     if (this.state.showReviseForm == false) {
       this.setState({
@@ -300,9 +312,9 @@ var Post = React.createClass({
       }
     }    
     
-  },
+  }
   
-  showCommentForm: function(){
+  showCommentForm() {
     if (this.state.showCommentForm == false) {
       this.setState({
         showCommentForm: true,
@@ -321,9 +333,9 @@ var Post = React.createClass({
         });
       }
     }    
-  },
+  }
   
-  addRevision: function (e){
+  addRevision(e) {
     e.preventDefault();
   
     var data = {
@@ -349,9 +361,9 @@ var Post = React.createClass({
       showReviseForm: false,
       showCommentForm: false
     });
-  },
+  }
   
-  addComment: function (e){
+  addComment(e) {
     e.preventDefault();
     
     var _id = this.props.post._id;
@@ -371,16 +383,16 @@ var Post = React.createClass({
       showReviseForm: false,
       showCommentForm: false,
     });
-  },
+  }
   
-  goBack: function(e) {
+  goBack(e) {
     e.preventDefault();
     this.setState({
       showReviseForm: false,
       showCommentForm: false
     });
   }
-});
+}
 
 if ($(window).width() > 767) {
   //Enlarge text when clicked
@@ -389,4 +401,4 @@ if ($(window).width() > 767) {
   });
 }
 
-module.exports = Post;
+export default Post;

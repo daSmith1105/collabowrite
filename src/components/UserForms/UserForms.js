@@ -1,28 +1,33 @@
-var React = require('react');
-var SigninForm = require('../SigninForm/SigninForm');
-var PostForm = require('../PostForm/PostForm');
-var $ = require('jquery');
+import React from 'react';
+import SigninForm from '../SigninForm/SigninForm';
+import PostForm from '../PostForm/PostForm';
+import $ from 'jquery';
 
-var UserForms = React.createClass({
-  getInitialState: function() {
-    return {
+class UserForms extends React.Component {
+  constructor() {
+    super();
+    
+    this.state = {
       accessCode: '',
       username: '',
       showInputForm: false,
-      showSigninForm: true,
+      showSigninForm: true,      
     };
-  },
+    
+    this.onStart = this.onStart.bind(this);
+    this.onSignin = this.onSignin.bind(this);
+  }
   
-  render: function() {
+  render() {
     return (
       <div>
         {this.state.showSigninForm ? <SigninForm onStart={this.onStart} onSignin={this.onSignin} /> : true }
         {this.state.showInputForm ? <PostForm accessCode={this.state.accessCode} username={this.state.username} /> : null }
       </div>
     );
-  },
+  }
 
-  onStart: function(accessCode, username){
+  onStart(accessCode, username) {
     this.setState({
       accessCode: accessCode,
       username: username,
@@ -31,9 +36,9 @@ var UserForms = React.createClass({
     });
     
     this.props.getSigninVars(accessCode, username);
-  },
+  }
   
-  onSignin: function(accessCode, username){
+  onSignin(accessCode, username) {
     this.setState({
       accessCode: accessCode,
       username: username,
@@ -44,9 +49,9 @@ var UserForms = React.createClass({
     this.props.getSigninVars(accessCode, username);
     
     $.get('/api/posts/' + accessCode, function(data){
-      this.props.showOldPosts(data);
+      this.props.showPosts(data);
     }.bind(this));
   }
-});
+}
 
 module.exports = UserForms;

@@ -44922,107 +44922,211 @@ module.exports = function(module) {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _store = __webpack_require__(596);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _pusherMin = __webpack_require__(333);
+
+var _pusherMin2 = _interopRequireDefault(_pusherMin);
+
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _PostContainer = __webpack_require__(1021);
+
+var _PostContainer2 = _interopRequireDefault(_PostContainer);
+
+var _UserForms = __webpack_require__(341);
+
+var _UserForms2 = _interopRequireDefault(_UserForms);
+
 var _reactBootstrap = __webpack_require__(62);
 
-var React = __webpack_require__(0);
-var UserForms = __webpack_require__(341);
-var Posts = __webpack_require__(339);
+var _jquery = __webpack_require__(60);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
-var $ = __webpack_require__(60);
+var notification = new Audio('notification.mp3');
 
-var App = React.createClass({
-  displayName: 'App',
+var App = function (_React$Component) {
+  _inherits(App, _React$Component);
 
-  getInitialState: function getInitialState() {
-    return {
+  function App() {
+    _classCallCheck(this, App);
+
+    //Turn on notification sounds if no sound setting found on local storage
+    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
+
+    if (!_store2.default.get('sound')) {
+      _store2.default.set('sound', { setting: true });
+    }
+
+    _this.state = {
       posts: [],
       matchCode: '',
       username: '',
-      showPosts: false
+      showPosts: false,
+      sound: _store2.default.get('sound').setting
     };
-  },
 
-  componentWillMount: function componentWillMount() {
-    this.pusher = new Pusher(PUSHER_APP_KEY, {
-      encrypted: true
-    });
-    this.channel = this.pusher.subscribe('project_posts');
-  },
+    _this.addPosts = _this.addPosts.bind(_this);
+    _this.addComments = _this.addComments.bind(_this);
+    _this.setSound = _this.setSound.bind(_this);
+    _this.showPosts = _this.showPosts.bind(_this);
+    _this.getSigninVars = _this.getSigninVars.bind(_this);
+    return _this;
+  }
 
-  componentDidMount: function componentDidMount() {
-    this.channel.bind('new_post', this.addPosts);
-    this.channel.bind('new_comment', this.addComments);
-  },
-
-  componentWillUnmount: function componentWillUnmount() {
-    this.channel.unbind();
-    this.pusher.unsubscribe(this.channel);
-  },
-
-  addPosts: function addPosts(data) {
-    var newArray = this.state.posts;
-    newArray.push(data);
-    this.setState({
-      posts: newArray
-    });
-  },
-
-  addComments: function addComments(data) {
-    var newArray = this.state.posts;
-    for (var i = 0; i < newArray.length; i++) {
-      if (newArray[i]._id === data._id) {
-        newArray[i].comments = data.comments;
-        newArray[i].updated = true;
+  _createClass(App, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.pusher = new _pusherMin2.default(PUSHER_APP_KEY, {
+        encrypted: true
+      });
+      this.channel = this.pusher.subscribe('project_posts');
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.channel.bind('new_post', this.addPosts);
+      this.channel.bind('new_comment', this.addComments);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.channel.unbind();
+      this.pusher.unsubscribe(this.channel);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'row' },
+        _react2.default.createElement(
+          _reactAddonsCssTransitionGroup2.default,
+          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          this.state.showPosts ? _react2.default.createElement(_PostContainer2.default, { posts: this.state.posts, matchCode: this.state.matchCode, username: this.state.username, setSound: this.setSound }) : null
+        ),
+        _react2.default.createElement(_UserForms2.default, { showPosts: this.showPosts, getSigninVars: this.getSigninVars }),
+        _react2.default.createElement(
+          'div',
+          { className: 'rights' },
+          _react2.default.createElement(
+            _reactBootstrap.Label,
+            { className: 'rights' },
+            '\xA9 2017 Tim Paik'
+          )
+        )
+      );
+    }
+  }, {
+    key: 'addPosts',
+    value: function addPosts(data) {
+      if (data.accessCode === this.state.matchCode) {
+        var newArray = this.state.posts;
+        newArray.push(data);
         this.setState({
           posts: newArray
         });
-        setTimeout(function () {
-          $(".newComment").toggleClass("highlight");
-          setTimeout(function () {
-            $(".newComment").toggleClass("highlight");
-          }, 2000);
-        }, 100);
-        newArray[i].updated = null;
-        break;
+
+        //Play notification sound if sound setting is on and the post was not made by the user
+        if (this.state.sound && this.state.username !== data.username) {
+          notification.play();
+        }
       }
     }
-  },
+  }, {
+    key: 'addComments',
+    value: function addComments(data) {
+      var newArray = this.state.posts;
+      var comments = data.comments;
+      var commentUser = comments[comments.length - 1].username;
+      for (var i = 0; i < newArray.length; i++) {
+        if (newArray[i]._id === data._id) {
+          //Update comments array for post that received new comment
+          newArray[i].comments = data.comments;
 
-  render: function render() {
-    return React.createElement(
-      'div',
-      { className: 'row app_container' },
-      this.state.showPosts ? React.createElement(Posts, { posts: this.state.posts, matchCode: this.state.matchCode, username: this.state.username, ref: 'posts' }) : false,
-      React.createElement(UserForms, { showOldPosts: this.showOldPosts, getSigninVars: this.getSigninVars }),
-      React.createElement(
-        'div',
-        { className: 'rights' },
-        React.createElement(
-          _reactBootstrap.Label,
-          { className: 'rights' },
-          '\xA9 2017 Tim Paik'
-        )
-      )
-    );
-  },
+          //Add an updated flag which will be used in Post component to add a highlighting CSS class
+          newArray[i].updated = true;
 
-  showOldPosts: function showOldPosts(data) {
-    this.setState({
-      posts: data,
-      showPosts: true
-    });
-  },
+          this.setState({
+            posts: newArray
+          });
 
-  getSigninVars: function getSigninVars(accessCode, username) {
-    this.setState({
-      matchCode: accessCode,
-      username: username,
-      showPosts: true
-    });
-  }
-});
+          //Temporarily higlight comment by toggling CSS class
+          setTimeout(function () {
+            (0, _jquery2.default)(".newComment").toggleClass("highlight");
+            setTimeout(function () {
+              (0, _jquery2.default)(".newComment").toggleClass("highlight");
+              setTimeout(function () {
+                newArray[i].updated = false;
+                this.setState({
+                  posts: newArray
+                });
+              }.bind(this), 1000);
+            }.bind(this), 1000);
+          }.bind(this), 100);
 
-module.exports = App;
+          if (this.state.sound && this.state.username !== commentUser) {
+            notification.play();
+          }
+
+          break;
+        }
+      }
+    }
+  }, {
+    key: 'setSound',
+    value: function setSound(boolean) {
+      this.setState({
+        sound: boolean
+      });
+    }
+  }, {
+    key: 'showPosts',
+    value: function showPosts(data) {
+      this.setState({
+        posts: data,
+        showPosts: true
+      });
+    }
+  }, {
+    key: 'getSigninVars',
+    value: function getSigninVars(accessCode, username) {
+      this.setState({
+        matchCode: accessCode,
+        username: username,
+        showPosts: true
+      });
+    }
+  }]);
+
+  return App;
+}(_react2.default.Component);
+
+exports.default = App;
 
 /***/ }),
 /* 333 */
@@ -46772,22 +46876,61 @@ if(false) {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _moment = __webpack_require__(1);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _jsdiff = __webpack_require__(337);
+
+var _jsdiff2 = _interopRequireDefault(_jsdiff);
+
 var _reactBootstrap = __webpack_require__(62);
 
-var React = __webpack_require__(0);
-var moment = __webpack_require__(1);
-var diffString = __webpack_require__(337);
-var FA = __webpack_require__(77);
-var ReactCSSTransitionGroup = __webpack_require__(69);
-var Scroll = __webpack_require__(129);
-var scroll = Scroll.animateScroll;
-var $ = __webpack_require__(60);
+var _reactFontawesome = __webpack_require__(77);
 
-var Post = React.createClass({
-  displayName: 'Post',
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
 
-  getInitialState: function getInitialState() {
-    return {
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _jquery = __webpack_require__(60);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _reactScroll = __webpack_require__(129);
+
+var _reactScroll2 = _interopRequireDefault(_reactScroll);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var scroll = _reactScroll2.default.animateScroll;
+
+var Post = function (_React$Component) {
+  _inherits(Post, _React$Component);
+
+  function Post() {
+    _classCallCheck(this, Post);
+
+    var _this = _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).call(this));
+
+    _this.state = {
       alertVisible: true,
       showChangesCommand: false,
       showChanges: true,
@@ -46795,564 +46938,587 @@ var Post = React.createClass({
       showCommentForm: false,
       showWriteButton: true
     };
-  },
 
-  render: function render() {
-    //Create post time stamp and bold if within the hour
-    var now = moment();
-    var postInsertedAt = this.props.post.insertedAt;
-    if (moment(postInsertedAt).add(60, 'minutes').isBefore(now)) {
-      var timeStamp = moment(this.props.post.insertedAt).fromNow();
-    } else {
-      timeStamp = '<b>' + moment(this.props.post.insertedAt).fromNow() + '</b>';
-      if (timeStamp === '<b>in a few seconds</b>') {
-        timeStamp === '<b>a few seconds ago</b>';
-      }
-    }
+    _this.showChanges = _this.showChanges.bind(_this);
+    _this.hideChanges = _this.hideChanges.bind(_this);
+    _this.showReviseForm = _this.showReviseForm.bind(_this);
+    _this.showCommentForm = _this.showCommentForm.bind(_this);
+    _this.addRevision = _this.addRevision.bind(_this);
+    _this.addComment = _this.addComment.bind(_this);
+    _this.goBack = _this.goBack.bind(_this);
+    return _this;
+  }
 
-    //Post variables
-    var username = this.props.post.username;
-    var content = this.props.post.content;
-    var contentInQuotes = '"' + content + '"';
-    var prevContent = this.props.post.prevContent;
-    var changes = '"' + diffString(prevContent, content).trim() + '"';
-    var editedFrom = this.props.post.editedFrom;
-
-    var commentsArray = this.props.post.comments;
-    var commentsHTML = '';
-    var stringifyComments = function stringifyComments(pClass, index, openBold, closeBold) {
-      return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: ' + commentsArray[index].comment + '<span class="comment_timestamp">' + openBold + moment(commentsArray[index].insertedAt).fromNow() + closeBold + '</span></p>';
-    };
-
-    //Generate HTML from comments array
-    for (var i = 0; i < commentsArray.length - 1; i++) {
-      if (moment(commentsArray[i].insertedAt).add(60, 'minutes').isBefore(now)) {
-        stringifyComments('<p>', i, '', '');
+  _createClass(Post, [{
+    key: 'render',
+    value: function render() {
+      var now = (0, _moment2.default)();
+      var postInsertedAt = this.props.post.insertedAt;
+      var timeStamp = '';
+      //Create post time stamp and bold if within the hour
+      if ((0, _moment2.default)(postInsertedAt).add(60, 'minutes').isBefore(now)) {
+        timeStamp = (0, _moment2.default)(postInsertedAt).fromNow();
       } else {
-        stringifyComments('<p>', i, '<b class="newComment_time">', '</b>');
+        timeStamp = '<b>' + (0, _moment2.default)(postInsertedAt).fromNow() + '</b>';
+        if (timeStamp === '<b>in a few seconds</b>') {
+          timeStamp === '<b>a few seconds ago</b>';
+        }
       }
-    }
 
-    //HTML for most recent or newly added comments
-    if (this.props.post.updated) {
-      //Add p class for css highlighting function
-      stringifyComments('<p class="newComment">', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
-    } else {
-      if (moment(commentsArray[commentsArray.length - 1].insertedAt).add(60, 'minutes').isBefore(now)) {
-        stringifyComments('<p>', commentsArray.length - 1, '', '');
+      //Post variables
+      var username = this.props.post.username;
+      var content = this.props.post.content;
+      var contentInQuotes = '"' + content + '"';
+      var prevContent = this.props.post.prevContent;
+      var changes = '"' + (0, _jsdiff2.default)(prevContent, content).trim() + '"';
+      var editedFrom = this.props.post.editedFrom;
+
+      //Comment-specific variables
+      var commentsArray = this.props.post.comments;
+      var commentsHTML = '';
+      var stringifyComments = function stringifyComments(pClass, index, openBold, closeBold) {
+        return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: ' + commentsArray[index].comment + '<span class="comment_timestamp">' + openBold + (0, _moment2.default)(commentsArray[index].insertedAt).fromNow() + closeBold + '</span></p>';
+      };
+
+      //Generate HTML from comments array
+      for (var i = 0; i < commentsArray.length - 1; i++) {
+        if ((0, _moment2.default)(commentsArray[i].insertedAt).add(60, 'minutes').isBefore(now)) {
+          stringifyComments('<p>', i, '', '');
+        } else {
+          stringifyComments('<p>', i, '<b class="newComment_time">', '</b>');
+        }
+      }
+
+      //HTML for most recent or newly added comments
+      if (this.props.post.updated) {
+        //Add p class for css highlighting function
+        stringifyComments('<p class="newComment">', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
       } else {
-        stringifyComments('<p>', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
+        if ((0, _moment2.default)(commentsArray[commentsArray.length - 1].insertedAt).add(60, 'minutes').isBefore(now)) {
+          stringifyComments('<p>', commentsArray.length - 1, '', '');
+        } else {
+          stringifyComments('<p>', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
+        }
       }
-    }
 
-    //For original post
-    if (this.props.version == 1) {
-      var postTitle = React.createElement(
-        'div',
-        { className: 'post_title' },
-        React.createElement(
-          _reactBootstrap.Label,
-          { bsStyle: 'info', className: 'title_header' },
-          'VERSION ',
-          this.props.version
-        ),
-        React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
-      );
-
-      return React.createElement(
-        'li',
-        { className: 'postitem' },
-        React.createElement(
-          _reactBootstrap.Panel,
-          { header: postTitle, bsStyle: 'info' },
-          React.createElement(
-            _reactBootstrap.ListGroup,
-            { fill: true },
-            React.createElement(
-              _reactBootstrap.ListGroupItem,
-              null,
-              React.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
-            ),
-            React.createElement(
-              _reactBootstrap.ListGroupItem,
-              null,
-              React.createElement(
-                'div',
-                { className: 'comments_header' },
-                React.createElement(
-                  'b',
-                  null,
-                  React.createElement(FA, { name: 'comments', className: 'gray_icon' }),
-                  ' Comments'
-                ),
-                ' -'
-              ),
-              React.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
-            )
-          ),
-          React.createElement(
-            _reactBootstrap.ButtonGroup,
-            { justified: true },
-            React.createElement(
-              _reactBootstrap.ButtonGroup,
-              null,
-              React.createElement(
-                _reactBootstrap.Button,
-                { bsStyle: 'success', onClick: this.showCommentForm },
-                React.createElement(FA, { name: 'comment' }),
-                ' Comment'
-              )
-            ),
-            React.createElement(
-              _reactBootstrap.ButtonGroup,
-              null,
-              React.createElement(
-                _reactBootstrap.Button,
-                { bsStyle: 'info', onClick: this.showReviseForm },
-                React.createElement(FA, { name: 'font' }),
-                ' Revise'
-              )
-            )
-          ),
-          React.createElement(
-            ReactCSSTransitionGroup,
-            { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-            this.state.showReviseForm ? React.createElement(
-              'form',
-              { onSubmit: this.addRevision },
-              React.createElement('br', null),
-              React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
-              React.createElement('br', null),
-              React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
-              React.createElement('br', null),
-              React.createElement(
-                _reactBootstrap.Button,
-                { block: true, bsStyle: 'info', type: 'submit' },
-                'Post revision'
-              )
-            ) : false,
-            this.state.showCommentForm ? React.createElement(
-              'form',
-              { onSubmit: this.addComment },
-              React.createElement('br', null),
-              React.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
-              React.createElement('br', null),
-              React.createElement(
-                _reactBootstrap.Button,
-                { block: true, bsStyle: 'success', type: 'submit' },
-                'Post comment'
-              )
-            ) : false
-          )
-        )
-      );
-    } else {
-      if (content === 'general_comment') {
-        //For discussion thread comments        
-        postTitle = React.createElement(
+      //For original version
+      if (this.props.version == 1 || editedFrom == 0 && content !== '' && content !== 'general_comment') {
+        var postTitle = _react2.default.createElement(
           'div',
           { className: 'post_title' },
-          React.createElement(
+          _react2.default.createElement(
             _reactBootstrap.Label,
-            { className: 'title_header' },
-            'ANNOUNCE / DISCUSS'
+            { bsStyle: 'info', className: 'title_header' },
+            'VERSION ',
+            this.props.version
           ),
-          React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted ' + timeStamp } })
+          _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Original posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
         );
-        return React.createElement(
+
+        return _react2.default.createElement(
           'li',
           { className: 'postitem' },
-          React.createElement(
+          _react2.default.createElement(
             _reactBootstrap.Panel,
-            { header: postTitle, className: 'general_comment' },
-            React.createElement(
+            { header: postTitle, bsStyle: 'info' },
+            _react2.default.createElement(
               _reactBootstrap.ListGroup,
               { fill: true },
-              React.createElement(
+              _react2.default.createElement(
                 _reactBootstrap.ListGroupItem,
                 null,
-                React.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
+                _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                null,
+                _react2.default.createElement(
+                  'div',
+                  { className: 'comments_header' },
+                  _react2.default.createElement(
+                    'b',
+                    null,
+                    _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
+                    ' Comments'
+                  ),
+                  ' -'
+                ),
+                _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
               )
             ),
-            React.createElement(
-              'form',
-              { onSubmit: this.addComment },
-              React.createElement(
-                _reactBootstrap.FormGroup,
-                { className: 'button_combined' },
-                React.createElement(
-                  _reactBootstrap.InputGroup,
+            _react2.default.createElement(
+              _reactBootstrap.ButtonGroup,
+              { justified: true },
+              _react2.default.createElement(
+                _reactBootstrap.ButtonGroup,
+                null,
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'success', onClick: this.showCommentForm },
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
+                  ' Comment'
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ButtonGroup,
+                null,
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'info', onClick: this.showReviseForm },
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
+                  ' Revise'
+                )
+              )
+            ),
+            _react2.default.createElement(
+              _reactAddonsCssTransitionGroup2.default,
+              { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+              this.state.showReviseForm ? _react2.default.createElement(
+                'form',
+                { onSubmit: this.addRevision },
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { block: true, bsStyle: 'info', type: 'submit' },
+                  'Post revision'
+                )
+              ) : false,
+              this.state.showCommentForm ? _react2.default.createElement(
+                'form',
+                { onSubmit: this.addComment },
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { block: true, bsStyle: 'success', type: 'submit' },
+                  'Post comment'
+                )
+              ) : false
+            )
+          )
+        );
+      } else {
+        if (content === 'general_comment') {
+          //For discussion thread comments        
+          postTitle = _react2.default.createElement(
+            'div',
+            { className: 'post_title' },
+            _react2.default.createElement(
+              _reactBootstrap.Label,
+              { className: 'title_header' },
+              'ANNOUNCE / DISCUSS'
+            ),
+            _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted ' + timeStamp } })
+          );
+          return _react2.default.createElement(
+            'li',
+            { className: 'postitem' },
+            _react2.default.createElement(
+              _reactBootstrap.Panel,
+              { header: postTitle, className: 'general_comment' },
+              _react2.default.createElement(
+                _reactBootstrap.ListGroup,
+                { fill: true },
+                _react2.default.createElement(
+                  _reactBootstrap.ListGroupItem,
                   null,
-                  React.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
-                  React.createElement(
-                    _reactBootstrap.InputGroup.Button,
+                  _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
+                )
+              ),
+              _react2.default.createElement(
+                'form',
+                { onSubmit: this.addComment },
+                _react2.default.createElement(
+                  _reactBootstrap.FormGroup,
+                  { className: 'button_combined' },
+                  _react2.default.createElement(
+                    _reactBootstrap.InputGroup,
                     null,
-                    React.createElement(
-                      _reactBootstrap.Button,
-                      { type: 'submit' },
-                      React.createElement(FA, { name: 'comment' })
+                    _react2.default.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
+                    _react2.default.createElement(
+                      _reactBootstrap.InputGroup.Button,
+                      null,
+                      _react2.default.createElement(
+                        _reactBootstrap.Button,
+                        { type: 'submit' },
+                        _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' })
+                      )
                     )
                   )
                 )
               )
             )
-          )
-        );
-      } else if (content === '') {
-        //For initial post without content
-        postTitle = React.createElement(
-          'div',
-          { className: 'post_title' },
-          React.createElement(
-            _reactBootstrap.Label,
-            { bsStyle: 'warning', className: 'title_header' },
-            'CONTEXT'
-          ),
-          React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
-        );
-
-        return React.createElement(
-          'li',
-          { className: 'postitem' },
-          React.createElement(
-            _reactBootstrap.Panel,
-            { header: postTitle, bsStyle: 'warning' },
-            React.createElement(
-              _reactBootstrap.ListGroup,
-              { fill: true },
-              React.createElement(
-                _reactBootstrap.ListGroupItem,
-                null,
-                React.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
-              )
+          );
+        } else if (content === '') {
+          //For initial post without content
+          postTitle = _react2.default.createElement(
+            'div',
+            { className: 'post_title' },
+            _react2.default.createElement(
+              _reactBootstrap.Label,
+              { bsStyle: 'warning', className: 'title_header' },
+              'CONTEXT'
             ),
-            React.createElement(
-              _reactBootstrap.ButtonGroup,
-              { justified: true },
-              React.createElement(
-                _reactBootstrap.ButtonGroup,
-                null,
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'success', onClick: this.showCommentForm },
-                  React.createElement(FA, { name: 'comment' }),
-                  ' Comment'
+            _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Posted by <span class="displayed_username">' + username + '</span> ' + timeStamp } })
+          );
+
+          return _react2.default.createElement(
+            'li',
+            { className: 'postitem' },
+            _react2.default.createElement(
+              _reactBootstrap.Panel,
+              { header: postTitle, bsStyle: 'warning' },
+              _react2.default.createElement(
+                _reactBootstrap.ListGroup,
+                { fill: true },
+                _react2.default.createElement(
+                  _reactBootstrap.ListGroupItem,
+                  null,
+                  _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
                 )
               ),
-              this.state.showWriteButton ? React.createElement(
+              _react2.default.createElement(
                 _reactBootstrap.ButtonGroup,
-                null,
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'info', onClick: this.showReviseForm },
-                  React.createElement(FA, { name: 'font' }),
-                  ' Write'
-                )
-              ) : null
-            ),
-            React.createElement(
-              ReactCSSTransitionGroup,
-              { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-              this.state.showReviseForm ? React.createElement(
-                'form',
-                { onSubmit: this.addRevision },
-                React.createElement('br', null),
-                React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest an initial version of writing for the project.' }),
-                React.createElement('br', null),
-                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your writing.' }),
-                React.createElement('br', null),
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { block: true, type: 'submit', bsStyle: 'info' },
-                  'Post writing'
-                )
-              ) : false,
-              this.state.showCommentForm ? React.createElement(
-                'form',
-                { onSubmit: this.addComment },
-                React.createElement('br', null),
-                React.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the context or discussion above.' }),
-                React.createElement('br', null),
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { block: true, type: 'submit', bsStyle: 'success' },
-                  'Post comment'
-                )
-              ) : false
-            )
-          )
-        );
-      } else {
-        //For revisions
-        postTitle = React.createElement(
-          'div',
-          { className: 'post_title' },
-          React.createElement(
-            _reactBootstrap.Label,
-            { bsStyle: 'success', className: 'title_header' },
-            'VERSION ',
-            this.props.version
-          ),
-          React.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp } })
-        );
-
-        return React.createElement(
-          'li',
-          { className: 'postitem' },
-          React.createElement(
-            _reactBootstrap.Panel,
-            { header: postTitle, bsStyle: 'success' },
-            React.createElement(
-              _reactBootstrap.ListGroup,
-              { fill: true },
-              React.createElement(
-                _reactBootstrap.ListGroupItem,
-                null,
-                this.state.showChangesCommand ? React.createElement(
-                  'div',
+                { justified: true },
+                _react2.default.createElement(
+                  _reactBootstrap.ButtonGroup,
                   null,
-                  React.createElement(
-                    'a',
-                    { href: '#', onClick: this.showChanges },
-                    React.createElement(
-                      'div',
-                      { className: 'changes_command' },
-                      '+ Show changes made from ',
-                      React.createElement(
-                        _reactBootstrap.Label,
-                        { bsStyle: 'default', className: 'change_version' },
-                        'VERSION ',
-                        editedFrom
-                      )
-                    )
-                  ),
-                  React.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
-                ) : false,
-                this.state.showChanges ? React.createElement(
-                  'div',
-                  null,
-                  React.createElement(
-                    'a',
-                    { href: '#', onClick: this.hideChanges },
-                    React.createElement(
-                      'div',
-                      { className: 'changes_command', onClick: this.hideChanges },
-                      '- Hide changes from ',
-                      React.createElement(
-                        _reactBootstrap.Label,
-                        { bsStyle: 'default', className: 'change_version' },
-                        'VERSION ',
-                        editedFrom
-                      )
-                    )
-                  ),
-                  React.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: changes } })
-                ) : true
-              ),
-              React.createElement(
-                _reactBootstrap.ListGroupItem,
-                null,
-                React.createElement(
-                  'div',
-                  { className: 'comments_header' },
-                  React.createElement(
-                    'b',
-                    null,
-                    React.createElement(FA, { name: 'comments', className: 'gray_icon' }),
-                    ' Comments'
-                  ),
-                  ' -'
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { bsStyle: 'success', onClick: this.showCommentForm },
+                    _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
+                    ' Comment'
+                  )
                 ),
-                React.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
+                this.state.showWriteButton ? _react2.default.createElement(
+                  _reactBootstrap.ButtonGroup,
+                  null,
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { bsStyle: 'info', onClick: this.showReviseForm },
+                    _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
+                    ' Write'
+                  )
+                ) : null
+              ),
+              _react2.default.createElement(
+                _reactAddonsCssTransitionGroup2.default,
+                { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+                this.state.showReviseForm ? _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.addRevision },
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest an initial version of writing for the project.' }),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your writing.' }),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { block: true, type: 'submit', bsStyle: 'info' },
+                    'Post writing'
+                  )
+                ) : false,
+                this.state.showCommentForm ? _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.addComment },
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the context or discussion above.' }),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { block: true, type: 'submit', bsStyle: 'success' },
+                    'Post comment'
+                  )
+                ) : false
               )
+            )
+          );
+        } else {
+          //For revisions
+          postTitle = _react2.default.createElement(
+            'div',
+            { className: 'post_title' },
+            _react2.default.createElement(
+              _reactBootstrap.Label,
+              { bsStyle: 'success', className: 'title_header' },
+              'VERSION ',
+              this.props.version
             ),
-            React.createElement(
-              _reactBootstrap.ButtonGroup,
-              { justified: true },
-              React.createElement(
-                _reactBootstrap.ButtonGroup,
-                null,
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'success', onClick: this.showCommentForm },
-                  React.createElement(FA, { name: 'comment' }),
-                  ' Comment'
+            _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp } })
+          );
+
+          return _react2.default.createElement(
+            'li',
+            { className: 'postitem' },
+            _react2.default.createElement(
+              _reactBootstrap.Panel,
+              { header: postTitle, bsStyle: 'success' },
+              _react2.default.createElement(
+                _reactBootstrap.ListGroup,
+                { fill: true },
+                _react2.default.createElement(
+                  _reactBootstrap.ListGroupItem,
+                  null,
+                  this.state.showChangesCommand ? _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                      'a',
+                      { href: '#', onClick: this.showChanges },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'changes_command' },
+                        '+ Show changes made from ',
+                        _react2.default.createElement(
+                          _reactBootstrap.Label,
+                          { bsStyle: 'default', className: 'change_version' },
+                          'VERSION ',
+                          editedFrom
+                        )
+                      )
+                    ),
+                    _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
+                  ) : false,
+                  this.state.showChanges ? _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                      'a',
+                      { href: '#', onClick: this.hideChanges },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'changes_command', onClick: this.hideChanges },
+                        '- Hide changes from ',
+                        _react2.default.createElement(
+                          _reactBootstrap.Label,
+                          { bsStyle: 'default', className: 'change_version' },
+                          'VERSION ',
+                          editedFrom
+                        )
+                      )
+                    ),
+                    _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: changes } })
+                  ) : true
+                ),
+                _react2.default.createElement(
+                  _reactBootstrap.ListGroupItem,
+                  null,
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'comments_header' },
+                    _react2.default.createElement(
+                      'b',
+                      null,
+                      _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
+                      ' Comments'
+                    ),
+                    ' -'
+                  ),
+                  _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
                 )
               ),
-              React.createElement(
+              _react2.default.createElement(
                 _reactBootstrap.ButtonGroup,
-                null,
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'info', onClick: this.showReviseForm },
-                  React.createElement(FA, { name: 'font' }),
-                  ' Revise'
+                { justified: true },
+                _react2.default.createElement(
+                  _reactBootstrap.ButtonGroup,
+                  null,
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { bsStyle: 'success', onClick: this.showCommentForm },
+                    _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
+                    ' Comment'
+                  )
+                ),
+                _react2.default.createElement(
+                  _reactBootstrap.ButtonGroup,
+                  null,
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { bsStyle: 'info', onClick: this.showReviseForm },
+                    _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
+                    ' Revise'
+                  )
                 )
+              ),
+              _react2.default.createElement(
+                _reactAddonsCssTransitionGroup2.default,
+                { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+                this.state.showReviseForm ? _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.addRevision },
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { block: true, type: 'submit', bsStyle: 'info' },
+                    'Post revision'
+                  )
+                ) : false,
+                this.state.showCommentForm ? _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.addComment },
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    { block: true, type: 'submit', bsStyle: 'success' },
+                    'Post comment'
+                  )
+                ) : false
               )
-            ),
-            React.createElement(
-              ReactCSSTransitionGroup,
-              { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-              this.state.showReviseForm ? React.createElement(
-                'form',
-                { onSubmit: this.addRevision },
-                React.createElement('br', null),
-                React.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent' }),
-                React.createElement('br', null),
-                React.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Explain your changes.' }),
-                React.createElement('br', null),
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { block: true, type: 'submit', bsStyle: 'info' },
-                  'Post revision'
-                )
-              ) : false,
-              this.state.showCommentForm ? React.createElement(
-                'form',
-                { onSubmit: this.addComment },
-                React.createElement('br', null),
-                React.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the revision above.' }),
-                React.createElement('br', null),
-                React.createElement(
-                  _reactBootstrap.Button,
-                  { block: true, type: 'submit', bsStyle: 'success' },
-                  'Post comment'
-                )
-              ) : false
             )
-          )
-        );
+          );
+        }
       }
     }
-  },
-
-  showChanges: function showChanges(e) {
-    e.preventDefault();
-    this.setState({
-      showChangesCommand: false,
-      showChanges: true
-    });
-  },
-
-  hideChanges: function hideChanges(e) {
-    e.preventDefault();
-    this.setState({
-      showChangesCommand: true,
-      showChanges: false
-    });
-  },
-
-  showReviseForm: function showReviseForm() {
-
-    if (this.state.showReviseForm == false) {
+  }, {
+    key: 'showChanges',
+    value: function showChanges(e) {
+      e.preventDefault();
       this.setState({
-        showReviseForm: true,
-        showCommentForm: false
-      }, function () {
-        this.refs.revisionContent.value = this.props.post.content;
+        showChangesCommand: false,
+        showChanges: true
       });
-    } else {
-      if (this.refs.revisionContent.value !== this.props.post.content) {
-        if (confirm("You haven't posted your revision yet.\nDo you still want to close this form?")) {
+    }
+  }, {
+    key: 'hideChanges',
+    value: function hideChanges(e) {
+      e.preventDefault();
+      this.setState({
+        showChangesCommand: true,
+        showChanges: false
+      });
+    }
+  }, {
+    key: 'showReviseForm',
+    value: function showReviseForm() {
+
+      if (this.state.showReviseForm == false) {
+        this.setState({
+          showReviseForm: true,
+          showCommentForm: false
+        }, function () {
+          this.refs.revisionContent.value = this.props.post.content;
+        });
+      } else {
+        if (this.refs.revisionContent.value !== this.props.post.content) {
+          if (confirm("You haven't posted your revision yet.\nDo you still want to close this form?")) {
+            this.setState({
+              showReviseForm: false
+            });
+          }
+        } else {
           this.setState({
             showReviseForm: false
           });
         }
-      } else {
-        this.setState({
-          showReviseForm: false
-        });
       }
     }
-  },
-
-  showCommentForm: function showCommentForm() {
-    if (this.state.showCommentForm == false) {
-      this.setState({
-        showCommentForm: true,
-        showReviseForm: false
-      });
-    } else {
-      if (this.refs.commentOnly.value !== '') {
-        if (confirm("You haven't posted your comment yet.\nDo you still want to close this form?")) {
+  }, {
+    key: 'showCommentForm',
+    value: function showCommentForm() {
+      if (this.state.showCommentForm == false) {
+        this.setState({
+          showCommentForm: true,
+          showReviseForm: false
+        });
+      } else {
+        if (this.refs.commentOnly.value !== '') {
+          if (confirm("You haven't posted your comment yet.\nDo you still want to close this form?")) {
+            this.setState({
+              showCommentForm: false
+            });
+          }
+        } else {
           this.setState({
             showCommentForm: false
           });
         }
-      } else {
-        this.setState({
-          showCommentForm: false
-        });
       }
     }
-  },
+  }, {
+    key: 'addRevision',
+    value: function addRevision(e) {
+      e.preventDefault();
 
-  addRevision: function addRevision(e) {
-    e.preventDefault();
+      var data = {
+        accessCode: this.props.post.accessCode,
+        username: this.props.yourUsername,
+        content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
+        prevContent: this.props.post.content,
+        editedFrom: this.props.version,
+        comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
+      };
 
-    var data = {
-      accessCode: this.props.post.accessCode,
-      username: this.props.yourUsername,
-      content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
-      prevContent: this.props.post.content,
-      editedFrom: this.props.version,
-      comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
-    };
+      _jquery2.default.ajax('/api/post', {
+        type: 'POST',
+        data: JSON.stringify(data),
+        datatype: 'json',
+        contentType: 'application/json'
+      }).done(function () {
+        scroll.scrollToBottom();
+      });
 
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    }).done(function () {
-      scroll.scrollToBottom();
-    });
+      this.setState({
+        showReviseForm: false,
+        showCommentForm: false
+      });
+    }
+  }, {
+    key: 'addComment',
+    value: function addComment(e) {
+      e.preventDefault();
 
-    this.setState({
-      showReviseForm: false,
-      showCommentForm: false
-    });
-  },
+      var _id = this.props.post._id;
+      var data = {
+        username: this.props.yourUsername,
+        comment: this.refs.commentOnly.value
+      };
 
-  addComment: function addComment(e) {
-    e.preventDefault();
+      _jquery2.default.ajax('/api/post/' + _id + '/comment', {
+        type: 'POST',
+        data: JSON.stringify(data),
+        datatype: 'json',
+        contentType: 'application/json'
+      });
 
-    var _id = this.props.post._id;
-    var data = {
-      username: this.props.yourUsername,
-      comment: this.refs.commentOnly.value
-    };
+      this.setState({
+        showReviseForm: false,
+        showCommentForm: false
+      });
+    }
+  }, {
+    key: 'goBack',
+    value: function goBack(e) {
+      e.preventDefault();
+      this.setState({
+        showReviseForm: false,
+        showCommentForm: false
+      });
+    }
+  }]);
 
-    $.ajax('/api/post/' + _id + '/comment', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    });
+  return Post;
+}(_react2.default.Component);
 
-    this.setState({
-      showReviseForm: false,
-      showCommentForm: false
-    });
-  },
-
-  goBack: function goBack(e) {
-    e.preventDefault();
-    this.setState({
-      showReviseForm: false,
-      showCommentForm: false
-    });
-  }
-});
-
-if ($(window).width() > 767) {
+if ((0, _jquery2.default)(window).width() > 767) {
   //Enlarge text when clicked
-  $('body').on('click', '.writing, p', function () {
-    $(this).toggleClass('large_text');
+  (0, _jquery2.default)('body').on('click', '.writing, p', function () {
+    (0, _jquery2.default)(this).toggleClass('large_text');
   });
 }
 
-module.exports = Post;
+exports.default = Post;
 
 /***/ }),
 /* 337 */
@@ -47523,645 +47689,557 @@ module.exports = diffString;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
 var _reactBootstrap = __webpack_require__(62);
 
-var React = __webpack_require__(0);
-var FA = __webpack_require__(77);
-var ReactCSSTransitionGroup = __webpack_require__(69);
-var Scroll = __webpack_require__(129);
-var scroll = Scroll.animateScroll;
-var $ = __webpack_require__(60);
+var _reactFontawesome = __webpack_require__(77);
 
-var PostForm = React.createClass({
-  displayName: 'PostForm',
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
 
-  getInitialState: function getInitialState() {
-    return {
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _jquery = __webpack_require__(60);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _reactScroll = __webpack_require__(129);
+
+var _reactScroll2 = _interopRequireDefault(_reactScroll);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var scroll = _reactScroll2.default.animateScroll;
+
+var PostForm = function (_React$Component) {
+  _inherits(PostForm, _React$Component);
+
+  function PostForm() {
+    _classCallCheck(this, PostForm);
+
+    var _this = _possibleConstructorReturn(this, (PostForm.__proto__ || Object.getPrototypeOf(PostForm)).call(this));
+
+    _this.state = {
       showButtons: true,
       showCommentForm: false
     };
-  },
 
-  render: function render() {
-    return React.createElement(
-      _reactBootstrap.Well,
-      null,
-      React.createElement(
-        _reactBootstrap.Button,
-        { block: true, bsSize: 'large', onClick: this.showCommentForm },
-        React.createElement(
-          'b',
-          null,
-          React.createElement(FA, { name: 'bullhorn' }),
-          ' Announce / Discuss'
-        )
-      ),
-      React.createElement(
-        ReactCSSTransitionGroup,
-        { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-        this.state.showCommentForm ? React.createElement(
-          'form',
-          { onSubmit: this.addComment },
-          React.createElement('br', null),
-          React.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
-          React.createElement('br', null),
-          React.createElement(
-            _reactBootstrap.Button,
-            { block: true, bsStyle: 'success', type: 'submit' },
-            'Begin thread'
+    _this.showCommentForm = _this.showCommentForm.bind(_this);
+    _this.addComment = _this.addComment.bind(_this);
+    return _this;
+  }
+
+  _createClass(PostForm, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _reactBootstrap.Well,
+        null,
+        _react2.default.createElement(
+          _reactBootstrap.Button,
+          { block: true, bsSize: 'large', onClick: this.showCommentForm },
+          _react2.default.createElement(
+            'b',
+            null,
+            _react2.default.createElement(_reactFontawesome2.default, { name: 'bullhorn' }),
+            ' Announce / Discuss'
           )
-        ) : false
-      )
-    );
-  },
-
-  showCommentForm: function showCommentForm() {
-    if (this.state.showCommentForm == false) {
-      this.setState({
-        showCommentForm: true
-      }, function () {
-        scroll.scrollToBottom();
-      });
-    } else {
-      if (this.refs.comment.value !== '') {
-        if (confirm("You haven't posted your thread yet.\nDo you still want to close this form?")) {
+        ),
+        _react2.default.createElement(
+          _reactAddonsCssTransitionGroup2.default,
+          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+          this.state.showCommentForm ? _react2.default.createElement(
+            'form',
+            { onSubmit: this.addComment },
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { block: true, bsStyle: 'success', type: 'submit' },
+              'Begin thread'
+            )
+          ) : false
+        )
+      );
+    }
+  }, {
+    key: 'showCommentForm',
+    value: function showCommentForm() {
+      if (this.state.showCommentForm == false) {
+        this.setState({
+          showCommentForm: true
+        }, function () {
+          scroll.scrollToBottom();
+        });
+      } else {
+        if (this.refs.comment.value !== '') {
+          if (confirm("You haven't posted your thread yet.\nDo you still want to close this form?")) {
+            this.setState({
+              showCommentForm: false
+            });
+          }
+        } else {
           this.setState({
             showCommentForm: false
           });
         }
-      } else {
-        this.setState({
-          showCommentForm: false
-        });
       }
     }
-  },
+  }, {
+    key: 'addComment',
+    value: function addComment(e) {
+      e.preventDefault();
 
-  addComment: function addComment(e) {
-    e.preventDefault();
+      var data = {
+        accessCode: this.props.accessCode,
+        username: this.props.username,
+        content: 'general_comment',
+        prevContent: 'general_comment',
+        editedFrom: 0,
+        comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+      };
 
-    var data = {
-      accessCode: this.props.accessCode,
-      username: this.props.username,
-      content: 'general_comment',
-      prevContent: 'general_comment',
-      editedFrom: 0,
-      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
-    };
-
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    });
-
-    this.setState({
-      showCommentForm: false
-    }, function () {
-      scroll.scrollToBottom();
-    });
-  }
-});
-
-module.exports = PostForm;
-
-/***/ }),
-/* 339 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _reactBootstrap = __webpack_require__(62);
-
-var React = __webpack_require__(0);
-var Post = __webpack_require__(336);
-var FA = __webpack_require__(77);
-var ReactCSSTransitionGroup = __webpack_require__(69);
-var notification = new Audio('notification.mp3');
-var store = __webpack_require__(596);
-var Scroll = __webpack_require__(129);
-var scroll = Scroll.animateScroll;
-
-store.set('sound', { setting: 'on' });
-
-var Posts = React.createClass({
-  displayName: 'Posts',
-
-  getInitialState: function getInitialState() {
-    return {
-      alertVisible: true,
-      soundIcon: React.createElement(FA, { name: 'volume-up' })
-    };
-  },
-
-  render: function render() {
-
-    var postsArray = this.props.posts;
-    var verNumber = 0;
-    var username = this.props.username;
-
-    var postsMapped = postsArray.map(function (post, index) {
-      if (this.props.matchCode === post.accessCode) {
-        notification.play();
-        if (post.content !== 'general_comment' && post.content !== '') {
-          verNumber++;
-        }
-        return React.createElement(Post, { post: post, key: index, version: verNumber, yourUsername: username, arrayLength: postsArray.length });
-      }
-    }.bind(this));
-
-    if (postsArray.length < 4) {
-      return React.createElement(
-        'div',
-        null,
-        React.createElement(
-          _reactBootstrap.Jumbotron,
-          null,
-          React.createElement(
-            'h2',
-            null,
-            'Collabo',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              'write'
-            )
-          ),
-          React.createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'info', className: 'sound', onClick: this.setSound },
-            this.state.soundIcon
-          )
-        ),
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-          this.state.alertVisible ? React.createElement(
-            _reactBootstrap.Alert,
-            { bsStyle: 'info' },
-            React.createElement(
-              'b',
-              null,
-              React.createElement(FA, { name: 'lightbulb-o' }),
-              ' Tip: If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
-            )
-          ) : true
-        ),
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-          postsMapped
-        )
-      );
-    } else {
-      return React.createElement(
-        'div',
-        null,
-        React.createElement(
-          _reactBootstrap.Jumbotron,
-          null,
-          React.createElement(
-            'h2',
-            null,
-            'Collabo',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              'write'
-            ),
-            React.createElement(
-              _reactBootstrap.Button,
-              { bsStyle: 'info', className: 'sound', onClick: this.setSound },
-              this.state.soundIcon
-            )
-          )
-        ),
-        React.createElement(
-          _reactBootstrap.Button,
-          { bsStyle: 'success', bsSize: 'large', block: true, onClick: this.scrollDown },
-          React.createElement(FA, { name: 'angle-down' }),
-          ' Scroll down to latest post'
-        ),
-        React.createElement('br', null),
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-          this.state.alertVisible ? React.createElement(
-            _reactBootstrap.Alert,
-            { bsStyle: 'info' },
-            React.createElement(
-              'b',
-              null,
-              React.createElement(FA, { name: 'lightbulb-o' }),
-              ' Tip: If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
-            )
-          ) : true
-        ),
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
-          postsMapped
-        ),
-        React.createElement(
-          _reactBootstrap.Button,
-          { block: true, bsSize: 'large', bsStyle: 'warning', onClick: this.scrollUp },
-          React.createElement(FA, { name: 'angle-up' }),
-          ' Scroll up to original post'
-        ),
-        React.createElement('br', null)
-      );
-    }
-  },
-
-  setSound: function setSound() {
-    if (store.get('sound').setting === 'on') {
-      store.set('sound', { setting: 'off' });
-      notification = new Audio();
-      this.setState({
-        soundIcon: React.createElement(FA, { name: 'volume-off' })
+      _jquery2.default.ajax('/api/post', {
+        type: 'POST',
+        data: JSON.stringify(data),
+        datatype: 'json',
+        contentType: 'application/json'
       });
-    } else {
-      store.set('sound', { setting: 'on' });
-      notification = new Audio('notification.mp3');
+
       this.setState({
-        soundIcon: React.createElement(FA, { name: 'volume-up' })
+        showCommentForm: false
+      }, function () {
+        scroll.scrollToBottom();
       });
     }
-    console.log(store.get('sound').setting);
-  },
+  }]);
 
-  scrollDown: function scrollDown() {
-    scroll.scrollToBottom();
-  },
+  return PostForm;
+}(_react2.default.Component);
 
-  scrollUp: function scrollUp() {
-    scroll.scrollToTop();
-  }
-
-});
-
-module.exports = Posts;
+exports.default = PostForm;
 
 /***/ }),
+/* 339 */,
 /* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
 var _reactBootstrap = __webpack_require__(62);
 
-var React = __webpack_require__(0);
-var FA = __webpack_require__(77);
-var ReactCSSTransitionGroup = __webpack_require__(69);
-var $ = __webpack_require__(60);
+var _reactFontawesome = __webpack_require__(77);
 
-var SigninForm = React.createClass({
-  displayName: 'SigninForm',
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
 
-  getInitialState: function getInitialState() {
-    return {
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _jquery = __webpack_require__(60);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SigninForm = function (_React$Component) {
+  _inherits(SigninForm, _React$Component);
+
+  function SigninForm() {
+    _classCallCheck(this, SigninForm);
+
+    var _this = _possibleConstructorReturn(this, (SigninForm.__proto__ || Object.getPrototypeOf(SigninForm)).call(this));
+
+    _this.state = {
       showIntro: true,
       showNewForm: false,
       showJoinForm: false
     };
-  },
 
-  render: function render() {
+    _this.showIntro = _this.showIntro.bind(_this);
+    _this.showDemo = _this.showDemo.bind(_this);
+    _this.showNewForm = _this.showNewForm.bind(_this);
+    _this.showJoinForm = _this.showJoinForm.bind(_this);
+    _this.createNewPost = _this.createNewPost.bind(_this);
+    _this.storeSigninVars = _this.storeSigninVars.bind(_this);
+    return _this;
+  }
 
-    var tooltip = React.createElement(
-      _reactBootstrap.Tooltip,
-      { id: 'tooltip' },
-      React.createElement(
-        'b',
+  _createClass(SigninForm, [{
+    key: 'render',
+    value: function render() {
+      var buttons = _react2.default.createElement(
+        'div',
         null,
-        React.createElement(FA, { name: 'lightbulb-o' }),
-        ' Tip'
-      ),
-      ': Share only with your group members since this is what your project members will use to log into the project.'
-    );
-
-    var buttons = React.createElement(
-      'div',
-      null,
-      React.createElement(
-        _reactBootstrap.ButtonGroup,
-        { justified: true },
-        React.createElement(
+        _react2.default.createElement(
           _reactBootstrap.ButtonGroup,
+          { justified: true },
+          _react2.default.createElement(
+            _reactBootstrap.ButtonGroup,
+            null,
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: 'success', onClick: this.showNewForm },
+              'Create project'
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.ButtonGroup,
+            null,
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: 'info', onClick: this.showJoinForm },
+              'Join project'
+            )
+          )
+        )
+      );
+
+      var tooltip = _react2.default.createElement(
+        _reactBootstrap.Tooltip,
+        { id: 'tooltip' },
+        _react2.default.createElement(
+          'b',
           null,
-          React.createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'success', onClick: this.showNewForm },
-            'Create project'
+          _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
+          ' Tip'
+        ),
+        ': Share only with your group members since this is what your project members will use to log into the project.'
+      );
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          _reactBootstrap.Jumbotron,
+          null,
+          _react2.default.createElement(
+            'a',
+            { href: '#', onClick: this.showIntro },
+            _react2.default.createElement(
+              'h2',
+              null,
+              'Collabo',
+              _react2.default.createElement(
+                'span',
+                { className: 'green' },
+                'write'
+              ),
+              ' ',
+              _react2.default.createElement(
+                'span',
+                { className: 'example' },
+                'a sentence.'
+              )
+            )
           )
         ),
-        React.createElement(
-          _reactBootstrap.ButtonGroup,
-          null,
-          React.createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'info', onClick: this.showJoinForm },
-            'Join project'
-          )
-        )
-      )
-    );
-
-    return React.createElement(
-      'div',
-      null,
-      React.createElement(
-        _reactBootstrap.Jumbotron,
-        null,
-        React.createElement(
-          'a',
-          { href: '#', onClick: this.showIntro },
-          React.createElement(
-            'h2',
+        _react2.default.createElement(
+          _reactBootstrap.Panel,
+          { header: buttons, className: 'intro_screen' },
+          this.state.showIntro ? _react2.default.createElement(
+            'div',
             null,
-            'Collabo',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              'write'
-            ),
-            ' ',
-            React.createElement(
-              'span',
-              { className: 'example' },
-              'a sentence.'
-            )
-          )
-        )
-      ),
-      React.createElement(
-        _reactBootstrap.Panel,
-        { header: buttons, className: 'intro_screen' },
-        this.state.showIntro ? React.createElement(
-          'div',
-          null,
-          React.createElement(
-            'h3',
-            null,
-            React.createElement(FA, { name: 'clock-o', className: 'intro' }),
-            ' Collaborate ',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              'real-time'
-            )
-          ),
-          React.createElement(
-            'h5',
-            null,
-            'Anytime you post a revision, comment, suggestion, or announcment, others working on the project will see it instantly. No more waiting around or refreshing for updates.'
-          ),
-          React.createElement(
-            'h3',
-            null,
-            React.createElement(FA, { name: 'mobile', className: 'intro' }),
-            ' Work ',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              'mobile-friendly'
-            )
-          ),
-          React.createElement(
-            'h5',
-            null,
-            'For those light-bulb moments while you\'re out, access and work on your projects on a smartphone or tablet, with all of the functions you have while you\'re on your computer.'
-          ),
-          React.createElement(
-            'h3',
-            null,
-            React.createElement(FA, { name: 'slideshare', className: 'intro' }),
-            ' Involve your ',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              ' audience'
-            )
-          ),
-          React.createElement(
-            'h5',
-            null,
-            'Skip the slides: when you\'re facilitating a class, meeting, or a brainstorming session, just put your project on a projector and invite others in the room to share their ideas onto the screen using their smartphones. You can blow up the text of any post or comment with a single click.'
-          ),
-          React.createElement(
-            'h3',
-            null,
-            React.createElement(FA, { name: 'hand-peace-o', className: 'intro' }),
-            ' Get started ',
-            React.createElement(
-              'span',
-              { className: 'green' },
-              ' hassle-free'
-            )
-          ),
-          React.createElement(
-            'h5',
-            null,
-            'No need to sign up for an account. Create a new project, and we\'ll generate a four-letter/number code that you and your project members can use to access the project anytime, anywhere.'
-          ),
-          React.createElement(
-            _reactBootstrap.Button,
-            { block: true, onClick: this.showDemo },
-            React.createElement(
-              'b',
+            _react2.default.createElement(
+              'h3',
               null,
-              'Click to see a demo project'
-            )
-          )
-        ) : true,
-        React.createElement(
-          ReactCSSTransitionGroup,
-          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-          this.state.showNewForm ? React.createElement(
-            'div',
-            null,
-            React.createElement(
-              'form',
-              { id: 'newform', onSubmit: this.createNewPost },
-              React.createElement(
-                _reactBootstrap.Well,
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'clock-o', className: 'intro' }),
+              ' Collaborate ',
+              _react2.default.createElement(
+                'span',
+                { className: 'green' },
+                'real-time'
+              )
+            ),
+            _react2.default.createElement(
+              'h5',
+              null,
+              'Anytime you post a revision, comment, suggestion, or announcment, others working on the project will see it instantly. No more waiting around or refreshing for updates.'
+            ),
+            _react2.default.createElement(
+              'h3',
+              null,
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'mobile', className: 'intro' }),
+              ' Work ',
+              _react2.default.createElement(
+                'span',
+                { className: 'green' },
+                'mobile-friendly'
+              )
+            ),
+            _react2.default.createElement(
+              'h5',
+              null,
+              'For those light-bulb moments while you\'re out, access and work on your projects on a smartphone or tablet, with all of the functions you have while you\'re on your computer.'
+            ),
+            _react2.default.createElement(
+              'h3',
+              null,
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'slideshare', className: 'intro' }),
+              ' Involve your ',
+              _react2.default.createElement(
+                'span',
+                { className: 'green' },
+                ' audience'
+              )
+            ),
+            _react2.default.createElement(
+              'h5',
+              null,
+              'Skip the slides: when you\'re facilitating a class, meeting, or a brainstorming session, just put your project on a projector and invite others in the room to share their ideas onto the screen using their smartphones. You can blow up the text of any post or comment with a single click.'
+            ),
+            _react2.default.createElement(
+              'h3',
+              null,
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'hand-peace-o', className: 'intro' }),
+              ' Get started ',
+              _react2.default.createElement(
+                'span',
+                { className: 'green' },
+                ' hassle-free'
+              )
+            ),
+            _react2.default.createElement(
+              'h5',
+              null,
+              'No need to sign up for an account. Create a new project, and we\'ll generate a four-letter/number code that you and your project members can use to access the project anytime, anywhere.'
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { block: true, onClick: this.showDemo },
+              _react2.default.createElement(
+                'b',
                 null,
-                React.createElement(
-                  'label',
-                  { className: 'accesscode_label' },
-                  'Below is your new project access code.',
-                  React.createElement('br', null),
-                  'Please write it down or save it somewhere safe.'
+                'Click to see a demo project'
+              )
+            )
+          ) : true,
+          _react2.default.createElement(
+            _reactAddonsCssTransitionGroup2.default,
+            { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+            this.state.showNewForm ? _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'form',
+                { id: 'newform', onSubmit: this.createNewPost },
+                _react2.default.createElement(
+                  _reactBootstrap.Well,
+                  null,
+                  _react2.default.createElement(
+                    'label',
+                    { className: 'accesscode_label' },
+                    'Below is your new project access code.',
+                    _react2.default.createElement('br', null),
+                    'Please write it down or save it somewhere safe.'
+                  ),
+                  _react2.default.createElement(
+                    _reactBootstrap.OverlayTrigger,
+                    { placement: 'bottom', overlay: tooltip },
+                    _react2.default.createElement('input', { className: 'accesscode_input', type: 'text', required: true, ref: 'newAccessCode', readOnly: true })
+                  )
                 ),
-                React.createElement(
-                  _reactBootstrap.OverlayTrigger,
-                  { placement: 'bottom', overlay: tooltip },
-                  React.createElement('input', { className: 'accesscode_input', type: 'text', required: true, ref: 'newAccessCode', readOnly: true })
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  'Enter your name'
+                ),
+                '\xA0',
+                _react2.default.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  'Provide some context for this project (i.e. what kind of writing it is, what others should focus on...)'
+                ),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('textarea', { required: true, ref: 'comment' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  'Optional: Share an initial version or starting point for the writing you have in mind'
+                ),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('textarea', { ref: 'content' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { block: true, bsStyle: 'success', type: 'submit' },
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'upload' }),
+                  ' Launch it!'
                 )
-              ),
-              React.createElement(
-                'label',
-                null,
-                'Enter your name'
-              ),
-              '\xA0',
-              React.createElement('input', { type: 'text', autoFocus: true, required: true, ref: 'newUsername' }),
-              React.createElement('br', null),
-              React.createElement(
-                'label',
-                null,
-                'Provide some context for this project (i.e. what kind of writing it is, what others should focus on...)'
-              ),
-              React.createElement('br', null),
-              React.createElement('textarea', { required: true, ref: 'comment' }),
-              React.createElement('br', null),
-              React.createElement(
-                'label',
-                null,
-                'Optional: Share an initial version or starting point for the writing you have in mind'
-              ),
-              React.createElement('br', null),
-              React.createElement('textarea', { ref: 'content' }),
-              React.createElement('br', null),
-              React.createElement(
-                _reactBootstrap.Button,
-                { block: true, bsStyle: 'success', type: 'submit' },
-                React.createElement(FA, { name: 'upload' }),
-                ' Launch it!'
               )
-            )
-          ) : false,
-          this.state.showJoinForm ? React.createElement(
-            'div',
-            null,
-            React.createElement(
-              'form',
-              { id: 'joinform', onSubmit: this.storeSigninVars },
-              React.createElement('input', { type: 'password', autoFocus: true, required: true, ref: 'accessCode', placeholder: 'Project access code' }),
-              React.createElement('br', null),
-              React.createElement('input', { type: 'text', required: true, ref: 'username', placeholder: 'Your name' }),
-              React.createElement('br', null),
-              React.createElement(
-                _reactBootstrap.Button,
-                { block: true, bsStyle: 'info', type: 'submit' },
-                React.createElement(FA, { name: 'sign-in' }),
-                ' Join in!'
+            ) : false,
+            this.state.showJoinForm ? _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'form',
+                { id: 'joinform', onSubmit: this.storeSigninVars },
+                _react2.default.createElement('input', { type: 'password', autoFocus: true, required: true, ref: 'accessCode', placeholder: 'Project access code' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'text', required: true, ref: 'username', placeholder: 'Your name' }),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { block: true, bsStyle: 'info', type: 'submit' },
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'sign-in' }),
+                  ' Join in!'
+                )
               )
-            )
-          ) : false
+            ) : false
+          )
         )
-      )
-    );
-  },
-
-  showIntro: function showIntro(e) {
-    e.preventDefault();
-    this.setState({
-      showIntro: true,
-      showNewForm: false,
-      showJoinForm: false
-    });
-  },
-
-  showDemo: function showDemo() {
-    $.get('/api/posts/1234', function (data) {
-      if (data.length === 0) {
-        alert('The project access code you typed in is not valid. Please check again!');
-      } else {
-        this.props.onSignin('1234', 'Test user');
-      }
-    }.bind(this));
-  },
-
-  showNewForm: function showNewForm() {
-    this.setState({
-      showIntro: false,
-      showNewForm: true,
-      showJoinForm: false
-    });
-
-    var candidateCode;
-    var generateCode = function generateCode() {
-      candidateCode = '';
-      var possible = "abcdefghijkmnpqrtuvwxyz234678";
-
-      for (var i = 0; i < 4; i++) {
-        candidateCode += possible.charAt(Math.floor(Math.random() * possible.length));
-      }return candidateCode;
-    };
-
-    generateCode();
-
-    $.get('/api/posts/' + candidateCode, function (data) {
-      if (data.length !== 0) {
-        generateCode();
-        this.refs.newAccessCode.value = candidateCode;
-      } else {
-        this.refs.newAccessCode.value = candidateCode;
-      }
-    }.bind(this));
-  },
-
-  showJoinForm: function showJoinForm() {
-    this.setState({
-      showIntro: false,
-      showJoinForm: true,
-      showNewForm: false
-    });
-  },
-
-  createNewPost: function createNewPost(e) {
-    e.preventDefault();
-
-    this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
-
-    var data = {
-      accessCode: this.refs.newAccessCode.value,
-      username: this.refs.newUsername.value,
-      content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
-      prevContent: '',
-      editedFrom: 0,
-      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
-    };
-
-    if (data.content === '') {
-      data.content = '';
+      );
     }
+  }, {
+    key: 'showIntro',
+    value: function showIntro(e) {
+      e.preventDefault();
+      this.setState({
+        showIntro: true,
+        showNewForm: false,
+        showJoinForm: false
+      });
+    }
+  }, {
+    key: 'showDemo',
+    value: function showDemo() {
+      _jquery2.default.get('/api/posts/1234', function (data) {
+        if (data.length === 0) {
+          alert('The project access code you typed in is not valid. Please check again!');
+        } else {
+          this.props.onSignin('1234', 'Test user');
+        }
+      }.bind(this));
+    }
+  }, {
+    key: 'showNewForm',
+    value: function showNewForm() {
+      this.setState({
+        showIntro: false,
+        showNewForm: true,
+        showJoinForm: false
+      });
 
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    });
-  },
+      var candidateCode = '';
 
-  storeSigninVars: function storeSigninVars(e) {
-    e.preventDefault();
-    $.get('/api/posts/' + this.refs.accessCode.value, function (data) {
-      if (data.length === 0) {
-        alert('The project access code you typed in is not valid. Please check again!');
-      } else {
-        this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
+      function generateCode() {
+        var possible = "abcdefghijkmnpqrtuvwxyz234678";
+        for (var i = 0; i < 4; i++) {
+          candidateCode += possible.charAt(Math.floor(Math.random() * possible.length));
+        }return candidateCode;
       }
-    }.bind(this));
-  }
-});
+
+      generateCode();
+
+      _jquery2.default.get('/api/posts/' + candidateCode, function (data) {
+        if (data.length !== 0) {
+          generateCode();
+          this.refs.newAccessCode.value = candidateCode;
+        } else {
+          this.refs.newAccessCode.value = candidateCode;
+        }
+      }.bind(this));
+    }
+  }, {
+    key: 'showJoinForm',
+    value: function showJoinForm() {
+      this.setState({
+        showIntro: false,
+        showJoinForm: true,
+        showNewForm: false
+      });
+    }
+  }, {
+    key: 'createNewPost',
+    value: function createNewPost(e) {
+      e.preventDefault();
+
+      this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
+
+      var data = {
+        accessCode: this.refs.newAccessCode.value,
+        username: this.refs.newUsername.value,
+        content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
+        prevContent: '',
+        editedFrom: 0,
+        comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+      };
+
+      if (data.content === '') data.content = '';
+
+      _jquery2.default.ajax('/api/post', {
+        type: 'POST',
+        data: JSON.stringify(data),
+        datatype: 'json',
+        contentType: 'application/json'
+      });
+    }
+  }, {
+    key: 'storeSigninVars',
+    value: function storeSigninVars(e) {
+      e.preventDefault();
+
+      _jquery2.default.get('/api/posts/' + this.refs.accessCode.value, function (data) {
+        if (data.length === 0) {
+          alert('The project access code you typed in is not valid. Please check again!');
+        } else {
+          this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
+        }
+      }.bind(this));
+    }
+  }]);
+
+  return SigninForm;
+}(_react2.default.Component);
 
 var examples = ["a topic sentence", "a thesis statement", "a mission statement", "instructions", "product descriptions", "translations", "a plotline", "a headline", "a tagline", "a catchphrase", "a paraphrase", "a paragraph", "a sentence"];
 
-if ($(window).width() > 767) {
+if ((0, _jquery2.default)(window).width() > 767) {
   setInterval(function () {
-    $(".example").fadeOut(function () {
-      $(this).text(examples[examples.push(examples.shift()) - 1] + '.').fadeIn();
+    (0, _jquery2.default)(".example").fadeOut(function () {
+      (0, _jquery2.default)(this).text(examples[examples.push(examples.shift()) - 1] + '.').fadeIn();
     });
   }, 1500);
 }
 
-module.exports = SigninForm;
+exports.default = SigninForm;
 
 /***/ }),
 /* 341 */
@@ -48170,58 +48248,94 @@ module.exports = SigninForm;
 "use strict";
 
 
-var React = __webpack_require__(0);
-var SigninForm = __webpack_require__(340);
-var PostForm = __webpack_require__(338);
-var $ = __webpack_require__(60);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var UserForms = React.createClass({
-  displayName: 'UserForms',
+var _react = __webpack_require__(0);
 
-  getInitialState: function getInitialState() {
-    return {
+var _react2 = _interopRequireDefault(_react);
+
+var _SigninForm = __webpack_require__(340);
+
+var _SigninForm2 = _interopRequireDefault(_SigninForm);
+
+var _PostForm = __webpack_require__(338);
+
+var _PostForm2 = _interopRequireDefault(_PostForm);
+
+var _jquery = __webpack_require__(60);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UserForms = function (_React$Component) {
+  _inherits(UserForms, _React$Component);
+
+  function UserForms() {
+    _classCallCheck(this, UserForms);
+
+    var _this = _possibleConstructorReturn(this, (UserForms.__proto__ || Object.getPrototypeOf(UserForms)).call(this));
+
+    _this.state = {
       accessCode: '',
       username: '',
       showInputForm: false,
       showSigninForm: true
     };
-  },
 
-  render: function render() {
-    return React.createElement(
-      'div',
-      null,
-      this.state.showSigninForm ? React.createElement(SigninForm, { onStart: this.onStart, onSignin: this.onSignin }) : true,
-      this.state.showInputForm ? React.createElement(PostForm, { accessCode: this.state.accessCode, username: this.state.username }) : null
-    );
-  },
-
-  onStart: function onStart(accessCode, username) {
-    this.setState({
-      accessCode: accessCode,
-      username: username,
-      showInputForm: true,
-      showSigninForm: false
-    });
-
-    this.props.getSigninVars(accessCode, username);
-  },
-
-  onSignin: function onSignin(accessCode, username) {
-    this.setState({
-      accessCode: accessCode,
-      username: username,
-      showInputForm: true,
-      showSigninForm: false
-    });
-
-    this.props.getSigninVars(accessCode, username);
-
-    $.get('/api/posts/' + accessCode, function (data) {
-      this.props.showOldPosts(data);
-    }.bind(this));
+    _this.onStart = _this.onStart.bind(_this);
+    _this.onSignin = _this.onSignin.bind(_this);
+    return _this;
   }
-});
+
+  _createClass(UserForms, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        this.state.showSigninForm ? _react2.default.createElement(_SigninForm2.default, { onStart: this.onStart, onSignin: this.onSignin }) : true,
+        this.state.showInputForm ? _react2.default.createElement(_PostForm2.default, { accessCode: this.state.accessCode, username: this.state.username }) : null
+      );
+    }
+  }, {
+    key: 'onStart',
+    value: function onStart(accessCode, username) {
+      this.setState({
+        accessCode: accessCode,
+        username: username,
+        showInputForm: true,
+        showSigninForm: false
+      });
+
+      this.props.getSigninVars(accessCode, username);
+    }
+  }, {
+    key: 'onSignin',
+    value: function onSignin(accessCode, username) {
+      this.setState({
+        accessCode: accessCode,
+        username: username,
+        showInputForm: true,
+        showSigninForm: false
+      });
+
+      this.props.getSigninVars(accessCode, username);
+
+      _jquery2.default.get('/api/posts/' + accessCode, function (data) {
+        this.props.showPosts(data);
+      }.bind(this));
+    }
+  }]);
+
+  return UserForms;
+}(_react2.default.Component);
 
 module.exports = UserForms;
 
@@ -49208,7 +49322,7 @@ exports = module.exports = __webpack_require__(150)();
 
 
 // module
-exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n.app_container {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-warning {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
+exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n#app {\n  padding-top: 20px;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-info {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
 
 // exports
 
@@ -73107,15 +73221,656 @@ module.exports = g;
 "use strict";
 
 
-__webpack_require__(333);
-//From https://js.pusher.com/3.2/pusher.min.js
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(20);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _App = __webpack_require__(332);
+
+var _App2 = _interopRequireDefault(_App);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 __webpack_require__(334);
 __webpack_require__(335);
-var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(20);
-var App = __webpack_require__(332);
 
-ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
+_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.getElementById('app'));
+
+/***/ }),
+/* 611 */,
+/* 612 */,
+/* 613 */,
+/* 614 */,
+/* 615 */,
+/* 616 */,
+/* 617 */,
+/* 618 */,
+/* 619 */,
+/* 620 */,
+/* 621 */,
+/* 622 */,
+/* 623 */,
+/* 624 */,
+/* 625 */,
+/* 626 */,
+/* 627 */,
+/* 628 */,
+/* 629 */,
+/* 630 */,
+/* 631 */,
+/* 632 */,
+/* 633 */,
+/* 634 */,
+/* 635 */,
+/* 636 */,
+/* 637 */,
+/* 638 */,
+/* 639 */,
+/* 640 */,
+/* 641 */,
+/* 642 */,
+/* 643 */,
+/* 644 */,
+/* 645 */,
+/* 646 */,
+/* 647 */,
+/* 648 */,
+/* 649 */,
+/* 650 */,
+/* 651 */,
+/* 652 */,
+/* 653 */,
+/* 654 */,
+/* 655 */,
+/* 656 */,
+/* 657 */,
+/* 658 */,
+/* 659 */,
+/* 660 */,
+/* 661 */,
+/* 662 */,
+/* 663 */,
+/* 664 */,
+/* 665 */,
+/* 666 */,
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */,
+/* 671 */,
+/* 672 */,
+/* 673 */,
+/* 674 */,
+/* 675 */,
+/* 676 */,
+/* 677 */,
+/* 678 */,
+/* 679 */,
+/* 680 */,
+/* 681 */,
+/* 682 */,
+/* 683 */,
+/* 684 */,
+/* 685 */,
+/* 686 */,
+/* 687 */,
+/* 688 */,
+/* 689 */,
+/* 690 */,
+/* 691 */,
+/* 692 */,
+/* 693 */,
+/* 694 */,
+/* 695 */,
+/* 696 */,
+/* 697 */,
+/* 698 */,
+/* 699 */,
+/* 700 */,
+/* 701 */,
+/* 702 */,
+/* 703 */,
+/* 704 */,
+/* 705 */,
+/* 706 */,
+/* 707 */,
+/* 708 */,
+/* 709 */,
+/* 710 */,
+/* 711 */,
+/* 712 */,
+/* 713 */,
+/* 714 */,
+/* 715 */,
+/* 716 */,
+/* 717 */,
+/* 718 */,
+/* 719 */,
+/* 720 */,
+/* 721 */,
+/* 722 */,
+/* 723 */,
+/* 724 */,
+/* 725 */,
+/* 726 */,
+/* 727 */,
+/* 728 */,
+/* 729 */,
+/* 730 */,
+/* 731 */,
+/* 732 */,
+/* 733 */,
+/* 734 */,
+/* 735 */,
+/* 736 */,
+/* 737 */,
+/* 738 */,
+/* 739 */,
+/* 740 */,
+/* 741 */,
+/* 742 */,
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */,
+/* 749 */,
+/* 750 */,
+/* 751 */,
+/* 752 */,
+/* 753 */,
+/* 754 */,
+/* 755 */,
+/* 756 */,
+/* 757 */,
+/* 758 */,
+/* 759 */,
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */,
+/* 767 */,
+/* 768 */,
+/* 769 */,
+/* 770 */,
+/* 771 */,
+/* 772 */,
+/* 773 */,
+/* 774 */,
+/* 775 */,
+/* 776 */,
+/* 777 */,
+/* 778 */,
+/* 779 */,
+/* 780 */,
+/* 781 */,
+/* 782 */,
+/* 783 */,
+/* 784 */,
+/* 785 */,
+/* 786 */,
+/* 787 */,
+/* 788 */,
+/* 789 */,
+/* 790 */,
+/* 791 */,
+/* 792 */,
+/* 793 */,
+/* 794 */,
+/* 795 */,
+/* 796 */,
+/* 797 */,
+/* 798 */,
+/* 799 */,
+/* 800 */,
+/* 801 */,
+/* 802 */,
+/* 803 */,
+/* 804 */,
+/* 805 */,
+/* 806 */,
+/* 807 */,
+/* 808 */,
+/* 809 */,
+/* 810 */,
+/* 811 */,
+/* 812 */,
+/* 813 */,
+/* 814 */,
+/* 815 */,
+/* 816 */,
+/* 817 */,
+/* 818 */,
+/* 819 */,
+/* 820 */,
+/* 821 */,
+/* 822 */,
+/* 823 */,
+/* 824 */,
+/* 825 */,
+/* 826 */,
+/* 827 */,
+/* 828 */,
+/* 829 */,
+/* 830 */,
+/* 831 */,
+/* 832 */,
+/* 833 */,
+/* 834 */,
+/* 835 */,
+/* 836 */,
+/* 837 */,
+/* 838 */,
+/* 839 */,
+/* 840 */,
+/* 841 */,
+/* 842 */,
+/* 843 */,
+/* 844 */,
+/* 845 */,
+/* 846 */,
+/* 847 */,
+/* 848 */,
+/* 849 */,
+/* 850 */,
+/* 851 */,
+/* 852 */,
+/* 853 */,
+/* 854 */,
+/* 855 */,
+/* 856 */,
+/* 857 */,
+/* 858 */,
+/* 859 */,
+/* 860 */,
+/* 861 */,
+/* 862 */,
+/* 863 */,
+/* 864 */,
+/* 865 */,
+/* 866 */,
+/* 867 */,
+/* 868 */,
+/* 869 */,
+/* 870 */,
+/* 871 */,
+/* 872 */,
+/* 873 */,
+/* 874 */,
+/* 875 */,
+/* 876 */,
+/* 877 */,
+/* 878 */,
+/* 879 */,
+/* 880 */,
+/* 881 */,
+/* 882 */,
+/* 883 */,
+/* 884 */,
+/* 885 */,
+/* 886 */,
+/* 887 */,
+/* 888 */,
+/* 889 */,
+/* 890 */,
+/* 891 */,
+/* 892 */,
+/* 893 */,
+/* 894 */,
+/* 895 */,
+/* 896 */,
+/* 897 */,
+/* 898 */,
+/* 899 */,
+/* 900 */,
+/* 901 */,
+/* 902 */,
+/* 903 */,
+/* 904 */,
+/* 905 */,
+/* 906 */,
+/* 907 */,
+/* 908 */,
+/* 909 */,
+/* 910 */,
+/* 911 */,
+/* 912 */,
+/* 913 */,
+/* 914 */,
+/* 915 */,
+/* 916 */,
+/* 917 */,
+/* 918 */,
+/* 919 */,
+/* 920 */,
+/* 921 */,
+/* 922 */,
+/* 923 */,
+/* 924 */,
+/* 925 */,
+/* 926 */,
+/* 927 */,
+/* 928 */,
+/* 929 */,
+/* 930 */,
+/* 931 */,
+/* 932 */,
+/* 933 */,
+/* 934 */,
+/* 935 */,
+/* 936 */,
+/* 937 */,
+/* 938 */,
+/* 939 */,
+/* 940 */,
+/* 941 */,
+/* 942 */,
+/* 943 */,
+/* 944 */,
+/* 945 */,
+/* 946 */,
+/* 947 */,
+/* 948 */,
+/* 949 */,
+/* 950 */,
+/* 951 */,
+/* 952 */,
+/* 953 */,
+/* 954 */,
+/* 955 */,
+/* 956 */,
+/* 957 */,
+/* 958 */,
+/* 959 */,
+/* 960 */,
+/* 961 */,
+/* 962 */,
+/* 963 */,
+/* 964 */,
+/* 965 */,
+/* 966 */,
+/* 967 */,
+/* 968 */,
+/* 969 */,
+/* 970 */,
+/* 971 */,
+/* 972 */,
+/* 973 */,
+/* 974 */,
+/* 975 */,
+/* 976 */,
+/* 977 */,
+/* 978 */,
+/* 979 */,
+/* 980 */,
+/* 981 */,
+/* 982 */,
+/* 983 */,
+/* 984 */,
+/* 985 */,
+/* 986 */,
+/* 987 */,
+/* 988 */,
+/* 989 */,
+/* 990 */,
+/* 991 */,
+/* 992 */,
+/* 993 */,
+/* 994 */,
+/* 995 */,
+/* 996 */,
+/* 997 */,
+/* 998 */,
+/* 999 */,
+/* 1000 */,
+/* 1001 */,
+/* 1002 */,
+/* 1003 */,
+/* 1004 */,
+/* 1005 */,
+/* 1006 */,
+/* 1007 */,
+/* 1008 */,
+/* 1009 */,
+/* 1010 */,
+/* 1011 */,
+/* 1012 */,
+/* 1013 */,
+/* 1014 */,
+/* 1015 */,
+/* 1016 */,
+/* 1017 */,
+/* 1018 */,
+/* 1019 */,
+/* 1020 */,
+/* 1021 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _store = __webpack_require__(596);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _Post = __webpack_require__(336);
+
+var _Post2 = _interopRequireDefault(_Post);
+
+var _reactBootstrap = __webpack_require__(62);
+
+var _reactFontawesome = __webpack_require__(77);
+
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
+
+var _ScrollButton = __webpack_require__(1023);
+
+var _ScrollButton2 = _interopRequireDefault(_ScrollButton);
+
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _reactScroll = __webpack_require__(129);
+
+var _reactScroll2 = _interopRequireDefault(_reactScroll);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var scroll = _reactScroll2.default.animateScroll;
+var notification = new Audio('notification.mp3');
+
+var PostContainer = function (_React$Component) {
+  _inherits(PostContainer, _React$Component);
+
+  function PostContainer() {
+    _classCallCheck(this, PostContainer);
+
+    //Display on/off icon in sound button with corresponding boolean value
+    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this));
+
+    _this.state = {
+      soundButton: _store2.default.get('sound').setting,
+      alertVisible: true
+    };
+
+    _this.setSound = _this.setSound.bind(_this);
+    _this.handleAlertDismiss = _this.handleAlertDismiss.bind(_this);
+    return _this;
+  }
+
+  _createClass(PostContainer, [{
+    key: 'render',
+    value: function render() {
+      var postsArray = this.props.posts;
+      var verNumber = 0;
+
+      //Create list of individual Post components from array data
+      var postsMapped = postsArray.map(function (post, index) {
+        //Increment version number if post isn't a discussion thread or context post
+        if (post.content !== 'general_comment' && post.content !== '') {
+          verNumber++;
+        }
+
+        return _react2.default.createElement(_Post2.default, { post: post, key: index, version: verNumber, yourUsername: this.props.username });
+      }.bind(this));
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          _reactBootstrap.Jumbotron,
+          null,
+          _react2.default.createElement(
+            'h2',
+            null,
+            'Collabo',
+            _react2.default.createElement(
+              'span',
+              { className: 'green' },
+              'write'
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: 'info', className: 'sound', onClick: this.setSound },
+              _react2.default.createElement(_reactFontawesome2.default, { name: this.state.soundButton ? "volume-up" : "volume-off" })
+            )
+          )
+        ),
+        _react2.default.createElement(_ScrollButton2.default, { postsArray: postsArray, bsStyle: 'success', handleClick: this.scrollDown, FAname: 'angle-down', buttonText: 'Scroll down to the latest post' }),
+        _react2.default.createElement(
+          _reactAddonsCssTransitionGroup2.default,
+          { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          this.state.alertVisible ? _react2.default.createElement(
+            _reactBootstrap.Alert,
+            { bsStyle: 'info', onDismiss: this.handleAlertDismiss },
+            _react2.default.createElement(
+              'b',
+              null,
+              _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
+              ' Tip: If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
+            )
+          ) : true
+        ),
+        _react2.default.createElement(
+          _reactAddonsCssTransitionGroup2.default,
+          { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
+          postsMapped
+        ),
+        _react2.default.createElement(_ScrollButton2.default, { postsArray: postsArray, bsStyle: 'info', handleClick: this.scrollUp, FAname: 'angle-up', buttonText: 'Scroll up to the original post' })
+      );
+    }
+  }, {
+    key: 'setSound',
+    value: function setSound() {
+      var soundOn = function (boolean) {
+        //Change displayed sound button icon by updating state
+        this.setState({ soundButton: boolean });
+
+        //Update local storage sound setting
+        _store2.default.set('sound', { setting: boolean });
+
+        //Pass up sound setting to App parent component
+        this.props.setSound(boolean);
+
+        //Play sound setting to confirm when switched on
+        if (boolean === true) {
+          notification.play();
+        }
+      }.bind(this);
+
+      //Ternary operator to swith sound settings on and off
+      this.state.soundButton ? soundOn(false) : soundOn(true);
+    }
+  }, {
+    key: 'scrollDown',
+    value: function scrollDown() {
+      scroll.scrollToBottom();
+    }
+  }, {
+    key: 'scrollUp',
+    value: function scrollUp() {
+      scroll.scrollToTop();
+    }
+  }, {
+    key: 'handleAlertDismiss',
+    value: function handleAlertDismiss() {
+      this.setState({ alertVisible: false });
+    }
+  }]);
+
+  return PostContainer;
+}(_react2.default.Component);
+
+exports.default = PostContainer;
+
+/***/ }),
+/* 1022 */,
+/* 1023 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ScrollButton;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactFontawesome = __webpack_require__(77);
+
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
+
+var _reactBootstrap = __webpack_require__(62);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ScrollButton(props) {
+  if (props.postsArray.length > 3) {
+    return _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        _reactBootstrap.Button,
+        { block: true, bsStyle: props.bsStyle, bsSize: 'large', onClick: props.handleClick },
+        _react2.default.createElement(_reactFontawesome2.default, { name: props.FAname }),
+        ' ',
+        props.buttonText
+      ),
+      _react2.default.createElement('br', null)
+    );
+  } else {
+    return null;
+  }
+}
 
 /***/ })
 /******/ ]);
