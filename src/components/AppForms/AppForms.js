@@ -1,16 +1,16 @@
 import React from 'react';
 import SigninForm from '../SigninForm/SigninForm';
-import PostForm from '../PostForm/PostForm';
+import ThreadForm from '../ThreadForm/ThreadForm';
 import $ from 'jquery';
 
-class UserForms extends React.Component {
+class AppForms extends React.Component {
   constructor() {
     super();
     
     this.state = {
       accessCode: '',
       username: '',
-      showInputForm: false,
+      showThreadForm: false,
       showSigninForm: true,      
     };
     
@@ -22,7 +22,7 @@ class UserForms extends React.Component {
     return (
       <div>
         {this.state.showSigninForm ? <SigninForm onStart={this.onStart} onSignin={this.onSignin} /> : true }
-        {this.state.showInputForm ? <PostForm accessCode={this.state.accessCode} username={this.state.username} /> : null }
+        {this.state.showThreadForm ? <ThreadForm accessCode={this.state.accessCode} username={this.state.username} /> : null }
       </div>
     );
   }
@@ -31,7 +31,7 @@ class UserForms extends React.Component {
     this.setState({
       accessCode: accessCode,
       username: username,
-      showInputForm: true,
+      showThreadForm: true,
       showSigninForm: false
     });
     
@@ -42,7 +42,7 @@ class UserForms extends React.Component {
     this.setState({
       accessCode: accessCode,
       username: username,
-      showInputForm: true,
+      showThreadForm: true,
       showSigninForm: false
     });
     
@@ -54,4 +54,4 @@ class UserForms extends React.Component {
   }
 }
 
-module.exports = UserForms;
+export default AppForms;

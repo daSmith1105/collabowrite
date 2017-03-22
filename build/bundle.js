@@ -44948,15 +44948,11 @@ var _PostContainer = __webpack_require__(1021);
 
 var _PostContainer2 = _interopRequireDefault(_PostContainer);
 
-var _UserForms = __webpack_require__(341);
+var _AppForms = __webpack_require__(1069);
 
-var _UserForms2 = _interopRequireDefault(_UserForms);
+var _AppForms2 = _interopRequireDefault(_AppForms);
 
 var _reactBootstrap = __webpack_require__(62);
-
-var _jquery = __webpack_require__(60);
-
-var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45029,7 +45025,7 @@ var App = function (_React$Component) {
           { transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
           this.state.showPosts ? _react2.default.createElement(_PostContainer2.default, { posts: this.state.posts, matchCode: this.state.matchCode, username: this.state.username, setSound: this.setSound }) : null
         ),
-        _react2.default.createElement(_UserForms2.default, { showPosts: this.showPosts, getSigninVars: this.getSigninVars }),
+        _react2.default.createElement(_AppForms2.default, { showPosts: this.showPosts, getSigninVars: this.getSigninVars }),
         _react2.default.createElement(
           'div',
           { className: 'rights' },
@@ -45077,9 +45073,9 @@ var App = function (_React$Component) {
 
           //Temporarily higlight comment by toggling CSS class
           setTimeout(function () {
-            (0, _jquery2.default)(".newComment").toggleClass("highlight");
+            document.querySelector('p.newComment').classList.toggle("highlight");
             setTimeout(function () {
-              (0, _jquery2.default)(".newComment").toggleClass("highlight");
+              document.querySelector('p.newComment').classList.toggle("highlight");
               setTimeout(function () {
                 newArray[i].updated = false;
                 this.setState({
@@ -46879,675 +46875,15 @@ if(false) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _moment = __webpack_require__(1);
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _jsdiff = __webpack_require__(337);
-
-var _jsdiff2 = _interopRequireDefault(_jsdiff);
-
-var _reactBootstrap = __webpack_require__(62);
-
-var _ConfirmMessage = __webpack_require__(1025);
-
-var _ConfirmMessage2 = _interopRequireDefault(_ConfirmMessage);
-
-var _reactFontawesome = __webpack_require__(77);
-
-var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
-
-var _reactAddonsCssTransitionGroup = __webpack_require__(69);
-
-var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
-
-var _jquery = __webpack_require__(60);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _reactScroll = __webpack_require__(129);
-
-var _reactScroll2 = _interopRequireDefault(_reactScroll);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var scroll = _reactScroll2.default.animateScroll;
-
-var Post = function (_React$Component) {
-  _inherits(Post, _React$Component);
-
-  function Post() {
-    _classCallCheck(this, Post);
-
-    var _this = _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).call(this));
-
-    _this.state = {
-      alertVisible: true,
-      showChangesCommand: false,
-      showChanges: true,
-      showReviseForm: false,
-      showCommentForm: false,
-      showWriteButton: true,
-      showModal: false
-    };
-
-    _this.showChanges = _this.showChanges.bind(_this);
-    _this.hideChanges = _this.hideChanges.bind(_this);
-    _this.showReviseForm = _this.showReviseForm.bind(_this);
-    _this.showCommentForm = _this.showCommentForm.bind(_this);
-    _this.addRevision = _this.addRevision.bind(_this);
-    _this.addComment = _this.addComment.bind(_this);
-    _this.goBack = _this.goBack.bind(_this);
-    _this.closeForm = _this.closeForm.bind(_this);
-    _this.closeConfirm = _this.closeConfirm.bind(_this);
-    return _this;
-  }
-
-  _createClass(Post, [{
-    key: 'render',
-    value: function render() {
-      //Time variables
-      var now = (0, _moment2.default)();
-      var postInsertedAt = (0, _moment2.default)(this.props.post.insertedAt);
-      var timeStamp = '';
-
-      //Create post time stamp and bold if within the hour
-      if (postInsertedAt.add(60, 'minutes').isBefore(now)) {
-        timeStamp = postInsertedAt.fromNow();
-      } else {
-        timeStamp = '<b>' + postInsertedAt.fromNow() + '</b>';
-        if (timeStamp === '<b>in a few seconds</b>') {
-          timeStamp === '<b>a few seconds ago</b>';
-        }
-      }
-
-      //Post variables
-      var username = this.props.post.username;
-      var content = this.props.post.content;
-      var contentInQuotes = '"' + content + '"';
-      var prevContent = this.props.post.prevContent;
-      var changes = '"' + (0, _jsdiff2.default)(prevContent, content).trim() + '"';
-      var editedFrom = this.props.post.editedFrom;
-      var version = this.props.version;
-
-      //Comment-specific variables
-      var commentsArray = this.props.post.comments;
-      var commentsHTML = '';
-      var stringifyComments = function stringifyComments(pClass, index, openBold, closeBold) {
-        return commentsHTML += pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: ' + commentsArray[index].comment + '<span class="comment_timestamp">' + openBold + (0, _moment2.default)(commentsArray[index].insertedAt).fromNow() + closeBold + '</span></p>';
-      };
-
-      //Generate HTML from comments array
-      for (var i = 0; i < commentsArray.length - 1; i++) {
-        if ((0, _moment2.default)(commentsArray[i].insertedAt).add(60, 'minutes').isBefore(now)) {
-          stringifyComments('<p>', i, '', '');
-        } else {
-          stringifyComments('<p>', i, '<b class="newComment_time">', '</b>');
-        }
-      }
-
-      //Generate HTML for most recent or newly added comments
-      if (this.props.post.updated) {
-        //Add p class for css highlighting function
-        stringifyComments('<p class="newComment">', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
-      } else {
-        if ((0, _moment2.default)(commentsArray[commentsArray.length - 1].insertedAt).add(60, 'minutes').isBefore(now)) {
-          stringifyComments('<p>', commentsArray.length - 1, '', '');
-        } else {
-          stringifyComments('<p>', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
-        }
-      }
-
-      //Post componenet elements
-      var postTitle = null;
-
-      //Generate post title
-      function setPostTitle(bsStyle, labelText, postInfo) {
-        return _react2.default.createElement(
-          'div',
-          { className: 'post_title' },
-          _react2.default.createElement(
-            _reactBootstrap.Label,
-            { bsStyle: bsStyle, className: 'title_header' },
-            labelText
-          ),
-          _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: postInfo } })
-        );
-      }
-
-      //Generate post type
-      var renderPostType = function (bsStyle, changesCommand, commentsHeader, postFunctions) {
-        return _react2.default.createElement(
-          'li',
-          { className: 'postitem' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            { header: postTitle, bsStyle: bsStyle },
-            _react2.default.createElement(
-              _reactBootstrap.ListGroup,
-              { fill: true },
-              changesCommand,
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                null,
-                commentsHeader,
-                _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
-              )
-            ),
-            postFunctions
-          ),
-          _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm })
-        );
-      }.bind(this);
-
-      //Content element
-      var postContent = _react2.default.createElement(
-        _reactBootstrap.ListGroupItem,
-        null,
-        _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
-      );
-
-      //Elements for showing/hiding changes from previous version    
-      var changesFromPrev = _react2.default.createElement(
-        _reactBootstrap.ListGroupItem,
-        null,
-        this.state.showChangesCommand ? _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            'a',
-            { href: '#', onClick: this.showChanges },
-            _react2.default.createElement(
-              'div',
-              { className: 'changes_command' },
-              '+ Show changes made from ',
-              _react2.default.createElement(
-                _reactBootstrap.Label,
-                { bsStyle: 'default', className: 'change_version' },
-                'VERSION ',
-                editedFrom
-              )
-            )
-          ),
-          _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: contentInQuotes } })
-        ) : false,
-        this.state.showChanges ? _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            'a',
-            { href: '#', onClick: this.hideChanges },
-            _react2.default.createElement(
-              'div',
-              { className: 'changes_command', onClick: this.hideChanges },
-              '- Hide changes from ',
-              _react2.default.createElement(
-                _reactBootstrap.Label,
-                { bsStyle: 'default', className: 'change_version' },
-                'VERSION ',
-                editedFrom
-              )
-            )
-          ),
-          _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: changes } })
-        ) : true
-      );
-
-      //Header to separate comments from content
-      var commentsHeaderHTML = _react2.default.createElement(
-        'div',
-        { className: 'comments_header' },
-        _react2.default.createElement(
-          'b',
-          null,
-          _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
-          ' Comments'
-        ),
-        ' -'
-      );
-
-      //Elements for comment and post functions
-      var commentAndPost = _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          _reactBootstrap.ButtonGroup,
-          { justified: true },
-          _react2.default.createElement(
-            _reactBootstrap.ButtonGroup,
-            null,
-            _react2.default.createElement(
-              _reactBootstrap.Button,
-              { bsStyle: 'success', onClick: this.showCommentForm },
-              _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
-              ' Comment'
-            )
-          ),
-          _react2.default.createElement(
-            _reactBootstrap.ButtonGroup,
-            null,
-            _react2.default.createElement(
-              _reactBootstrap.Button,
-              { bsStyle: 'info', onClick: this.showReviseForm },
-              _react2.default.createElement(_reactFontawesome2.default, { name: 'font' }),
-              ' Write'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          _reactAddonsCssTransitionGroup2.default,
-          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-          this.state.showReviseForm ? _react2.default.createElement(
-            'form',
-            { onSubmit: this.addRevision },
-            _react2.default.createElement('br', null),
-            _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest your version for the project writing.' }),
-            _react2.default.createElement('br', null),
-            _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Comment on your writing above.' }),
-            _react2.default.createElement('br', null),
-            _react2.default.createElement(
-              _reactBootstrap.Button,
-              { block: true, type: 'submit', bsStyle: 'info' },
-              'Post your writing'
-            )
-          ) : false,
-          this.state.showCommentForm ? _react2.default.createElement(
-            'form',
-            { onSubmit: this.addComment },
-            _react2.default.createElement('br', null),
-            _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the post above.' }),
-            _react2.default.createElement('br', null),
-            _react2.default.createElement(
-              _reactBootstrap.Button,
-              { block: true, type: 'submit', bsStyle: 'success' },
-              'Post comment'
-            )
-          ) : false
-        )
-      );
-
-      //Elements for comment only function for discussion thread
-      var onlyComment = _react2.default.createElement(
-        'form',
-        { onSubmit: this.addComment },
-        _react2.default.createElement(
-          _reactBootstrap.FormGroup,
-          { className: 'button_combined' },
-          _react2.default.createElement(
-            _reactBootstrap.InputGroup,
-            null,
-            _react2.default.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
-            _react2.default.createElement(
-              _reactBootstrap.InputGroup.Button,
-              null,
-              _react2.default.createElement(
-                _reactBootstrap.Button,
-                { type: 'submit' },
-                _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' })
-              )
-            )
-          )
-        )
-      );
-
-      //Render different post types
-      if (content === '') {
-        //Context post
-        postTitle = setPostTitle("warning", "CONTEXT", 'Provided by <span class="displayed_username">' + username + '</span> ' + timeStamp);
-        return renderPostType("warning", '', '', commentAndPost);
-      } else if (version === 1 || editedFrom === 0 && content !== '' && content !== 'general_comment') {
-        //Originals
-        postTitle = setPostTitle("info", "VERSION " + version + " - ORIGINAL", 'Suggested by <span class="displayed_username">' + username + '</span> ' + timeStamp);
-        return renderPostType("info", postContent, commentsHeaderHTML, commentAndPost);
-      } else if (editedFrom !== 0) {
-        //Revisions
-        postTitle = setPostTitle("success", "VERSION " + version + " - REVISION", 'Revised from <b>Version ' + editedFrom + '</b> by <span class="displayed_username">' + username + '</span>' + ' ' + timeStamp);
-        return renderPostType("success", changesFromPrev, commentsHeaderHTML, commentAndPost);
-      } else if (content === "general_comment") {
-        //Discussion threads
-        postTitle = setPostTitle("default", "ANNOUNCEMENT / DISCUSSION", 'Initiated by <span class="displayed_username">' + username + '</span> ' + timeStamp);
-        return renderPostType("default", '', '', onlyComment);
-      }
-    }
-  }, {
-    key: 'showChanges',
-    value: function showChanges(e) {
-      e.preventDefault();
-
-      this.setState({
-        showChangesCommand: false,
-        showChanges: true
-      });
-    }
-  }, {
-    key: 'hideChanges',
-    value: function hideChanges(e) {
-      e.preventDefault();
-
-      this.setState({
-        showChangesCommand: true,
-        showChanges: false
-      });
-    }
-  }, {
-    key: 'showReviseForm',
-    value: function showReviseForm() {
-      if (this.state.showReviseForm == false) {
-        this.setState({
-          showReviseForm: true,
-          showCommentForm: false
-        }, function () {
-          this.refs.revisionContent.value = this.props.post.content;
-        });
-      } else {
-        if (this.refs.revisionContent.value !== this.props.post.content) {
-          this.setState({ showModal: true });
-        } else {
-          this.setState({
-            showReviseForm: false
-          });
-        }
-      }
-    }
-  }, {
-    key: 'showCommentForm',
-    value: function showCommentForm() {
-      if (this.state.showCommentForm == false) {
-        this.setState({
-          showCommentForm: true,
-          showReviseForm: false
-        });
-      } else {
-        if (this.refs.commentOnly.value !== '') {
-          this.setState({ showModal: true });
-        } else {
-          this.setState({
-            showCommentForm: false
-          });
-        }
-      }
-    }
-  }, {
-    key: 'addRevision',
-    value: function addRevision(e) {
-      e.preventDefault();
-
-      var data = {
-        accessCode: this.props.post.accessCode,
-        username: this.props.yourUsername,
-        content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
-        prevContent: this.props.post.content,
-        editedFrom: this.props.version,
-        comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
-      };
-
-      _jquery2.default.ajax('/api/post', {
-        type: 'POST',
-        data: JSON.stringify(data),
-        datatype: 'json',
-        contentType: 'application/json'
-      }).done(function () {
-        scroll.scrollToBottom();
-      });
-
-      this.setState({
-        showReviseForm: false,
-        showCommentForm: false
-      });
-    }
-  }, {
-    key: 'addComment',
-    value: function addComment(e) {
-      e.preventDefault();
-
-      var _id = this.props.post._id;
-
-      var data = {
-        username: this.props.yourUsername,
-        comment: this.refs.commentOnly.value
-      };
-
-      _jquery2.default.ajax('/api/post/' + _id + '/comment', {
-        type: 'POST',
-        data: JSON.stringify(data),
-        datatype: 'json',
-        contentType: 'application/json'
-      });
-
-      this.setState({
-        showReviseForm: false,
-        showCommentForm: false
-      });
-    }
-  }, {
-    key: 'goBack',
-    value: function goBack(e) {
-      e.preventDefault();
-
-      this.setState({
-        showReviseForm: false,
-        showCommentForm: false
-      });
-    }
-  }, {
-    key: 'closeForm',
-    value: function closeForm() {
-      this.setState({
-        showReviseForm: false,
-        showCommentForm: false,
-        showModal: false
-      });
-    }
-  }, {
-    key: 'closeConfirm',
-    value: function closeConfirm() {
-      this.setState({ showModal: false });
-    }
-  }]);
-
-  return Post;
-}(_react2.default.Component);
-
-if ((0, _jquery2.default)(window).width() > 767) {
-  //Enlarge post or comment text when clicked
-  (0, _jquery2.default)('body').on('click', '.writing, p', function () {
-    (0, _jquery2.default)(this).toggleClass('large_text');
-  });
-}
-
 exports.default = Post;
 
-/***/ }),
-/* 337 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/*
- * Javascript Diff Algorithm
- *  By John Resig (http://ejohn.org/)
- *  Modified by Chu Alan "sprite"
- *
- * Released under the MIT license.
- *
- * More Info:
- *  http://ejohn.org/projects/javascript-diff-algorithm/
- */
-
-function escape(s) {
-  var n = s;
-  n = n.replace(/&/g, "&amp;");
-  n = n.replace(/</g, "&lt;");
-  n = n.replace(/>/g, "&gt;");
-  n = n.replace(/"/g, "&quot;");
-
-  return n;
-}
-
-function diffString(o, n) {
-  o = o.replace(/\s+$/, '');
-  n = n.replace(/\s+$/, '');
-
-  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/));
-  var str = "";
-
-  var oSpace = o.match(/\s+/g);
-  if (oSpace == null) {
-    oSpace = ["\n"];
-  } else {
-    oSpace.push("\n");
-  }
-  var nSpace = n.match(/\s+/g);
-  if (nSpace == null) {
-    nSpace = ["\n"];
-  } else {
-    nSpace.push("\n");
-  }
-
-  if (out.n.length == 0) {
-    for (var i = 0; i < out.o.length; i++) {
-      str += '<del>' + escape(out.o[i]) + oSpace[i] + "</del>";
-    }
-  } else {
-    if (out.n[0].text == null) {
-      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
-        str += '<del>' + escape(out.o[n]) + oSpace[n] + "</del>";
-      }
-    }
-
-    for (var i = 0; i < out.n.length; i++) {
-      if (out.n[i].text == null) {
-        str += '<ins>' + escape(out.n[i]) + nSpace[i] + "</ins>";
-      } else {
-        var pre = "";
-
-        for (n = out.n[i].row + 1; n < out.o.length && out.o[n].text == null; n++) {
-          pre += '<del>' + escape(out.o[n]) + oSpace[n] + "</del>";
-        }
-        str += " " + out.n[i].text + nSpace[i] + pre;
-      }
-    }
-  }
-
-  return str;
-}
-
-function randomColor() {
-  return "rgb(" + Math.random() * 100 + "%, " + Math.random() * 100 + "%, " + Math.random() * 100 + "%)";
-}
-function diffString2(o, n) {
-  o = o.replace(/\s+$/, '');
-  n = n.replace(/\s+$/, '');
-
-  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/));
-
-  var oSpace = o.match(/\s+/g);
-  if (oSpace == null) {
-    oSpace = ["\n"];
-  } else {
-    oSpace.push("\n");
-  }
-  var nSpace = n.match(/\s+/g);
-  if (nSpace == null) {
-    nSpace = ["\n"];
-  } else {
-    nSpace.push("\n");
-  }
-
-  var os = "";
-  var colors = new Array();
-  for (var i = 0; i < out.o.length; i++) {
-    colors[i] = randomColor();
-
-    if (out.o[i].text != null) {
-      os += '<span style="background-color: ' + colors[i] + '">' + escape(out.o[i].text) + oSpace[i] + "</span>";
-    } else {
-      os += "<del>" + escape(out.o[i]) + oSpace[i] + "</del>";
-    }
-  }
-
-  var ns = "";
-  for (var i = 0; i < out.n.length; i++) {
-    if (out.n[i].text != null) {
-      ns += '<span style="background-color: ' + colors[out.n[i].row] + '">' + escape(out.n[i].text) + nSpace[i] + "</span>";
-    } else {
-      ns += "<ins>" + escape(out.n[i]) + nSpace[i] + "</ins>";
-    }
-  }
-
-  return { o: os, n: ns };
-}
-
-function diff(o, n) {
-  var ns = new Object();
-  var os = new Object();
-
-  for (var i = 0; i < n.length; i++) {
-    if (ns[n[i]] == null) ns[n[i]] = { rows: new Array(), o: null };
-    ns[n[i]].rows.push(i);
-  }
-
-  for (var i = 0; i < o.length; i++) {
-    if (os[o[i]] == null) os[o[i]] = { rows: new Array(), n: null };
-    os[o[i]].rows.push(i);
-  }
-
-  for (var i in ns) {
-    if (ns[i].rows.length == 1 && typeof os[i] != "undefined" && os[i].rows.length == 1) {
-      n[ns[i].rows[0]] = { text: n[ns[i].rows[0]], row: os[i].rows[0] };
-      o[os[i].rows[0]] = { text: o[os[i].rows[0]], row: ns[i].rows[0] };
-    }
-  }
-
-  for (var i = 0; i < n.length - 1; i++) {
-    if (n[i].text != null && n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]) {
-      n[i + 1] = { text: n[i + 1], row: n[i].row + 1 };
-      o[n[i].row + 1] = { text: o[n[i].row + 1], row: i + 1 };
-    }
-  }
-
-  for (var i = n.length - 1; i > 0; i--) {
-    if (n[i].text != null && n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]) {
-      n[i - 1] = { text: n[i - 1], row: n[i].row - 1 };
-      o[n[i].row - 1] = { text: o[n[i].row - 1], row: i - 1 };
-    }
-  }
-
-  return { o: o, n: n };
-}
-
-module.exports = diffString;
-
-/***/ }),
-/* 338 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _generateTimeStamp = __webpack_require__(1055);
+
+var _generateTimeStamp2 = _interopRequireDefault(_generateTimeStamp);
 
 var _reactBootstrap = __webpack_require__(62);
 
@@ -47555,155 +46891,79 @@ var _reactFontawesome = __webpack_require__(77);
 
 var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
 
-var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+var _PostHeader = __webpack_require__(1063);
 
-var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+var _PostHeader2 = _interopRequireDefault(_PostHeader);
 
-var _ConfirmMessage = __webpack_require__(1025);
+var _PostBody = __webpack_require__(1064);
 
-var _ConfirmMessage2 = _interopRequireDefault(_ConfirmMessage);
+var _PostBody2 = _interopRequireDefault(_PostBody);
 
-var _jquery = __webpack_require__(60);
+var _Comments = __webpack_require__(1066);
 
-var _jquery2 = _interopRequireDefault(_jquery);
+var _Comments2 = _interopRequireDefault(_Comments);
 
-var _reactScroll = __webpack_require__(129);
+var _PostForms = __webpack_require__(1067);
 
-var _reactScroll2 = _interopRequireDefault(_reactScroll);
+var _PostForms2 = _interopRequireDefault(_PostForms);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+// import $ from 'jquery';
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function Post(props) {
+  var username = props.post.username;
+  var timeStamp = (0, _generateTimeStamp2.default)(props.post.insertedAt);
+  var content = props.post.content;
+  var version = props.version;
+  var editedFrom = props.post.editedFrom;
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  //Panel styling for different types of posts
+  var panelStyle = void 0;
+  if (content === '') {
+    panelStyle = "warning";
+  } //Context posts
+  else if (version === 1 || editedFrom === 0 && content !== '' && content !== 'general_comment') {
+      panelStyle = "info";
+    } //Originals
+    else if (editedFrom !== 0) {
+        panelStyle = "success";
+      } //Revisions
+      else if (content === "general_comment") {
+          panelStyle = "default";
+        } //Discussion threads
 
-var scroll = _reactScroll2.default.animateScroll;
+  return _react2.default.createElement(
+    'li',
+    { className: 'postitem' },
+    _react2.default.createElement(
+      _reactBootstrap.Panel,
+      { bsStyle: panelStyle, header: _react2.default.createElement(_PostHeader2.default, { username: username, timeStamp: timeStamp, content: content, version: version, editedFrom: editedFrom }) },
+      _react2.default.createElement(
+        _reactBootstrap.ListGroup,
+        { fill: true },
+        _react2.default.createElement(_PostBody2.default, { username: username, content: content, version: version, editedFrom: editedFrom, prevContent: props.post.prevContent }),
+        _react2.default.createElement(_Comments2.default, { commentsArray: props.post.comments, updated: props.post.updated, content: content })
+      ),
+      _react2.default.createElement(_PostForms2.default, { content: content, accessCode: props.post.accessCode, yourUsername: props.yourUsername, version: version, _id: props.post._id })
+    )
+  );
+}
 
-var PostForm = function (_React$Component) {
-  _inherits(PostForm, _React$Component);
+if (document.body.clientWidth > 767) {
+  // Enlarge post or comment text when clicked
+  // $(document).on('click', '.writing, p', function() {
+  //   this.classList.toggle('large_text');
+  // });
 
-  function PostForm() {
-    _classCallCheck(this, PostForm);
-
-    var _this = _possibleConstructorReturn(this, (PostForm.__proto__ || Object.getPrototypeOf(PostForm)).call(this));
-
-    _this.state = {
-      showButtons: true,
-      showCommentForm: false,
-      showModal: false
-    };
-
-    _this.showCommentForm = _this.showCommentForm.bind(_this);
-    _this.addComment = _this.addComment.bind(_this);
-    _this.closeForm = _this.closeForm.bind(_this);
-    _this.closeConfirm = _this.closeConfirm.bind(_this);
-    return _this;
-  }
-
-  _createClass(PostForm, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        _reactBootstrap.Well,
-        null,
-        _react2.default.createElement(
-          _reactBootstrap.Button,
-          { block: true, bsSize: 'large', onClick: this.showCommentForm },
-          _react2.default.createElement(
-            'b',
-            null,
-            _react2.default.createElement(_reactFontawesome2.default, { name: 'bullhorn' }),
-            ' Announce / Discuss'
-          )
-        ),
-        _react2.default.createElement(
-          _reactAddonsCssTransitionGroup2.default,
-          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-          this.state.showCommentForm ? _react2.default.createElement(
-            'form',
-            { onSubmit: this.addComment },
-            _react2.default.createElement('br', null),
-            _react2.default.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
-            _react2.default.createElement('br', null),
-            _react2.default.createElement(
-              _reactBootstrap.Button,
-              { block: true, bsStyle: 'success', type: 'submit' },
-              'Begin thread'
-            )
-          ) : false
-        ),
-        _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm })
-      );
-    }
-  }, {
-    key: 'showCommentForm',
-    value: function showCommentForm() {
-      if (this.state.showCommentForm == false) {
-        this.setState({
-          showCommentForm: true
-        }, function () {
-          scroll.scrollToBottom();
-        });
-      } else {
-        if (this.refs.comment.value !== '') {
-          this.setState({ showModal: true });
-        } else {
-          this.setState({
-            showCommentForm: false
-          });
-        }
-      }
-    }
-  }, {
-    key: 'addComment',
-    value: function addComment(e) {
-      e.preventDefault();
-
-      var data = {
-        accessCode: this.props.accessCode,
-        username: this.props.username,
-        content: 'general_comment',
-        prevContent: 'general_comment',
-        editedFrom: 0,
-        comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
-      };
-
-      _jquery2.default.ajax('/api/post', {
-        type: 'POST',
-        data: JSON.stringify(data),
-        datatype: 'json',
-        contentType: 'application/json'
-      });
-
-      this.setState({
-        showCommentForm: false
-      }, function () {
-        scroll.scrollToBottom();
-      });
-    }
-  }, {
-    key: 'closeForm',
-    value: function closeForm() {
-      this.setState({
-        showCommentForm: false,
-        showModal: false
-      });
-    }
-  }, {
-    key: 'closeConfirm',
-    value: function closeConfirm() {
-      this.setState({ showModal: false });
-    }
-  }]);
-
-  return PostForm;
-}(_react2.default.Component);
-
-exports.default = PostForm;
+  // document.querySelectorAll(".writing p").onclick = function(){
+  //   this.classList.toggle('large_text');    
+  // };
+}
 
 /***/ }),
+/* 337 */,
+/* 338 */,
 /* 339 */,
 /* 340 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -48109,104 +47369,7 @@ if ((0, _jquery2.default)(window).width() > 767) {
 exports.default = SigninForm;
 
 /***/ }),
-/* 341 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _SigninForm = __webpack_require__(340);
-
-var _SigninForm2 = _interopRequireDefault(_SigninForm);
-
-var _PostForm = __webpack_require__(338);
-
-var _PostForm2 = _interopRequireDefault(_PostForm);
-
-var _jquery = __webpack_require__(60);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var UserForms = function (_React$Component) {
-  _inherits(UserForms, _React$Component);
-
-  function UserForms() {
-    _classCallCheck(this, UserForms);
-
-    var _this = _possibleConstructorReturn(this, (UserForms.__proto__ || Object.getPrototypeOf(UserForms)).call(this));
-
-    _this.state = {
-      accessCode: '',
-      username: '',
-      showInputForm: false,
-      showSigninForm: true
-    };
-
-    _this.onStart = _this.onStart.bind(_this);
-    _this.onSignin = _this.onSignin.bind(_this);
-    return _this;
-  }
-
-  _createClass(UserForms, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        this.state.showSigninForm ? _react2.default.createElement(_SigninForm2.default, { onStart: this.onStart, onSignin: this.onSignin }) : true,
-        this.state.showInputForm ? _react2.default.createElement(_PostForm2.default, { accessCode: this.state.accessCode, username: this.state.username }) : null
-      );
-    }
-  }, {
-    key: 'onStart',
-    value: function onStart(accessCode, username) {
-      this.setState({
-        accessCode: accessCode,
-        username: username,
-        showInputForm: true,
-        showSigninForm: false
-      });
-
-      this.props.getSigninVars(accessCode, username);
-    }
-  }, {
-    key: 'onSignin',
-    value: function onSignin(accessCode, username) {
-      this.setState({
-        accessCode: accessCode,
-        username: username,
-        showInputForm: true,
-        showSigninForm: false
-      });
-
-      this.props.getSigninVars(accessCode, username);
-
-      _jquery2.default.get('/api/posts/' + accessCode, function (data) {
-        this.props.showPosts(data);
-      }.bind(this));
-    }
-  }]);
-
-  return UserForms;
-}(_react2.default.Component);
-
-module.exports = UserForms;
-
-/***/ }),
+/* 341 */,
 /* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49189,7 +48352,7 @@ exports = module.exports = __webpack_require__(150)();
 
 
 // module
-exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n#app {\n  padding-top: 20px;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n.confirm_info {\n  padding-top: 10px;\n  display: block;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-info {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
+exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n#app {\n  padding-top: 20px;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n    opacity: 1;\n    transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n    opacity: 0.01;\n    transition: opacity 500ms ease-in;\n}\n\ndel {\n    background: #FFE6E6;\n    color: gray;\n    font-size: 80%;\n}\n\nins {\n    background: #E6FFE6;\n    text-decoration: none;\n    font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n    display: inline-block;\n    padding-left: 8px;\n    position: relative;\n    top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.large_text {\n  font-size: 26px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n    padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n  font-size: 16px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n    display: block;\n    width: 100%;\n    height: 34px;\n    padding: 6px 12px;\n    font-size: 14px;\n    line-height: 1.42857143;\n    color: #555;\n    background-color: #fff;\n    background-image: none;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n font-size: 20px; \n position: relative;\n bottom: 1px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n    font-weight: normal;\n    font-size: 14px;\n    line-height: 22px;\n    padding: 0 32px;\n    margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n    font-size: 27px;\n    text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n.confirm_info {\n  padding-top: 10px;\n  display: block;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n      padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-info {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
 
 // exports
 
@@ -73774,16 +72937,12 @@ function ConfirmMessage(props) {
       _react2.default.createElement(
         _reactBootstrap.Modal.Title,
         null,
+        _react2.default.createElement(_reactFontawesome2.default, { name: 'exclamation-triangle' }),
+        ' ',
         _react2.default.createElement(
-          'h3',
+          'b',
           null,
-          _react2.default.createElement(_reactFontawesome2.default, { name: 'exclamation-triangle' }),
-          ' ',
-          _react2.default.createElement(
-            'b',
-            null,
-            'You have unsaved work.'
-          )
+          'You have unsaved work.'
         )
       )
     ),
@@ -73825,6 +72984,2499 @@ function ConfirmMessage(props) {
     )
   );
 }
+
+/***/ }),
+/* 1026 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var bind = __webpack_require__(1032);
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  typeof document.createElement -> undefined
+ */
+function isStandardBrowserEnv() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined' &&
+    typeof document.createElement === 'function'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object' && !isArray(obj)) {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim
+};
+
+
+/***/ }),
+/* 1027 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(1026);
+var normalizeHeaderName = __webpack_require__(1048);
+
+var PROTECTION_PREFIX = /^\)\]\}',?\n/;
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(1028);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(1028);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      data = data.replace(PROTECTION_PREFIX, '');
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMehtodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 1028 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(1026);
+var settle = __webpack_require__(1040);
+var buildURL = __webpack_require__(1043);
+var parseHeaders = __webpack_require__(1049);
+var isURLSameOrigin = __webpack_require__(1047);
+var createError = __webpack_require__(1031);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(1042);
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+    var loadEvent = 'onreadystatechange';
+    var xDomain = false;
+
+    // For IE 8/9 CORS support
+    // Only supports POST and GET calls and doesn't returns the response headers.
+    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+    if (process.env.NODE_ENV !== 'test' &&
+        typeof window !== 'undefined' &&
+        window.XDomainRequest && !('withCredentials' in request) &&
+        !isURLSameOrigin(config.url)) {
+      request = new window.XDomainRequest();
+      loadEvent = 'onload';
+      xDomain = true;
+      request.onprogress = function handleProgress() {};
+      request.ontimeout = function handleTimeout() {};
+    }
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request[loadEvent] = function handleLoad() {
+      if (!request || (request.readyState !== 4 && !xDomain)) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
+        status: request.status === 1223 ? 204 : request.status,
+        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED'));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(1045);
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        if (request.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 1029 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+
+/***/ }),
+/* 1030 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+
+/***/ }),
+/* 1031 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var enhanceError = __webpack_require__(1039);
+
+/**
+ * Create an Error with the specified message, config, error code, and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, response);
+};
+
+
+/***/ }),
+/* 1032 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+/* 1033 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(1034);
+
+/***/ }),
+/* 1034 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+var bind = __webpack_require__(1032);
+var Axios = __webpack_require__(1036);
+var defaults = __webpack_require__(1027);
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(utils.merge(defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = __webpack_require__(1029);
+axios.CancelToken = __webpack_require__(1035);
+axios.isCancel = __webpack_require__(1030);
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = __webpack_require__(1050);
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+
+/***/ }),
+/* 1035 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Cancel = __webpack_require__(1029);
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+
+/***/ }),
+/* 1036 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var defaults = __webpack_require__(1027);
+var utils = __webpack_require__(1026);
+var InterceptorManager = __webpack_require__(1037);
+var dispatchRequest = __webpack_require__(1038);
+var isAbsoluteURL = __webpack_require__(1046);
+var combineURLs = __webpack_require__(1044);
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = utils.merge({
+      url: arguments[0]
+    }, arguments[1]);
+  }
+
+  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+
+  // Support baseURL config
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+
+/***/ }),
+/* 1037 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+
+/***/ }),
+/* 1038 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+var transformData = __webpack_require__(1041);
+var isCancel = __webpack_require__(1030);
+var defaults = __webpack_require__(1027);
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+
+/***/ }),
+/* 1039 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+  error.response = response;
+  return error;
+};
+
+
+/***/ }),
+/* 1040 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var createError = __webpack_require__(1031);
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  // Note: status is not exposed by XDomainRequest
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response
+    ));
+  }
+};
+
+
+/***/ }),
+/* 1041 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+
+/***/ }),
+/* 1042 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
+
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+function E() {
+  this.message = 'String contains an invalid character';
+}
+E.prototype = new Error;
+E.prototype.code = 5;
+E.prototype.name = 'InvalidCharacterError';
+
+function btoa(input) {
+  var str = String(input);
+  var output = '';
+  for (
+    // initialize result and counter
+    var block, charCode, idx = 0, map = chars;
+    // if the next str index does not exist:
+    //   change the mapping table to "="
+    //   check if d has no fractional digits
+    str.charAt(idx | 0) || (map = '=', idx % 1);
+    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
+    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
+  ) {
+    charCode = str.charCodeAt(idx += 3 / 4);
+    if (charCode > 0xFF) {
+      throw new E();
+    }
+    block = block << 8 | charCode;
+  }
+  return output;
+}
+
+module.exports = btoa;
+
+
+/***/ }),
+/* 1043 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%40/gi, '@').
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      }
+
+      if (!utils.isArray(val)) {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+
+/***/ }),
+/* 1044 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '');
+};
+
+
+/***/ }),
+/* 1045 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+  (function standardBrowserEnv() {
+    return {
+      write: function write(name, value, expires, path, domain, secure) {
+        var cookie = [];
+        cookie.push(name + '=' + encodeURIComponent(value));
+
+        if (utils.isNumber(expires)) {
+          cookie.push('expires=' + new Date(expires).toGMTString());
+        }
+
+        if (utils.isString(path)) {
+          cookie.push('path=' + path);
+        }
+
+        if (utils.isString(domain)) {
+          cookie.push('domain=' + domain);
+        }
+
+        if (secure === true) {
+          cookie.push('secure');
+        }
+
+        document.cookie = cookie.join('; ');
+      },
+
+      read: function read(name) {
+        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+        return (match ? decodeURIComponent(match[3]) : null);
+      },
+
+      remove: function remove(name) {
+        this.write(name, '', Date.now() - 86400000);
+      }
+    };
+  })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return {
+      write: function write() {},
+      read: function read() { return null; },
+      remove: function remove() {}
+    };
+  })()
+);
+
+
+/***/ }),
+/* 1046 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+/* 1047 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+  (function standardBrowserEnv() {
+    var msie = /(msie|trident)/i.test(navigator.userAgent);
+    var urlParsingNode = document.createElement('a');
+    var originURL;
+
+    /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+    function resolveURL(url) {
+      var href = url;
+
+      if (msie) {
+        // IE needs attribute set twice to normalize properties
+        urlParsingNode.setAttribute('href', href);
+        href = urlParsingNode.href;
+      }
+
+      urlParsingNode.setAttribute('href', href);
+
+      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+      return {
+        href: urlParsingNode.href,
+        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+        host: urlParsingNode.host,
+        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+        hostname: urlParsingNode.hostname,
+        port: urlParsingNode.port,
+        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+                  urlParsingNode.pathname :
+                  '/' + urlParsingNode.pathname
+      };
+    }
+
+    originURL = resolveURL(window.location.href);
+
+    /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+    return function isURLSameOrigin(requestURL) {
+      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+      return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+    };
+  })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return function isURLSameOrigin() {
+      return true;
+    };
+  })()
+);
+
+
+/***/ }),
+/* 1048 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+
+/***/ }),
+/* 1049 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(1026);
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+    }
+  });
+
+  return parsed;
+};
+
+
+/***/ }),
+/* 1050 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+
+/***/ }),
+/* 1051 */,
+/* 1052 */,
+/* 1053 */,
+/* 1054 */,
+/* 1055 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = generateTimeStamp;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _moment = __webpack_require__(1);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function generateTimeStamp(postTime) {
+  if ((0, _moment2.default)(postTime).add(60, 'minutes').isBefore((0, _moment2.default)())) {
+    return (0, _moment2.default)(postTime).fromNow();
+  } else {
+    var timeStamp = '<b>' + (0, _moment2.default)(postTime).fromNow() + '</b>';
+    if (timeStamp === '<b>in a few seconds</b>') {
+      timeStamp === '<b>a few seconds ago</b>';
+    }
+    return timeStamp;
+  }
+}
+
+/***/ }),
+/* 1056 */,
+/* 1057 */,
+/* 1058 */,
+/* 1059 */,
+/* 1060 */,
+/* 1061 */,
+/* 1062 */,
+/* 1063 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = PostHeader;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = __webpack_require__(62);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function PostHeader(props) {
+  var bsStyle = void 0,
+      labelText = void 0,
+      postInfo = void 0;
+
+  if (props.content === '') {
+    //Context post
+    bsStyle = "warning";
+    labelText = "CONTEXT";
+    postInfo = 'Provided by <span class="displayed_username">' + props.username + '</span> ' + props.timeStamp;
+  } else if (props.version === 1 || props.editedFrom === 0 && props.content !== 'general_comment') {
+    //Originals
+    bsStyle = "info";
+    labelText = "VERSION " + props.version + " - ORIGINAL";
+    postInfo = 'Suggested by <span class="displayed_username">' + props.username + '</span> ' + props.timeStamp;
+  } else if (props.editedFrom !== 0) {
+    //Revisions
+    bsStyle = "success";
+    labelText = "VERSION " + props.version + " - REVISION";
+    postInfo = 'Revised from <b>Version ' + props.editedFrom + '</b> by <span class="displayed_username">' + props.username + '</span>' + ' ' + props.timeStamp;
+  } else if (props.content === "general_comment") {
+    //Discussion threads
+    bsStyle = "default";
+    labelText = "ANNOUNCEMENT / DISCUSSION";
+    postInfo = 'Initiated by <span class="displayed_username">' + props.username + '</span> ' + props.timeStamp;
+  }
+
+  return _react2.default.createElement(
+    'div',
+    { className: 'post_title' },
+    _react2.default.createElement(
+      _reactBootstrap.Label,
+      { bsStyle: bsStyle, className: 'title_header' },
+      labelText
+    ),
+    _react2.default.createElement('div', { className: 'byline', dangerouslySetInnerHTML: { __html: postInfo } })
+  );
+}
+
+/***/ }),
+/* 1064 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = __webpack_require__(62);
+
+var _jsdiff = __webpack_require__(1065);
+
+var _jsdiff2 = _interopRequireDefault(_jsdiff);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PostBody = function (_React$Component) {
+  _inherits(PostBody, _React$Component);
+
+  function PostBody() {
+    _classCallCheck(this, PostBody);
+
+    var _this = _possibleConstructorReturn(this, (PostBody.__proto__ || Object.getPrototypeOf(PostBody)).call(this));
+
+    _this.state = { showChangesCommand: false, showChanges: true };
+    _this.showChanges = _this.showChanges.bind(_this);
+    _this.hideChanges = _this.hideChanges.bind(_this);
+    return _this;
+  }
+
+  _createClass(PostBody, [{
+    key: 'render',
+    value: function render() {
+      if (this.props.content === '' || this.props.content === "general_comment") {
+        //Context posts or discussion threads
+        return null;
+      } else if (this.props.version === 1 || this.props.editedFrom === 0) {
+        //Originals
+        return _react2.default.createElement(
+          _reactBootstrap.ListGroupItem,
+          null,
+          _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: '"' + this.props.content + '"' } })
+        );
+      } else if (this.props.editedFrom !== 0) {
+        //Revisions
+        return _react2.default.createElement(
+          _reactBootstrap.ListGroupItem,
+          null,
+          this.state.showChangesCommand ? _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#', onClick: this.showChanges },
+              _react2.default.createElement(
+                'div',
+                { className: 'changes_command' },
+                '+ Show changes made from ',
+                _react2.default.createElement(
+                  _reactBootstrap.Label,
+                  { bsStyle: 'default', className: 'change_version' },
+                  'VERSION ',
+                  this.props.editedFrom
+                )
+              )
+            ),
+            _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: this.props.content } })
+          ) : false,
+          this.state.showChanges ? _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#', onClick: this.hideChanges },
+              _react2.default.createElement(
+                'div',
+                { className: 'changes_command' },
+                '- Hide changes from ',
+                _react2.default.createElement(
+                  _reactBootstrap.Label,
+                  { bsStyle: 'default', className: 'change_version' },
+                  'VERSION ',
+                  this.props.editedFrom
+                )
+              )
+            ),
+            _react2.default.createElement('div', { className: 'writing', dangerouslySetInnerHTML: { __html: '"' + (0, _jsdiff2.default)(this.props.prevContent, this.props.content).trim() + '"' } })
+          ) : true
+        );
+      }
+    }
+  }, {
+    key: 'showChanges',
+    value: function showChanges(e) {
+      e.preventDefault();
+      this.setState({ showChangesCommand: false, showChanges: true });
+    }
+  }, {
+    key: 'hideChanges',
+    value: function hideChanges(e) {
+      e.preventDefault();
+      this.setState({ showChangesCommand: true, showChanges: false });
+    }
+  }]);
+
+  return PostBody;
+}(_react2.default.Component);
+
+exports.default = PostBody;
+
+/***/ }),
+/* 1065 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*
+ * Javascript Diff Algorithm
+ *  By John Resig (http://ejohn.org/)
+ *  Modified by Chu Alan "sprite"
+ *
+ * Released under the MIT license.
+ *
+ * More Info:
+ *  http://ejohn.org/projects/javascript-diff-algorithm/
+ */
+
+function escape(s) {
+  var n = s;
+  n = n.replace(/&/g, "&amp;");
+  n = n.replace(/</g, "&lt;");
+  n = n.replace(/>/g, "&gt;");
+  n = n.replace(/"/g, "&quot;");
+
+  return n;
+}
+
+function diffString(o, n) {
+  o = o.replace(/\s+$/, '');
+  n = n.replace(/\s+$/, '');
+
+  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/));
+  var str = "";
+
+  var oSpace = o.match(/\s+/g);
+  if (oSpace == null) {
+    oSpace = ["\n"];
+  } else {
+    oSpace.push("\n");
+  }
+  var nSpace = n.match(/\s+/g);
+  if (nSpace == null) {
+    nSpace = ["\n"];
+  } else {
+    nSpace.push("\n");
+  }
+
+  if (out.n.length == 0) {
+    for (var i = 0; i < out.o.length; i++) {
+      str += '<del>' + escape(out.o[i]) + oSpace[i] + "</del>";
+    }
+  } else {
+    if (out.n[0].text == null) {
+      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
+        str += '<del>' + escape(out.o[n]) + oSpace[n] + "</del>";
+      }
+    }
+
+    for (var i = 0; i < out.n.length; i++) {
+      if (out.n[i].text == null) {
+        str += '<ins>' + escape(out.n[i]) + nSpace[i] + "</ins>";
+      } else {
+        var pre = "";
+
+        for (n = out.n[i].row + 1; n < out.o.length && out.o[n].text == null; n++) {
+          pre += '<del>' + escape(out.o[n]) + oSpace[n] + "</del>";
+        }
+        str += " " + out.n[i].text + nSpace[i] + pre;
+      }
+    }
+  }
+
+  return str;
+}
+
+function randomColor() {
+  return "rgb(" + Math.random() * 100 + "%, " + Math.random() * 100 + "%, " + Math.random() * 100 + "%)";
+}
+function diffString2(o, n) {
+  o = o.replace(/\s+$/, '');
+  n = n.replace(/\s+$/, '');
+
+  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/));
+
+  var oSpace = o.match(/\s+/g);
+  if (oSpace == null) {
+    oSpace = ["\n"];
+  } else {
+    oSpace.push("\n");
+  }
+  var nSpace = n.match(/\s+/g);
+  if (nSpace == null) {
+    nSpace = ["\n"];
+  } else {
+    nSpace.push("\n");
+  }
+
+  var os = "";
+  var colors = new Array();
+  for (var i = 0; i < out.o.length; i++) {
+    colors[i] = randomColor();
+
+    if (out.o[i].text != null) {
+      os += '<span style="background-color: ' + colors[i] + '">' + escape(out.o[i].text) + oSpace[i] + "</span>";
+    } else {
+      os += "<del>" + escape(out.o[i]) + oSpace[i] + "</del>";
+    }
+  }
+
+  var ns = "";
+  for (var i = 0; i < out.n.length; i++) {
+    if (out.n[i].text != null) {
+      ns += '<span style="background-color: ' + colors[out.n[i].row] + '">' + escape(out.n[i].text) + nSpace[i] + "</span>";
+    } else {
+      ns += "<ins>" + escape(out.n[i]) + nSpace[i] + "</ins>";
+    }
+  }
+
+  return { o: os, n: ns };
+}
+
+function diff(o, n) {
+  var ns = new Object();
+  var os = new Object();
+
+  for (var i = 0; i < n.length; i++) {
+    if (ns[n[i]] == null) ns[n[i]] = { rows: new Array(), o: null };
+    ns[n[i]].rows.push(i);
+  }
+
+  for (var i = 0; i < o.length; i++) {
+    if (os[o[i]] == null) os[o[i]] = { rows: new Array(), n: null };
+    os[o[i]].rows.push(i);
+  }
+
+  for (var i in ns) {
+    if (ns[i].rows.length == 1 && typeof os[i] != "undefined" && os[i].rows.length == 1) {
+      n[ns[i].rows[0]] = { text: n[ns[i].rows[0]], row: os[i].rows[0] };
+      o[os[i].rows[0]] = { text: o[os[i].rows[0]], row: ns[i].rows[0] };
+    }
+  }
+
+  for (var i = 0; i < n.length - 1; i++) {
+    if (n[i].text != null && n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]) {
+      n[i + 1] = { text: n[i + 1], row: n[i].row + 1 };
+      o[n[i].row + 1] = { text: o[n[i].row + 1], row: i + 1 };
+    }
+  }
+
+  for (var i = n.length - 1; i > 0; i--) {
+    if (n[i].text != null && n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]) {
+      n[i - 1] = { text: n[i - 1], row: n[i].row - 1 };
+      o[n[i].row - 1] = { text: o[n[i].row - 1], row: i - 1 };
+    }
+  }
+
+  return { o: o, n: n };
+}
+
+module.exports = diffString;
+
+/***/ }),
+/* 1066 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = Comments;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _moment = __webpack_require__(1);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _reactBootstrap = __webpack_require__(62);
+
+var _reactFontawesome = __webpack_require__(77);
+
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function stringifyComments(commentsArray, pClass, index, openBold, closeBold) {
+  return pClass + '<span class="displayed_username">' + commentsArray[index].username + '</span>: ' + commentsArray[index].comment + '<span class="comment_timestamp">' + openBold + (0, _moment2.default)(commentsArray[index].insertedAt).fromNow() + closeBold + '</span></p>';
+}
+
+function Comments(props) {
+  var commentsArray = props.commentsArray;
+  var commentsHTML = '';
+  for (var i = 0; i < commentsArray.length - 1; i++) {
+    if ((0, _moment2.default)(commentsArray[i].insertedAt).add(60, 'minutes').isBefore((0, _moment2.default)())) {
+      commentsHTML += stringifyComments(commentsArray, '<p>', i, '', '');
+    } else {
+      commentsHTML += stringifyComments(commentsArray, '<p>', i, '<b class="newComment_time">', '</b>');
+    }
+  }
+
+  if (props.updated) {
+    commentsHTML += stringifyComments(commentsArray, '<p class="newComment">', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
+  } else {
+    if ((0, _moment2.default)(commentsArray[commentsArray.length - 1].insertedAt).add(60, 'minutes').isBefore((0, _moment2.default)())) {
+      commentsHTML += stringifyComments(commentsArray, '<p>', commentsArray.length - 1, '', '');
+    } else {
+      commentsHTML += stringifyComments(commentsArray, '<p>', commentsArray.length - 1, '<b class="newComment_time">', '</b>');
+    }
+  }
+
+  if (props.content === '' || props.content === "general_comment") {
+    return _react2.default.createElement(
+      _reactBootstrap.ListGroupItem,
+      null,
+      _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
+    );
+  } else {
+    return _react2.default.createElement(
+      _reactBootstrap.ListGroupItem,
+      null,
+      _react2.default.createElement(
+        'div',
+        { className: 'comments_header' },
+        _react2.default.createElement(
+          'b',
+          null,
+          _react2.default.createElement(_reactFontawesome2.default, { name: 'comments', className: 'gray_icon' }),
+          ' Comments'
+        ),
+        ' -'
+      ),
+      _react2.default.createElement('div', { className: 'comments', dangerouslySetInnerHTML: { __html: commentsHTML } })
+    );
+  }
+}
+
+/***/ }),
+/* 1067 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _ConfirmMessage = __webpack_require__(1025);
+
+var _ConfirmMessage2 = _interopRequireDefault(_ConfirmMessage);
+
+var _reactBootstrap = __webpack_require__(62);
+
+var _reactFontawesome = __webpack_require__(77);
+
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
+
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _axios = __webpack_require__(1033);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactScroll = __webpack_require__(129);
+
+var _reactScroll2 = _interopRequireDefault(_reactScroll);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var scroll = _reactScroll2.default.animateScroll;
+
+var PostForms = function (_React$Component) {
+  _inherits(PostForms, _React$Component);
+
+  function PostForms() {
+    _classCallCheck(this, PostForms);
+
+    var _this = _possibleConstructorReturn(this, (PostForms.__proto__ || Object.getPrototypeOf(PostForms)).call(this));
+
+    _this.state = {
+      showReviseForm: false,
+      showCommentForm: false,
+      showWriteButton: true,
+      showModal: false
+    };
+    _this.showReviseForm = _this.showReviseForm.bind(_this);
+    _this.showCommentForm = _this.showCommentForm.bind(_this);
+    _this.addRevision = _this.addRevision.bind(_this);
+    _this.addComment = _this.addComment.bind(_this);
+    _this.goBack = _this.goBack.bind(_this);
+    _this.closeForm = _this.closeForm.bind(_this);
+    _this.closeConfirm = _this.closeConfirm.bind(_this);
+    return _this;
+  }
+
+  _createClass(PostForms, [{
+    key: 'render',
+    value: function render() {
+      var confirmMsg = _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm });
+
+      if (this.props.content === "general_comment") {
+        //Inline comment form only for discussion threads
+        return _react2.default.createElement(
+          'form',
+          { onSubmit: this.addComment },
+          _react2.default.createElement(
+            _reactBootstrap.FormGroup,
+            { className: 'button_combined' },
+            _react2.default.createElement(
+              _reactBootstrap.InputGroup,
+              null,
+              _react2.default.createElement('input', { className: 'button_combined', type: 'text', required: true, ref: 'commentOnly', placeholder: 'Comment on this thread.' }),
+              _react2.default.createElement(
+                _reactBootstrap.InputGroup.Button,
+                null,
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { type: 'submit' },
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' })
+                )
+              )
+            )
+          ),
+          confirmMsg
+        );
+      } else {
+        //Collapsible comment & write forms for other post types
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            _reactBootstrap.ButtonGroup,
+            { justified: true },
+            _react2.default.createElement(
+              _reactBootstrap.ButtonGroup,
+              null,
+              _react2.default.createElement(
+                _reactBootstrap.Button,
+                { bsStyle: 'success', onClick: this.showCommentForm },
+                _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
+                ' Comment'
+              )
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.ButtonGroup,
+              null,
+              _react2.default.createElement(
+                _reactBootstrap.Button,
+                { bsStyle: 'info', onClick: this.showReviseForm },
+                _react2.default.createElement(_reactFontawesome2.default, { name: 'pencil' }),
+                ' Write'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _reactAddonsCssTransitionGroup2.default,
+            { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+            this.state.showReviseForm ? _react2.default.createElement(
+              'form',
+              { onSubmit: this.addRevision },
+              _react2.default.createElement('br', null),
+              _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest your version for the project writing.' }),
+              _react2.default.createElement('br', null),
+              _react2.default.createElement('textarea', { spellCheck: 'true', required: true, ref: 'revisionComment', placeholder: 'Comment on your writing above.' }),
+              _react2.default.createElement('br', null),
+              _react2.default.createElement(
+                _reactBootstrap.Button,
+                { block: true, type: 'submit', bsStyle: 'info' },
+                'Post your writing'
+              )
+            ) : false,
+            this.state.showCommentForm ? _react2.default.createElement(
+              'form',
+              { onSubmit: this.addComment },
+              _react2.default.createElement('br', null),
+              _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the post above.' }),
+              _react2.default.createElement('br', null),
+              _react2.default.createElement(
+                _reactBootstrap.Button,
+                { block: true, type: 'submit', bsStyle: 'success' },
+                'Post comment'
+              )
+            ) : false
+          ),
+          confirmMsg
+        );
+      }
+    }
+  }, {
+    key: 'showReviseForm',
+    value: function showReviseForm() {
+      if (this.state.showReviseForm == false) {
+        this.setState({ showReviseForm: true, showCommentForm: false }, function () {
+          this.refs.revisionContent.value = this.props.content;
+        });
+      } else {
+        if (this.refs.revisionContent.value !== this.props.content) {
+          this.setState({ showModal: true });
+        } else {
+          this.setState({ showReviseForm: false });
+        }
+      }
+    }
+  }, {
+    key: 'showCommentForm',
+    value: function showCommentForm() {
+      if (this.state.showCommentForm == false) {
+        this.setState({ showCommentForm: true, showReviseForm: false });
+      } else {
+        if (this.refs.commentOnly.value !== '') {
+          this.setState({ showModal: true });
+        } else {
+          this.setState({ showCommentForm: false });
+        }
+      }
+    }
+  }, {
+    key: 'addRevision',
+    value: function addRevision(e) {
+      e.preventDefault();
+      var data = {
+        accessCode: this.props.accessCode,
+        username: this.props.yourUsername,
+        content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
+        prevContent: this.props.content,
+        editedFrom: this.props.version,
+        comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
+      };
+      _axios2.default.post('/api/post', data).then(function () {
+        scroll.scrollToBottom();
+      });
+      this.setState({ showReviseForm: false, showCommentForm: false });
+    }
+  }, {
+    key: 'addComment',
+    value: function addComment(e) {
+      e.preventDefault();
+      var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value };
+      _axios2.default.post('/api/post/' + this.props._id + '/comment', data);
+      this.setState({ showReviseForm: false, showCommentForm: false });
+    }
+  }, {
+    key: 'goBack',
+    value: function goBack(e) {
+      e.preventDefault();
+      this.setState({ showReviseForm: false, showCommentForm: false });
+    }
+  }, {
+    key: 'closeForm',
+    value: function closeForm() {
+      this.setState({ showReviseForm: false, showCommentForm: false, showModal: false });
+    }
+  }, {
+    key: 'closeConfirm',
+    value: function closeConfirm() {
+      this.setState({ showModal: false });
+    }
+  }]);
+
+  return PostForms;
+}(_react2.default.Component);
+
+exports.default = PostForms;
+
+/***/ }),
+/* 1068 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = __webpack_require__(62);
+
+var _reactFontawesome = __webpack_require__(77);
+
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
+
+var _reactAddonsCssTransitionGroup = __webpack_require__(69);
+
+var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+
+var _ConfirmMessage = __webpack_require__(1025);
+
+var _ConfirmMessage2 = _interopRequireDefault(_ConfirmMessage);
+
+var _axios = __webpack_require__(1033);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactScroll = __webpack_require__(129);
+
+var _reactScroll2 = _interopRequireDefault(_reactScroll);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var scroll = _reactScroll2.default.animateScroll;
+
+var ThreadForm = function (_React$Component) {
+  _inherits(ThreadForm, _React$Component);
+
+  function ThreadForm() {
+    _classCallCheck(this, ThreadForm);
+
+    var _this = _possibleConstructorReturn(this, (ThreadForm.__proto__ || Object.getPrototypeOf(ThreadForm)).call(this));
+
+    _this.state = {
+      showButtons: true,
+      showCommentForm: false,
+      showModal: false
+    };
+
+    _this.showCommentForm = _this.showCommentForm.bind(_this);
+    _this.addComment = _this.addComment.bind(_this);
+    _this.closeForm = _this.closeForm.bind(_this);
+    _this.closeConfirm = _this.closeConfirm.bind(_this);
+    return _this;
+  }
+
+  _createClass(ThreadForm, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _reactBootstrap.Well,
+        null,
+        _react2.default.createElement(
+          _reactBootstrap.Button,
+          { block: true, bsSize: 'large', onClick: this.showCommentForm },
+          _react2.default.createElement(
+            'b',
+            null,
+            _react2.default.createElement(_reactFontawesome2.default, { name: 'bullhorn' }),
+            ' Announce / Discuss'
+          )
+        ),
+        _react2.default.createElement(
+          _reactAddonsCssTransitionGroup2.default,
+          { transitionName: 'form-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+          this.state.showCommentForm ? _react2.default.createElement(
+            'form',
+            { onSubmit: this.addComment },
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { block: true, bsStyle: 'success', type: 'submit' },
+              'Begin thread'
+            )
+          ) : false
+        ),
+        _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm })
+      );
+    }
+  }, {
+    key: 'showCommentForm',
+    value: function showCommentForm() {
+      if (this.state.showCommentForm == false) {
+        this.setState({
+          showCommentForm: true
+        }, function () {
+          scroll.scrollToBottom();
+        });
+      } else {
+        if (this.refs.comment.value !== '') {
+          this.setState({ showModal: true });
+        } else {
+          this.setState({
+            showCommentForm: false
+          });
+        }
+      }
+    }
+  }, {
+    key: 'addComment',
+    value: function addComment(e) {
+      e.preventDefault();
+
+      var data = {
+        accessCode: this.props.accessCode,
+        username: this.props.username,
+        content: 'general_comment',
+        prevContent: 'general_comment',
+        editedFrom: 0,
+        comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+      };
+
+      _axios2.default.post('/api/post', data);
+
+      this.setState({
+        showCommentForm: false
+      }, function () {
+        scroll.scrollToBottom();
+      });
+    }
+  }, {
+    key: 'closeForm',
+    value: function closeForm() {
+      this.setState({
+        showCommentForm: false,
+        showModal: false
+      });
+    }
+  }, {
+    key: 'closeConfirm',
+    value: function closeConfirm() {
+      this.setState({ showModal: false });
+    }
+  }]);
+
+  return ThreadForm;
+}(_react2.default.Component);
+
+exports.default = ThreadForm;
+
+/***/ }),
+/* 1069 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _SigninForm = __webpack_require__(340);
+
+var _SigninForm2 = _interopRequireDefault(_SigninForm);
+
+var _ThreadForm = __webpack_require__(1068);
+
+var _ThreadForm2 = _interopRequireDefault(_ThreadForm);
+
+var _jquery = __webpack_require__(60);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AppForms = function (_React$Component) {
+  _inherits(AppForms, _React$Component);
+
+  function AppForms() {
+    _classCallCheck(this, AppForms);
+
+    var _this = _possibleConstructorReturn(this, (AppForms.__proto__ || Object.getPrototypeOf(AppForms)).call(this));
+
+    _this.state = {
+      accessCode: '',
+      username: '',
+      showThreadForm: false,
+      showSigninForm: true
+    };
+
+    _this.onStart = _this.onStart.bind(_this);
+    _this.onSignin = _this.onSignin.bind(_this);
+    return _this;
+  }
+
+  _createClass(AppForms, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        this.state.showSigninForm ? _react2.default.createElement(_SigninForm2.default, { onStart: this.onStart, onSignin: this.onSignin }) : true,
+        this.state.showThreadForm ? _react2.default.createElement(_ThreadForm2.default, { accessCode: this.state.accessCode, username: this.state.username }) : null
+      );
+    }
+  }, {
+    key: 'onStart',
+    value: function onStart(accessCode, username) {
+      this.setState({
+        accessCode: accessCode,
+        username: username,
+        showThreadForm: true,
+        showSigninForm: false
+      });
+
+      this.props.getSigninVars(accessCode, username);
+    }
+  }, {
+    key: 'onSignin',
+    value: function onSignin(accessCode, username) {
+      this.setState({
+        accessCode: accessCode,
+        username: username,
+        showThreadForm: true,
+        showSigninForm: false
+      });
+
+      this.props.getSigninVars(accessCode, username);
+
+      _jquery2.default.get('/api/posts/' + accessCode, function (data) {
+        this.props.showPosts(data);
+      }.bind(this));
+    }
+  }]);
+
+  return AppForms;
+}(_react2.default.Component);
+
+exports.default = AppForms;
 
 /***/ })
 /******/ ]);

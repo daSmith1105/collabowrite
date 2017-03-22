@@ -3,12 +3,11 @@ import { Well, Button } from 'react-bootstrap';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ConfirmMessage from '../ConfirmMessage/ConfirmMessage';
-import $ from 'jquery';
+import axios from 'axios';
 import Scroll from 'react-scroll';
-
 const scroll = Scroll.animateScroll;
 
-class PostForm extends React.Component {
+class ThreadForm extends React.Component {
   constructor() {
     super();
     
@@ -71,13 +70,8 @@ class PostForm extends React.Component {
       editedFrom: 0,
       comment: this.refs.comment.value.replace(/\n\r?/g, '<br />'),
     };
-  
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    });
+    
+    axios.post('/api/post', data);
     
     this.setState({
       showCommentForm: false
@@ -98,4 +92,4 @@ class PostForm extends React.Component {
   }
 }
 
-export default PostForm;
+export default ThreadForm;

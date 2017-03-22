@@ -3,9 +3,8 @@ import store from 'store';
 import Pusher from '../../pusher.min.js';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import PostContainer from '../PostContainer/PostContainer';
-import UserForms from '../UserForms/UserForms';
+import AppForms from '../AppForms/AppForms';
 import { Label } from 'react-bootstrap';
-import $ from 'jquery';
 
 const PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
 const notification = new Audio('notification.mp3');
@@ -57,7 +56,7 @@ class App extends React.Component {
         <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
           {this.state.showPosts ? <PostContainer posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} setSound={this.setSound} /> : null}
         </ReactCSSTransitionGroup>
-        <UserForms showPosts={this.showPosts} getSigninVars={this.getSigninVars} />
+        <AppForms showPosts={this.showPosts} getSigninVars={this.getSigninVars} />
         <div className="rights"><Label className="rights">© 2017 Tim Paik</Label></div>
       </div>
     );
@@ -96,9 +95,9 @@ class App extends React.Component {
         
         //Temporarily higlight comment by toggling CSS class
         setTimeout(function() {
-          $(".newComment").toggleClass("highlight");
+          document.querySelector('p.newComment').classList.toggle("highlight");
           setTimeout(function() {
-            $(".newComment").toggleClass("highlight");
+            document.querySelector('p.newComment').classList.toggle("highlight");
             setTimeout(function() {
               newArray[i].updated = false;
               this.setState({
