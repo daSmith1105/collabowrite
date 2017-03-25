@@ -9,8 +9,8 @@ class AppForms extends React.Component {
     this.state = {
       accessCode: '',
       username: '',
-      showThreadForm: false,
       showSigninForm: true,      
+      showThreadForm: false
     };
     this.onStart = this.onStart.bind(this);
     this.onSignin = this.onSignin.bind(this);
@@ -20,8 +20,8 @@ class AppForms extends React.Component {
     this.setState({
       accessCode: accessCode,
       username: username,
-      showThreadForm: true,
-      showSigninForm: false
+      showSigninForm: false,
+      showThreadForm: true
     });
     this.props.getSigninVars(accessCode, username);
   }
@@ -30,8 +30,8 @@ class AppForms extends React.Component {
     this.setState({
       accessCode: accessCode,
       username: username,
-      showThreadForm: true,
-      showSigninForm: false
+      showSigninForm: false,
+      showThreadForm: true
     });
     this.props.getSigninVars(accessCode, username);
     axios.get('/api/posts/' + accessCode).then(function(res){

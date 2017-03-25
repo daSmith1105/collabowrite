@@ -34791,6 +34791,11 @@ var App = function (_React$Component) {
       this.pusher.unsubscribe(this.channel);
     }
   }, {
+    key: 'showIntro',
+    value: function showIntro(boolean) {
+      this.setState({ showIntro: boolean });
+    }
+  }, {
     key: 'setSound',
     value: function setSound(boolean) {
       this.setState({ sound: boolean });
@@ -38076,7 +38081,7 @@ exports = module.exports = __webpack_require__(150)();
 
 
 // module
-exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n#app {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.text-transition-enter {\n\topacity: 0.01;\n}\n\n.text-transition-enter.text-transition-enter-active {\n  opacity: 1;\n  transition: opacity 400ms ease-in 600ms;\n}\n\n.text-transition-leave {\n  opacity: 1;\n}\n\n.text-transition-leave.text-transition-leave-active {\n  opacity: 0.01;\n  transition: opacity 400ms ease-in;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n  opacity: 1;\n  transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n  opacity: 0.01;\n  transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n  opacity: 1;\n  transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n  opacity: 0.01;\n  transition: opacity 500ms ease-in;\n}\n\ndel {\n  background: #FFE6E6;\n  color: gray;\n  font-size: 80%;\n}\n\nins {\n  background: #E6FFE6;\n  text-decoration: none;\n  font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n  display: inline-block;\n  padding-left: 8px;\n  position: relative;\n  top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.quotations {\n  font-family: sans-serif;\n  font-weight: bolder;\n  padding: 1px;\n  transition: font-size 0.1s ease;\n}\n\n.larger_text {\n  font-size: 23px;\n}\n\n.enlarged_text {\n  font-size: 27px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n  padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n  font-size: 16px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n  display: block;\n  width: 100%;\n  height: 34px;\n  padding: 6px 12px;\n  font-size: 14px;\n  line-height: 1.42857143;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 70px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n  font-size: 20px; \n  position: relative;\n  bottom: 1px;\n}\n\nh2 {\n  position: relative;\n}\n\n.example {\n  position: absolute;\n  margin: 0 0 3px 7px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n  font-weight: normal;\n  font-size: 14px;\n  line-height: 22px;\n  padding: 0 32px;\n  margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n  font-size: 27px;\n  text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n.confirm_info {\n  padding-top: 10px;\n  display: block;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n    padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-info {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
+exports.push([module.i, "body {\n\tmargin: 0;\n  background: url('/bg.png');\n  background-attachment: fixed;\n}\n\n#app {\n  padding-top: 20px;\n}\n\n.postlist {\n\tlist-style: none;\n\tpadding: 0;\n}\n\n.text-transition-enter {\n\topacity: 0.01;\n}\n\n.text-transition-enter.text-transition-enter-active {\n  opacity: 1;\n  transition: opacity 400ms ease-in 600ms;\n}\n\n.text-transition-leave {\n  opacity: 1;\n}\n\n.text-transition-leave.text-transition-leave-active {\n  opacity: 0.01;\n  transition: opacity 400ms ease-in;\n}\n\n.evt-transition-enter {\n\topacity: 0.01;\n}\n\n.evt-transition-enter.evt-transition-enter-active {\n  opacity: 1;\n  transition: opacity 500ms ease-in;\n}\n\n.evt-transition-leave {\n    opacity: 1;\n}\n\n.evt-transition-leave.evt-transition-leave-active {\n  opacity: 0.01;\n  transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter {\n\topacity: 0.01;\n}\n\n.form-transition-enter.form-transition-enter-active {\n  opacity: 1;\n  transition: opacity 500ms ease-in;\n}\n\n.form-transition-enter-transition-leave {\n    opacity: 1;\n}\n\n.form-transition-leave.form-transition-leave-active {\n  opacity: 0.01;\n  transition: opacity 500ms ease-in;\n}\n\ndel {\n  background: #FFE6E6;\n  color: gray;\n  font-size: 80%;\n}\n\nins {\n  background: #E6FFE6;\n  text-decoration: none;\n  font-weight: bold;\n}\n\ndel + ins::before {\n  content: '\\A0';\n  display: inline-block;\n}\n\n.newComment {\n  background-color: #FFFFFF;\n\ttransition: background-color 0.5s ease;\n}\n\n.newComment.highlight {\n  background-color: #ffff80;\n\ttransition: background-color 0.5s ease;\n}\n\n.displayed_username {\n  font-weight: bold;\n}\n\n.byline {\n  display: inline-block;\n  padding-left: 8px;\n  position: relative;\n  top: 2px;\n}\n\n.writing {\n  padding: 7px 10px;\n  transition: font-size 0.2s ease;\n  font-size: 115%;\n}\n\np {\n  padding: 3px;\n  margin: 0;\n  transition: font-size 0.1s ease;\n}\n\n.quotations {\n  font-family: sans-serif;\n  font-weight: bolder;\n  padding: 1px;\n  transition: font-size 0.1s ease;\n}\n\n.larger_text {\n  font-size: 23px;\n}\n\n.enlarged_text {\n  font-size: 27px;\n  transition: font-size 0.1s ease;\n}\n\n.comments_header {\n  padding-bottom: 2px;\n  font-size: 16px;\n}\n\n.comments {\n  padding-left: 7px;\n}\n\n.newComment_time {\n  color: black;\n}\n\n.comment_timestamp {\n  font-size: 80%;\n  padding-left: 5px;\n  color: darkgray;\n}\n\n.post_title {\n  padding-bottom: 3px;\n  font-size: 16px;\n}\n\n.gray_icon {\n  color: gray;\n}\n\n.panel-heading {\n  text-align: right;\n}\n\n.label.title_header {\n  padding-top: 4px;\n  float: left;\n  position: relative;\n  top: 3px;\n}\n\n.label.change_version {\n  position: relative;\n  bottom: 1px;  \n}\n\ninput, textarea {\n  display: block;\n  width: 100%;\n  height: 34px;\n  padding: 6px 12px;\n  font-size: 14px;\n  line-height: 1.42857143;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n}\n\ntextarea {\n  height: 100px;\n  resize: vertical;\n}\n\n.changes_command {\n  font-weight: bold;\n}\n\n.general_comment_textarea {\n  height: 100px;\n}\n\ninput.button_combined {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.form-group.button_combined {\n  margin-bottom: 0;\n}\n\nbutton {\n  opacity: 0.90;\n  transition: background 0.5s ease !important;\n}\n\nbutton: hover {\n  transition: background 0.5s ease !important;\n}\n\nspan:focus {\n  outline: none;\n}\n\n.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {\n    box-shadow: 1px 1px 6px #cccccc;\n}\n\ndiv, button, input, textarea {\n  transition: box-shadow 0.5s ease;\n  border-radius: 0 !important;\n}\n\nbutton:focus, input:focus, textarea:focus{\n  outline: none;\n  box-shadow: 1px 1px 4px #bbbbbb;\n}\n\n.accesscode_label {\n  display: block;\n  text-align: center;\n}\n\n.accesscode_input {\n  font-size: 60px;\n  height: 90px;\n  letter-spacing: 2px;\n  font-weight: bold;\n  text-align: center;\n  box-shadow: none !important;\n  border: none;\n  background: none;\n}\n\n.jumbotron {\n  background: none;\n  padding: 0;\n  margin: 0;\n}\n\n.green {\n  color: #5cb85c;\n}\n\n.red {\n  color: red;\n}\n\nh3 {\n  margin: 5px 0 0 0;\n  font-size: 20px;\n}\n\n.example, .description {\n  font-size: 20px; \n  position: relative;\n  bottom: 1px;\n}\n\nh2 {\n  position: relative;\n}\n\n.example {\n  position: absolute;\n  margin: 0 0 3px 7px;\n}\n\n.description {\n  font-size: 18px;\n}\n\nh5 {\n  font-weight: normal;\n  font-size: 14px;\n  line-height: 22px;\n  padding: 0 32px;\n  margin-bottom: 20px;\n}\n\n.adj {\n  text-align: center;\n}\n\n.fa.intro {\n  text-align: center;\n  display: inline-block;\n  width: 20px;\n  margin-right: 5px;\n  color: #5cb85c;\n}\n\n.fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {\n  font-size: 27px;\n  text-align: right;\n}\n\n.rights {\n  font-weight: normal;\n  margin: 20px auto;\n  width: 100px;\n}\n\n.label-default {\n  background-color: darkgray;\n}\n\n.intro_screen {\n  margin-bottom: 10px;\n}\n\n.announce {\n  background-color: darkgray;\n  color: white;\n}\n\n.comment_field {\n  height: 100px ;\n}\n\na:link, a:hover, a:active, a:visited {\n  text-decoration: none;\n  color: inherit;\n}\n\n.sound {\n  float: right;\n  height: 35px;\n  width: 35px;\n  text-align: left;\n  padding-left: 10px;\n}\n\n.confirm_info {\n  padding-top: 10px;\n  display: block;\n}\n\n@media only screen and (min-device-width : 320px) and (max-device-width : 568px) { \n  h5 {\n    padding: 0 4px;\n  }\n  \n  .example {\n    display: none;\n  }\n  \n  .panel-heading {\n      text-align: left;\n  }\n\n  .byline {\n    display: inline-block;\n    padding: 10px 0 0 0;\n    font-size: 15px;\n  }\n\n  .list-group-item {\n    padding: 10px 10px;\n  }\n  \n  .comments_header {\n    padding-left: 10px;\n  }\n  \n  textarea, .general_comment_textarea {\n    height: 150px;\n  }\n\n  .alert-info {\n    display: none;\n  }\n  \n  .label {\n    margin-right: 100px;\n  }\n}", ""]);
 
 // exports
 
@@ -64976,8 +64981,8 @@ var AppForms = function (_React$Component) {
     _this.state = {
       accessCode: '',
       username: '',
-      showThreadForm: false,
-      showSigninForm: true
+      showSigninForm: true,
+      showThreadForm: false
     };
     _this.onStart = _this.onStart.bind(_this);
     _this.onSignin = _this.onSignin.bind(_this);
@@ -64990,8 +64995,8 @@ var AppForms = function (_React$Component) {
       this.setState({
         accessCode: accessCode,
         username: username,
-        showThreadForm: true,
-        showSigninForm: false
+        showSigninForm: false,
+        showThreadForm: true
       });
       this.props.getSigninVars(accessCode, username);
     }
@@ -65001,8 +65006,8 @@ var AppForms = function (_React$Component) {
       this.setState({
         accessCode: accessCode,
         username: username,
-        showThreadForm: true,
-        showSigninForm: false
+        showSigninForm: false,
+        showThreadForm: true
       });
       this.props.getSigninVars(accessCode, username);
       _axios2.default.get('/api/posts/' + accessCode).then(function (res) {
@@ -65140,21 +65145,25 @@ var Header = function (_React$Component) {
           _reactBootstrap.Jumbotron,
           null,
           _react2.default.createElement(
-            'h2',
-            null,
-            'Collabo',
+            'a',
+            { href: '.' },
             _react2.default.createElement(
-              'span',
-              { className: 'green' },
-              'write '
-            ),
-            _react2.default.createElement(
-              _reactAddonsCssTransitionGroup2.default,
-              { transitionName: 'text-transition', transitionEnterTimeout: 1000, transitionLeaveTimeout: 400 },
+              'h2',
+              null,
+              'Collabo',
               _react2.default.createElement(
                 'span',
-                { className: 'example', key: this.state.example },
-                this.state.example
+                { className: 'green' },
+                'write '
+              ),
+              _react2.default.createElement(
+                _reactAddonsCssTransitionGroup2.default,
+                { transitionName: 'text-transition', transitionEnterTimeout: 1000, transitionLeaveTimeout: 400 },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'example', key: this.state.example },
+                  this.state.example
+                )
               )
             )
           )

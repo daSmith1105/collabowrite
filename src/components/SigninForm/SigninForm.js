@@ -29,7 +29,7 @@ class SigninForm extends React.Component{
     this.setState({
       showIntro: false,
       showNewForm: true,
-      showJoinForm: false,
+      showJoinForm: false
     });
     
     let candidateCode = '';

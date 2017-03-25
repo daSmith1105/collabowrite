@@ -37,7 +37,7 @@ class Header extends React.Component {
         this.setState({ example: examples[examples.push(examples.shift())-1] + '.' });
       }.bind(this), 1500);    
     }
-  }	
+  }
 
 	setSound() {
 	  const soundOn = function(boolean) {
@@ -67,13 +67,13 @@ class Header extends React.Component {
 	  if (!this.props.signIn) {
 	    return (
         <Jumbotron>
-          <h2>Collabo<span className="green">write </span>
+          <a href="."><h2>Collabo<span className="green">write </span>
             <ReactCSSTransitionGroup transitionName="text-transition" transitionEnterTimeout={1000} transitionLeaveTimeout={400}>
               <span className="example" key={this.state.example}>
                 {this.state.example}
               </span>
             </ReactCSSTransitionGroup>
-          </h2>
+          </h2></a>
         </Jumbotron>
 	    );
 	  } else {

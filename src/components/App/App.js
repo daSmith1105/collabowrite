@@ -22,7 +22,7 @@ class App extends React.Component {
       username: '',
       showPosts: false,
       sound: store.get('sound').setting
-    };      
+    };
     this.addPosts = this.addPosts.bind(this);
     this.addComments = this.addComments.bind(this);
     this.setSound = this.setSound.bind(this);
@@ -48,9 +48,13 @@ class App extends React.Component {
     this.pusher.unsubscribe(this.channel);
   }
   
+  showIntro(boolean) {
+    this.setState({ showIntro: boolean });
+  }
+  
   setSound(boolean) {
     this.setState({ sound: boolean });
-  }  
+  }
   
   addPosts(data) {
     if (data.accessCode === this.state.matchCode) {
