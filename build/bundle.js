@@ -64253,7 +64253,7 @@ var PostBody = function (_React$Component) {
               _react2.default.createElement(
                 'div',
                 { className: 'changes_command' },
-                '+ Show changes made from ',
+                '+ Show changes from ',
                 _react2.default.createElement(
                   _reactBootstrap.Label,
                   { bsStyle: 'default', className: 'change_version' },

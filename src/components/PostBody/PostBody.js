@@ -58,7 +58,7 @@ class PostBody extends React.Component {
             <div>
               <a href="#" onClick={this.showChanges}>
                 <div className="changes_command">
-                  + Show changes made from <Label bsStyle="default" className="change_version">VERSION {this.props.editedFrom}</Label>
+                  + Show changes from <Label bsStyle="default" className="change_version">VERSION {this.props.editedFrom}</Label>
                 </div>
               </a>
               <div className={"writing" + largerText} onClick={this.changeTextSize} dangerouslySetInnerHTML={{__html: '<span class="quotations">&ldquo;</span>' + this.props.content + '<span class="quotations">&rdquo;</span>'}}></div>
