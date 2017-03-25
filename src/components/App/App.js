@@ -2,22 +2,20 @@ import React from 'react';
 import store from 'store';
 import Pusher from '../../pusher.min.js';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import PostContainer from '../PostContainer/PostContainer';
+import Header from '../Header/Header';
+import Posts from '../Posts/Posts';
 import AppForms from '../AppForms/AppForms';
 import { Label } from 'react-bootstrap';
 
-const PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
 const notification = new Audio('notification.mp3');
 
 class App extends React.Component {
   constructor() {
     super();
-    
-    //Turn on notification sounds if no sound setting found on local storage
     if (!store.get('sound')) {
+      // Turn on notification sounds if no sound setting on local storage
       store.set('sound', { setting: true });
     }
-    
     this.state = {
       posts: [],
       matchCode: '',
@@ -25,7 +23,6 @@ class App extends React.Component {
       showPosts: false,
       sound: store.get('sound').setting
     };      
-    
     this.addPosts = this.addPosts.bind(this);
     this.addComments = this.addComments.bind(this);
     this.setSound = this.setSound.bind(this);
@@ -34,6 +31,7 @@ class App extends React.Component {
   }
   
   componentWillMount() {
+    const PUSHER_APP_KEY = '8dfa4a5831cd9c0be510';
     this.pusher = new Pusher(PUSHER_APP_KEY, {
       encrypted: true,
     });
@@ -49,29 +47,19 @@ class App extends React.Component {
     this.channel.unbind();
     this.pusher.unsubscribe(this.channel);
   }
-
-  render() {
-    return (
-      <div className="row">
-        <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-          {this.state.showPosts ? <PostContainer posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} setSound={this.setSound} /> : null}
-        </ReactCSSTransitionGroup>
-        <AppForms showPosts={this.showPosts} getSigninVars={this.getSigninVars} />
-        <div className="rights"><Label className="rights">© 2017 Tim Paik</Label></div>
-      </div>
-    );
-  }
+  
+  setSound(boolean) {
+    this.setState({ sound: boolean });
+  }  
   
   addPosts(data) {
     if (data.accessCode === this.state.matchCode) {
       let newArray = this.state.posts;
       newArray.push(data);
-      this.setState({
-        posts: newArray
-      });
+      this.setState({ posts: newArray });
       
-      //Play notification sound if sound setting is on and the post was not made by the user
       if (this.state.sound && this.state.username !== data.username) {
+        // Notification sounds if setting is on AND post created by other users
     	  notification.play();
     	}
     }
@@ -83,43 +71,30 @@ class App extends React.Component {
     const commentUser = comments[comments.length-1].username;
     for (var i = 0; i < newArray.length; i++) {
       if (newArray[i]._id === data._id) {
-        //Update comments array for post that received new comment
+        // Update comments array for post that received new comment
         newArray[i].comments = data.comments;
         
-        //Add an updated flag which will be used in Post component to add a highlighting CSS class
+        // Add updated flag for use in Post component for highlighting CSS class
         newArray[i].updated = true;
         
-        this.setState({
-          posts: newArray
-        });
+        this.setState({ posts: newArray });
         
-        //Temporarily higlight comment by toggling CSS class
+        // Temporarily higlight comment by toggling CSS class
         setTimeout(function() {
           document.querySelector('p.newComment').classList.toggle("highlight");
           setTimeout(function() {
             document.querySelector('p.newComment').classList.toggle("highlight");
             setTimeout(function() {
               newArray[i].updated = false;
-              this.setState({
-                posts: newArray
-              });
+              this.setState({ posts: newArray });
             }.bind(this), 1000);
           }.bind(this), 1000);
         }.bind(this), 100);
         
-        if (this.state.sound && this.state.username !== commentUser) {
-      	  notification.play();
-      	}
-      	
+        if (this.state.sound && this.state.username !== commentUser) { notification.play(); } 
         break;
       }
     }
-  }
-  
-  setSound(boolean) {
-    this.setState({
-      sound: boolean
-    });
   }
   
   showPosts(data) {
@@ -136,6 +111,19 @@ class App extends React.Component {
       showPosts: true
     });
   }
+  
+  render() {
+    return (
+      <div className="row">
+        <Header setSound={this.setSound} signIn={this.state.showPosts} />
+        <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
+          {this.state.showPosts ? <Posts posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} /> : null}
+        </ReactCSSTransitionGroup>
+        <AppForms showPosts={this.showPosts} getSigninVars={this.getSigninVars} />
+        <div className="rights"><Label className="rights">© 2017 Tim Paik</Label></div>
+      </div>
+    );
+  }  
 }
 
 export default App;

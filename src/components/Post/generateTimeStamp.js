@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-export default function generateTimeStamp(postTime){
+export default function generateTimeStamp(postTime) {
   if (moment(postTime).add(60, 'minutes').isBefore(moment())) {
      return moment(postTime).fromNow();
   } else {

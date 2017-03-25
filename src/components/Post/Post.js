@@ -6,7 +6,6 @@ import PostHeader from '../PostHeader/PostHeader';
 import PostBody from '../PostBody/PostBody';
 import Comments from '../Comments/Comments';
 import PostForms from '../PostForms/PostForms';
-// import $ from 'jquery';
 
 export default function Post(props) {
   const username = props.post.username;
@@ -28,21 +27,10 @@ export default function Post(props) {
         <PostHeader username={username} timeStamp={timeStamp} content={content} version={version} editedFrom={editedFrom} />}>
         <ListGroup fill>
           <PostBody username={username} content={content} version={version} editedFrom={editedFrom} prevContent={props.post.prevContent} />
-          <Comments commentsArray={props.post.comments} updated={props.post.updated} content={content} />
+          <Comments comments={props.post.comments} updated={props.post.updated} content={content} />
         </ListGroup>
         <PostForms content={content} accessCode={props.post.accessCode} yourUsername={props.yourUsername} version={version} _id={props.post._id} />
       </Panel>
     </li>
   );  
-}
-
-if (document.body.clientWidth > 767) {
-  // Enlarge post or comment text when clicked
-  // $(document).on('click', '.writing, p', function() {
-  //   this.classList.toggle('large_text');
-  // });
-  
-  // document.querySelectorAll(".writing p").onclick = function(){
-  //   this.classList.toggle('large_text');    
-  // };
 }

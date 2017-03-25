@@ -10,19 +10,56 @@ const scroll = Scroll.animateScroll;
 class ThreadForm extends React.Component {
   constructor() {
     super();
-    
     this.state = {
       showButtons: true,
       showCommentForm: false,
       showModal: false
     };
-    
     this.showCommentForm = this.showCommentForm.bind(this);
     this.addComment = this.addComment.bind(this);
     this.closeForm = this.closeForm.bind(this);
     this.closeConfirm = this.closeConfirm.bind(this);
   }
   
+  showCommentForm() {
+    if (this.state.showCommentForm == false) {
+      this.setState({ showCommentForm: true }, function() {
+        scroll.scrollToBottom();      
+      });
+    } else {
+      if (this.refs.comment.value !== '') {
+        this.setState({ showModal: true }); 
+      } else {
+        this.setState({ showCommentForm: false });
+      }
+    }     
+  }
+  
+  addComment(e) {
+    e.preventDefault();
+    let data = {
+      accessCode: this.props.accessCode,
+      username: this.props.username,
+      content: 'general_comment',
+      prevContent: 'general_comment',
+      editedFrom: 0,
+      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />'),
+    };
+    axios.post('/api/post', data);
+    this.setState({ showCommentForm: false }, function() {
+      scroll.scrollToBottom();
+    });
+  }
+  
+  closeForm() {
+    this.setState({
+      showCommentForm: false,
+      showModal: false
+    });  
+  }
+
+  closeConfirm() { this.setState({ showModal: false }); }
+
   render() {
     return (
       <Well>
@@ -39,56 +76,6 @@ class ThreadForm extends React.Component {
         <ConfirmMessage showModal={this.state.showModal} closeConfirm={this.closeConfirm} closeForm={this.closeForm} />
       </Well>
     );
-  }
-  
-  showCommentForm() {
-    if (this.state.showCommentForm == false) {
-      this.setState({
-        showCommentForm: true,
-      }, function() {
-        scroll.scrollToBottom();      
-      });
-    } else {
-      if (this.refs.comment.value !== '') {
-        this.setState({ showModal: true }); 
-      } else {
-        this.setState({
-          showCommentForm: false
-        });
-      }
-    }     
-  }
-  
-  addComment(e) {
-    e.preventDefault();
-  
-    let data = {
-      accessCode: this.props.accessCode,
-      username: this.props.username,
-      content: 'general_comment',
-      prevContent: 'general_comment',
-      editedFrom: 0,
-      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />'),
-    };
-    
-    axios.post('/api/post', data);
-    
-    this.setState({
-      showCommentForm: false
-    }, function() {
-      scroll.scrollToBottom();
-    });
-  }
-  
-  closeForm() {
-    this.setState({
-      showCommentForm: false,
-      showModal: false
-    });  
-  }
-
-  closeConfirm() {
-    this.setState({ showModal: false });
   }
 }
 

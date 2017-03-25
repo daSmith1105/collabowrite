@@ -1,30 +1,19 @@
 import React from 'react';
 import SigninForm from '../SigninForm/SigninForm';
 import ThreadForm from '../ThreadForm/ThreadForm';
-import $ from 'jquery';
+import axios from 'axios';
 
 class AppForms extends React.Component {
   constructor() {
     super();
-    
     this.state = {
       accessCode: '',
       username: '',
       showThreadForm: false,
       showSigninForm: true,      
     };
-    
     this.onStart = this.onStart.bind(this);
     this.onSignin = this.onSignin.bind(this);
-  }
-  
-  render() {
-    return (
-      <div>
-        {this.state.showSigninForm ? <SigninForm onStart={this.onStart} onSignin={this.onSignin} /> : true }
-        {this.state.showThreadForm ? <ThreadForm accessCode={this.state.accessCode} username={this.state.username} /> : null }
-      </div>
-    );
   }
 
   onStart(accessCode, username) {
@@ -34,7 +23,6 @@ class AppForms extends React.Component {
       showThreadForm: true,
       showSigninForm: false
     });
-    
     this.props.getSigninVars(accessCode, username);
   }
   
@@ -45,12 +33,19 @@ class AppForms extends React.Component {
       showThreadForm: true,
       showSigninForm: false
     });
-    
     this.props.getSigninVars(accessCode, username);
-    
-    $.get('/api/posts/' + accessCode, function(data){
-      this.props.showPosts(data);
+    axios.get('/api/posts/' + accessCode).then(function(res){
+      this.props.showPosts(res.data);
     }.bind(this));
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.showSigninForm ? <SigninForm onStart={this.onStart} onSignin={this.onSignin} /> : true }
+        {this.state.showThreadForm ? <ThreadForm accessCode={this.state.accessCode} username={this.state.username} /> : null }
+      </div>
+    );
   }
 }
 

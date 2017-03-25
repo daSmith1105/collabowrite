@@ -1,125 +1,29 @@
 import React from 'react';
-import { Tooltip, ButtonGroup, Button, Jumbotron, Panel, Well, OverlayTrigger } from 'react-bootstrap';
+import { Tooltip, ButtonGroup, Button, Panel, Well, OverlayTrigger } from 'react-bootstrap';
+import IntroScreen from '../IntroScreen/IntroScreen';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import $ from 'jquery';
+import AlertMessage from '../AlertMessage/AlertMessage';
+import axios from 'axios';
 
 class SigninForm extends React.Component{
   constructor() {
     super();
-    
     this.state = {
       showIntro: true,
       showNewForm: false,
-      showJoinForm: false      
+      showJoinForm: false,
+      showModal: false
     };
-    
-    this.showIntro = this.showIntro.bind(this);
     this.showDemo = this.showDemo.bind(this);
     this.showNewForm = this.showNewForm.bind(this);
     this.showJoinForm = this.showJoinForm.bind(this);
     this.createNewPost = this.createNewPost.bind(this);
     this.storeSigninVars = this.storeSigninVars.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
   
-  render() {
-    const buttons = (
-      <div>
-        <ButtonGroup justified>
-          <ButtonGroup>
-            <Button bsStyle="success" onClick={this.showNewForm}>Create project</Button>
-          </ButtonGroup>
-          <ButtonGroup>
-            <Button bsStyle="info" onClick={this.showJoinForm}>Join project</Button>
-          </ButtonGroup>
-        </ButtonGroup>
-      </div>
-    );
-    
-    const tooltip = (
-      <Tooltip id="tooltip">
-        <b><FA name="lightbulb-o" /> Tip</b>: Share only with your group members since this is what your project members will use to log into the project.
-      </Tooltip>
-    );
-    
-    return (
-      <div>
-        <Jumbotron>
-          <a href="#" onClick={this.showIntro}><h2>Collabo<span className="green">write</span> <span className="example">a sentence.</span></h2></a>
-        </Jumbotron>
-        <Panel header={buttons} className="intro_screen">
-          {this.state.showIntro ?
-            <div>
-              <h3><FA name="clock-o" className="intro" /> Collaborate <span className="green">real-time</span></h3>
-              <h5>Anytime you post a revision, comment, suggestion, or announcment, others working on the project will see it instantly. No more waiting around or refreshing for updates.</h5>
-              <h3><FA name="mobile" className="intro" /> Work <span className="green">mobile-friendly</span></h3>
-              <h5>For those light-bulb moments while you're out, access and work on your projects on a smartphone or tablet, with all of the functions you have while you're on your computer.</h5>
-              <h3><FA name="slideshare" className="intro" /> Involve your <span className="green"> audience</span></h3>
-              <h5>Skip the slides: when you're facilitating a class, meeting, or a brainstorming session, just put your project on a projector and invite others in the room to share their ideas onto the screen using their smartphones. You can blow up the text of any post or comment with a single click.</h5> 
-              <h3><FA name="hand-peace-o" className="intro" /> Get started <span className="green"> hassle-free</span></h3>
-              <h5>No need to sign up for an account. Create a new project, and we'll generate a four-letter/number code that you and your project members can use to access the project anytime, anywhere.</h5>
-              <Button block onClick={this.showDemo}><b>Click to see a demo project</b></Button>
-            </div>
-          : true }
-          <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>        
-            {this.state.showNewForm ?
-              <div>
-                <form id="newform" onSubmit={this.createNewPost}> 
-                  <Well>
-                    <label className="accesscode_label">Below is your new project access code.<br />Please write it down or save it somewhere safe.</label>
-                    <OverlayTrigger placement="bottom" overlay={tooltip}>
-                      <input className="accesscode_input" type="text" required ref="newAccessCode" readOnly />
-                    </OverlayTrigger>
-                  </Well>
-                  <label>Enter your name</label>&nbsp;<input type="text" autoFocus required ref="newUsername" />
-                  <br />
-                  <label>Provide some context for this project (i.e. what kind of writing it is, what others should focus on...)</label>
-                  <br/>
-                  <textarea required ref="comment" />
-                  <br/>
-                  <label>Optional: Share an initial version or starting point for the writing you have in mind</label>
-                  <br/>
-                  <textarea ref="content" />
-                  <br/>
-                  <Button block bsStyle="success" type="submit"><FA name="upload" /> Launch it!</Button>
-                </form>
-              </div>
-            : false}
-            {this.state.showJoinForm ?
-              <div>
-                <form id="joinform" onSubmit={this.storeSigninVars}> 
-                  <input type="password" autoFocus required ref="accessCode" placeholder="Project access code" />
-                  <br />
-                  <input type="text" required ref="username" placeholder="Your name" />
-                  <br />
-                  <Button block bsStyle="info" type="submit"><FA name="sign-in" /> Join in!</Button>
-                </form>
-              </div>
-            : false}
-          </ReactCSSTransitionGroup>
-        </Panel>
-      </div>
-    );
-  }
-  
-  showIntro(e) {
-    e.preventDefault();
-    this.setState({
-      showIntro: true,
-      showNewForm: false,
-      showJoinForm: false
-    });
-  }
-  
-  showDemo() {
-    $.get('/api/posts/1234', function(data){
-      if (data.length === 0) {
-        alert('The project access code you typed in is not valid. Please check again!');
-      } else {
-        this.props.onSignin('1234', 'Test user');
-      }
-    }.bind(this));
-  }
+  showDemo() { this.props.onSignin('1234', 'Test user'); }
   
   showNewForm() {
     this.setState({
@@ -138,8 +42,10 @@ class SigninForm extends React.Component{
     
     generateCode();
     
-    $.get('/api/posts/' + candidateCode, function(data){
-      if (data.length !== 0) {
+    axios.get('/api/posts/' + candidateCode).then(function(res){
+      // Run a get request with randomly generated access code
+      if (res.data.length !== 0) {
+        // Regenerate code in the statistically insignificant scenario that the code is already in use
         generateCode();
         this.refs.newAccessCode.value = candidateCode;
       } else {
@@ -158,9 +64,7 @@ class SigninForm extends React.Component{
   
   createNewPost(e) {
     e.preventDefault();
-    
     this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
-    
     let data = {
       accessCode: this.refs.newAccessCode.value,
       username: this.refs.newUsername.value,
@@ -169,39 +73,68 @@ class SigninForm extends React.Component{
       editedFrom: 0,
       comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
     };
-    
-    if (data.content === '') data.content = '';
-
-    $.ajax('/api/post', {
-      type: 'POST',
-      data: JSON.stringify(data),
-      datatype: 'json',
-      contentType: 'application/json'
-    });
+    axios.post('/api/post/', data);
   }
   
   storeSigninVars(e) {
     e.preventDefault();
-    
-    $.get('/api/posts/' + this.refs.accessCode.value, function(data){
-      if (data.length === 0) {
-        alert('The project access code you typed in is not valid. Please check again!');
-      } else {
-        this.props.onSignin(this.refs.accessCode.value, this.refs.username.value);
-      }
+    axios.get('/api/posts/' + this.refs.accessCode.value).then(function(res){
+      if (res.data.length === 0) {  this.setState({ showModal: true }); }
+      else { this.props.onSignin(this.refs.accessCode.value, this.refs.username.value); }
     }.bind(this));
   }
-}
 
-var examples = [ "a topic sentence", "a thesis statement", "a mission statement", "instructions", "product descriptions", "translations", "a plotline", "a headline", "a tagline", "a catchphrase", "a paraphrase", "a paragraph", "a sentence"];
+  closeAlert() { this.setState({ showModal: false }); }  
 
-
-if ($(window).width() > 767) {
-  setInterval(function(){
-    $(".example").fadeOut(function() {
-      $(this).text(examples[examples.push(examples.shift())-1] + '.').fadeIn();
-    });  
-  }, 1500);    
+  render() {
+    const buttons = (
+      <ButtonGroup justified>
+        <ButtonGroup><Button bsStyle="success" onClick={this.showNewForm}>Create project</Button></ButtonGroup>
+        <ButtonGroup><Button bsStyle="info" onClick={this.showJoinForm}>Join project</Button></ButtonGroup>
+      </ButtonGroup>
+    );
+    
+    const tooltip = (
+      <Tooltip id="tooltip">
+        <b><FA name="lightbulb-o" /> Tip</b>: Share only with your group members since this is what your project members will use to log into the project.
+      </Tooltip>
+    );
+    
+    return (
+      <Panel header={buttons} className="intro_screen">
+        {this.state.showIntro ?
+          <div>
+            <IntroScreen />
+            <Button block onClick={this.showDemo}><b>Click to see a demo project</b></Button>
+          </div>
+        : true }
+        <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>        
+          {this.state.showNewForm ?
+            <form id="newform" onSubmit={this.createNewPost}> 
+              <Well>
+                <label className="accesscode_label">Below is your new project access code.<br />Please write it down or save it somewhere safe.</label>
+                <OverlayTrigger placement="bottom" overlay={tooltip}><input className="accesscode_input" type="text" required ref="newAccessCode" readOnly /></OverlayTrigger>
+              </Well>
+              <label>Enter your name</label>&nbsp;<input type="text" autoFocus required ref="newUsername" /><br />
+              <label>Provide some context for this project (i.e. what kind of writing it is, what others should focus on...)</label><br/>
+              <textarea required ref="comment" /><br/>
+              <label>Optional: Share an initial version or starting point for the writing you have in mind</label><br/>
+              <textarea ref="content" /><br/>
+              <Button block bsStyle="success" type="submit"><FA name="upload" /> Launch it!</Button>
+            </form>
+          : false}
+          {this.state.showJoinForm ?
+            <form id="joinform" onSubmit={this.storeSigninVars}> 
+              <input autoFocus required ref="accessCode" placeholder="Project access code" /><br />
+              <input type="text" required ref="username" placeholder="Your name" /><br />
+              <Button block bsStyle="info" type="submit"><FA name="sign-in" /> Join in!</Button>
+            </form>
+          : false}
+        </ReactCSSTransitionGroup>
+        <AlertMessage showModal={this.state.showModal} closeAlert={this.closeAlert} />
+      </Panel>
+    );
+  }
 }
 
 export default SigninForm;

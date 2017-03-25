@@ -13,7 +13,7 @@ export default function PostHeader(props) {
     } else if (props.version === 1 || props.editedFrom === 0 && props.content !== 'general_comment') {
       //Originals
       bsStyle = "info";
-      labelText = "VERSION " + props.version + " - ORIGINAL";
+      labelText = "VERSION " + props.version + " - NEW PROPOSAL";
       postInfo = 'Suggested by <span class="displayed_username">' + props.username + '</span> ' + props.timeStamp;
 
     } else if (props.editedFrom !== 0 ) {

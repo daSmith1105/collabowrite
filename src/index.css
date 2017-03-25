@@ -8,13 +8,36 @@ body {
   padding-top: 20px;
 }
 
+.postlist {
+	list-style: none;
+	padding: 0;
+}
+
+.text-transition-enter {
+	opacity: 0.01;
+}
+
+.text-transition-enter.text-transition-enter-active {
+  opacity: 1;
+  transition: opacity 400ms ease-in 600ms;
+}
+
+.text-transition-leave {
+  opacity: 1;
+}
+
+.text-transition-leave.text-transition-leave-active {
+  opacity: 0.01;
+  transition: opacity 400ms ease-in;
+}
+
 .evt-transition-enter {
 	opacity: 0.01;
 }
 
 .evt-transition-enter.evt-transition-enter-active {
-    opacity: 1;
-    transition: opacity 500ms ease-in;
+  opacity: 1;
+  transition: opacity 500ms ease-in;
 }
 
 .evt-transition-leave {
@@ -22,23 +45,17 @@ body {
 }
 
 .evt-transition-leave.evt-transition-leave-active {
-    opacity: 0.01;
-    transition: opacity 500ms ease-in;
+  opacity: 0.01;
+  transition: opacity 500ms ease-in;
 }
-
-.postlist {
-	list-style: none;
-	padding: 0;
-}
-
 
 .form-transition-enter {
 	opacity: 0.01;
 }
 
 .form-transition-enter.form-transition-enter-active {
-    opacity: 1;
-    transition: opacity 500ms ease-in;
+  opacity: 1;
+  transition: opacity 500ms ease-in;
 }
 
 .form-transition-enter-transition-leave {
@@ -46,20 +63,20 @@ body {
 }
 
 .form-transition-leave.form-transition-leave-active {
-    opacity: 0.01;
-    transition: opacity 500ms ease-in;
+  opacity: 0.01;
+  transition: opacity 500ms ease-in;
 }
 
 del {
-    background: #FFE6E6;
-    color: gray;
-    font-size: 80%;
+  background: #FFE6E6;
+  color: gray;
+  font-size: 80%;
 }
 
 ins {
-    background: #E6FFE6;
-    text-decoration: none;
-    font-weight: bold;
+  background: #E6FFE6;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 del + ins::before {
@@ -82,10 +99,10 @@ del + ins::before {
 }
 
 .byline {
-    display: inline-block;
-    padding-left: 8px;
-    position: relative;
-    top: 2px;
+  display: inline-block;
+  padding-left: 8px;
+  position: relative;
+  top: 2px;
 }
 
 .writing {
@@ -100,8 +117,19 @@ p {
   transition: font-size 0.1s ease;
 }
 
-.large_text {
-  font-size: 26px;
+.quotations {
+  font-family: sans-serif;
+  font-weight: bolder;
+  padding: 1px;
+  transition: font-size 0.1s ease;
+}
+
+.larger_text {
+  font-size: 23px;
+}
+
+.enlarged_text {
+  font-size: 27px;
   transition: font-size 0.1s ease;
 }
 
@@ -111,7 +139,7 @@ p {
 }
 
 .comments {
-    padding-left: 7px;
+  padding-left: 7px;
 }
 
 .newComment_time {
@@ -150,19 +178,19 @@ p {
 }
 
 input, textarea {
-    display: block;
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #555;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
 textarea {
@@ -250,9 +278,18 @@ h3 {
 }
 
 .example, .description {
- font-size: 20px; 
- position: relative;
- bottom: 1px;
+  font-size: 20px; 
+  position: relative;
+  bottom: 1px;
+}
+
+h2 {
+  position: relative;
+}
+
+.example {
+  position: absolute;
+  margin: 0 0 3px 7px;
 }
 
 .description {
@@ -260,11 +297,11 @@ h3 {
 }
 
 h5 {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 22px;
-    padding: 0 32px;
-    margin-bottom: 20px;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+  padding: 0 32px;
+  margin-bottom: 20px;
 }
 
 .adj {
@@ -280,8 +317,8 @@ h5 {
 }
 
 .fa-mobile-phone, .fa-mobile-phone:before, .fa-mobile:before {
-    font-size: 27px;
-    text-align: right;
+  font-size: 27px;
+  text-align: right;
 }
 
 .rights {
@@ -345,7 +382,7 @@ a:link, a:hover, a:active, a:visited {
   }
 
   .list-group-item {
-      padding: 10px 10px;
+    padding: 10px 10px;
   }
   
   .comments_header {
