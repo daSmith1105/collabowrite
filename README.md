@@ -1,6 +1,6 @@
 #**Collabowrite**
 
-Live link: **http://collabowriteit.herokuapp.com/**
+Live link: **https://collabowriteit.herokuapp.com/**
 
 ##Screenshots of **Collabowrite**
 ![Screenshot of sample project](screenshot1.jpg "Header")
@@ -17,16 +17,18 @@ The main features include the following:
 
 (1) Real-time updates and notifications of new posts and comments
 
-(2) Mobile responsive interface to allow users to work from smartphones and tablets
+(2) A Mobile responsive interface to allow users to work from smartphones and tablets
 
-(3) On-click text-enlarging feature of posts and comments to make project presentation or classroom-friendly.
+(3) An on-click text-enlarging feature of posts and comments to make projects presentation/classroom-friendly.
 
-(4) Easy account-free set-up enabled by randomly generated project access codes 
+(4) Easy account-free set-up enabled using randomly generated unique project access codes 
 
 
 ##Technology
 
-"Collabowrite" is a full-stack express application using React.js and Node.js for its front-end and back-end framework respectively and MongoDB for its database. All posts, forms, and comments are composed of components which communicates data to one another via props and state. Axios is used to make calls to the REST API to save and display post Mongoose object data stored in a MongoDB database hosted on Mlab. The app uses Pusher for real-time event triggering to display new posts and comments to all users in session. Lastly, Webpack and style loaders are being used to generate a bundle.js that comprises all front-end javascript files and CSS stylesheets. 
+"Collabowrite" is a full-stack express application using React.js and Node.js for its front-end and back-end framework respectively and MongoDB for its database. All posts, forms, and comments are composed of components, which communicate data with each another via props and state. Axios is used to make calls to the REST API to save and display post Mongoose object data stored in a MongoDB database hosted on Mlab. The app uses Pusher (https://pusher.com) for real-time event triggering to display new posts and comments to all users in session. Lastly, Webpack and style loaders have been used to generate a bundle.js that combines all of the front-end javascript files and CSS stylesheets into one javascript file. 
+
+Live link: **https://collabowriteit.herokuapp.com/**
 
 For any further questions, contact me at **tswpaik@gmail.com**.
 
