@@ -10,7 +10,7 @@ export default function PostHeader(props) {
       labelText = "CONTEXT";
       postInfo = 'Provided by <span class="displayed_username">' + props.username + '</span> ' + props.timeStamp;
 
-    } else if (props.version === 1 || props.editedFrom === 0 && props.content !== 'general_comment') {
+    } else if (props.version === 1 && props.content !== 'general_comment' || props.editedFrom === 0 && props.content !== 'general_comment') {
       //Originals
       bsStyle = "info";
       labelText = "VERSION " + props.version + " - NEW PROPOSAL";

@@ -36693,7 +36693,7 @@ function Post(props) {
   if (content === '') {
     panelStyle = "warning";
   } //Context posts
-  else if (version === 1 || editedFrom === 0 && content !== '' && content !== 'general_comment') {
+  else if (version === 1 && content !== 'general_comment' || editedFrom === 0 && content !== '' && content !== 'general_comment') {
       panelStyle = "info";
     } //Originals
     else if (editedFrom !== 0) {
@@ -64124,7 +64124,7 @@ function PostHeader(props) {
     bsStyle = "warning";
     labelText = "CONTEXT";
     postInfo = 'Provided by <span class="displayed_username">' + props.username + '</span> ' + props.timeStamp;
-  } else if (props.version === 1 || props.editedFrom === 0 && props.content !== 'general_comment') {
+  } else if (props.version === 1 && props.content !== 'general_comment' || props.editedFrom === 0 && props.content !== 'general_comment') {
     //Originals
     bsStyle = "info";
     labelText = "VERSION " + props.version + " - NEW PROPOSAL";

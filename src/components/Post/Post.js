@@ -17,7 +17,7 @@ export default function Post(props) {
   //Panel styling for different types of posts
   let panelStyle;
   if (content === '') { panelStyle = "warning"; } //Context posts
-  else if (version === 1 || editedFrom === 0 && content !== '' && content !== 'general_comment') { panelStyle = "info"; } //Originals
+  else if (version === 1 && content !== 'general_comment' || editedFrom === 0 && content !== '' && content !== 'general_comment') { panelStyle = "info"; } //Originals
   else if (editedFrom !== 0 ) { panelStyle = "success"; } //Revisions
   else if (content === "general_comment") { panelStyle="default"; } //Discussion threads
 
