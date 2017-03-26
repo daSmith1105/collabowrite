@@ -3,6 +3,7 @@ import { Well, Button } from 'react-bootstrap';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ConfirmMessage from '../ConfirmMessage/ConfirmMessage';
+import TestMessage from '../TestMessage/TestMessage';
 import axios from 'axios';
 import Scroll from 'react-scroll';
 const scroll = Scroll.animateScroll;
@@ -13,12 +14,14 @@ class ThreadForm extends React.Component {
     this.state = {
       showButtons: true,
       showCommentForm: false,
-      showModal: false
+      showModal: false,
+      showTestMessage: false
     };
     this.showCommentForm = this.showCommentForm.bind(this);
     this.addComment = this.addComment.bind(this);
     this.closeForm = this.closeForm.bind(this);
     this.closeConfirm = this.closeConfirm.bind(this);
+    this.closeTestMessage = this.closeTestMessage.bind(this);
   }
   
   showCommentForm() {
@@ -45,10 +48,14 @@ class ThreadForm extends React.Component {
       editedFrom: 0,
       comment: this.refs.comment.value.replace(/\n\r?/g, '<br />'),
     };
-    axios.post('/api/post', data);
-    this.setState({ showCommentForm: false }, function() {
-      scroll.scrollToBottom();
-    });
+    if (data.username === 'Test user') {
+      this.setState({ showTestMessage: true });
+    } else {
+      axios.post('/api/post', data);
+      this.setState({ showCommentForm: false }, function() {
+        scroll.scrollToBottom();
+      });
+    }
   }
   
   closeForm() {
@@ -59,6 +66,8 @@ class ThreadForm extends React.Component {
   }
 
   closeConfirm() { this.setState({ showModal: false }); }
+  
+  closeTestMessage() { this.setState({ showCommentForm: false, showTestMessage: false }); }
 
   render() {
     return (
@@ -74,6 +83,7 @@ class ThreadForm extends React.Component {
           : false}
         </ReactCSSTransitionGroup>
         <ConfirmMessage showModal={this.state.showModal} closeConfirm={this.closeConfirm} closeForm={this.closeForm} />
+        <TestMessage showTestMessage={this.state.showTestMessage} closeTestMessage={this.closeTestMessage} />
       </Well>
     );
   }

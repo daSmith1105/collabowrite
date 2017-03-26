@@ -64830,6 +64830,10 @@ var _ConfirmMessage = __webpack_require__(1025);
 
 var _ConfirmMessage2 = _interopRequireDefault(_ConfirmMessage);
 
+var _TestMessage = __webpack_require__(1074);
+
+var _TestMessage2 = _interopRequireDefault(_TestMessage);
+
 var _axios = __webpack_require__(1033);
 
 var _axios2 = _interopRequireDefault(_axios);
@@ -64859,12 +64863,14 @@ var ThreadForm = function (_React$Component) {
     _this.state = {
       showButtons: true,
       showCommentForm: false,
-      showModal: false
+      showModal: false,
+      showTestMessage: false
     };
     _this.showCommentForm = _this.showCommentForm.bind(_this);
     _this.addComment = _this.addComment.bind(_this);
     _this.closeForm = _this.closeForm.bind(_this);
     _this.closeConfirm = _this.closeConfirm.bind(_this);
+    _this.closeTestMessage = _this.closeTestMessage.bind(_this);
     return _this;
   }
 
@@ -64895,10 +64901,14 @@ var ThreadForm = function (_React$Component) {
         editedFrom: 0,
         comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
       };
-      _axios2.default.post('/api/post', data);
-      this.setState({ showCommentForm: false }, function () {
-        scroll.scrollToBottom();
-      });
+      if (data.username === 'Test user') {
+        this.setState({ showTestMessage: true });
+      } else {
+        _axios2.default.post('/api/post', data);
+        this.setState({ showCommentForm: false }, function () {
+          scroll.scrollToBottom();
+        });
+      }
     }
   }, {
     key: 'closeForm',
@@ -64912,6 +64922,11 @@ var ThreadForm = function (_React$Component) {
     key: 'closeConfirm',
     value: function closeConfirm() {
       this.setState({ showModal: false });
+    }
+  }, {
+    key: 'closeTestMessage',
+    value: function closeTestMessage() {
+      this.setState({ showCommentForm: false, showTestMessage: false });
     }
   }, {
     key: 'render',
@@ -64945,7 +64960,8 @@ var ThreadForm = function (_React$Component) {
             )
           ) : false
         ),
-        _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm })
+        _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm }),
+        _react2.default.createElement(_TestMessage2.default, { showTestMessage: this.state.showTestMessage, closeTestMessage: this.closeTestMessage })
       );
     }
   }]);
