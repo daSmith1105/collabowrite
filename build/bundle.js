@@ -35720,8 +35720,8 @@ var App = function (_React$Component) {
               setTimeout(function () {
                 newArray[i].updated = false;
                 this.setState({ posts: newArray });
-              }.bind(this), 5000);
-            }.bind(this), 5000);
+              }.bind(this), 3000);
+            }.bind(this), 3000);
           }.bind(this), 100);
 
           if (this.state.sound && this.state.username !== commentUser) {
