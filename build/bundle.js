@@ -37532,6 +37532,9 @@ var PostBody = function (_React$Component) {
           _react2.default.createElement('div', { className: "writing" + largerText, onClick: this.changeTextSize, dangerouslySetInnerHTML: { __html: '<span class="quotations">&ldquo;</span>' + this.props.content + '<span class="quotations">&rdquo;</span>' } })
         );
       } else if (this.props.editedFrom !== 0) {
+        var changes = (0, _jsdiff2.default)(this.props.prevContent, this.props.content).replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>');
+        console.log(changes);
+
         // Revisions
         return _react2.default.createElement(
           _reactBootstrap.ListGroupItem,
@@ -37574,7 +37577,7 @@ var PostBody = function (_React$Component) {
                 )
               )
             ),
-            _react2.default.createElement('div', { className: "writing" + largerText, onClick: this.changeTextSize, dangerouslySetInnerHTML: { __html: '<span class="quotations">&ldquo;</span>' + (0, _jsdiff2.default)(this.props.prevContent, this.props.content).trim() + '<span class="quotations">&rdquo;</span>' } })
+            _react2.default.createElement('div', { className: "writing" + largerText, onClick: this.changeTextSize, dangerouslySetInnerHTML: { __html: '<span class="quotations">&ldquo;</span>' + changes + '<span class="quotations">&rdquo;</span>' } })
           ) : true
         );
       }
@@ -37833,7 +37836,7 @@ var PostForms = function (_React$Component) {
       if (this.state.showReviseForm == false) {
         this.setState({ showReviseForm: true, showCommentForm: false }, function () {
           // Place content of the post in textarea for user to revise
-          this.refs.revisionContent.value = this.props.content;
+          this.refs.revisionContent.value = this.props.content.replace(/<br\s*\/?>/mg, "\n");
         });
       } else {
         if (this.refs.revisionContent.value !== this.props.content) {
@@ -37864,17 +37867,17 @@ var PostForms = function (_React$Component) {
       var data = {
         accessCode: this.props.accessCode,
         username: this.props.yourUsername,
-        content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
+        content: this.refs.revisionContent.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' '),
         prevContent: this.props.content,
         editedFrom: this.props.version,
-        comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
+        comment: this.refs.revisionComment.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' ')
       };
 
       if (data.username === 'Test user') {
         this.setState({ showTestMessage: true });
       } else {
         if (data.content === data.prevContent) {
-          data = { username: this.props.yourUsername, comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />') };
+          data = { username: this.props.yourUsername, comment: this.refs.revisionComment.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' ') };
           _axios2.default.post('/api/post/' + this.props._id + '/comment', data);
         } else {
           _axios2.default.post('/api/post', data).then(function () {
@@ -37888,7 +37891,7 @@ var PostForms = function (_React$Component) {
     key: 'addComment',
     value: function addComment(e) {
       e.preventDefault();
-      var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value.replace(/\n\r?/g, '<br />') };
+      var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' ') };
       if (data.username === 'Test user') {
         this.setState({ showTestMessage: true });
       } else {
@@ -38379,10 +38382,10 @@ var SigninForm = function (_React$Component) {
       var data = {
         accessCode: this.refs.newAccessCode.value,
         username: this.refs.newUsername.value,
-        content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
+        content: this.refs.content.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' '),
         prevContent: '',
         editedFrom: 0,
-        comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+        comment: this.refs.comment.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' ')
       };
       _axios2.default.post('/api/post/', data);
     }
@@ -38620,7 +38623,7 @@ var ThreadForm = function (_React$Component) {
         content: 'general_comment',
         prevContent: 'general_comment',
         editedFrom: 0,
-        comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+        comment: this.refs.comment.value.replace(/\n\r?/g, ' <br />').replace(/\s\s+/g, ' ')
       };
       if (data.username === 'Test user') {
         this.setState({ showTestMessage: true });

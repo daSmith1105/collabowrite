@@ -32,7 +32,7 @@ class PostForms extends React.Component {
     if (this.state.showReviseForm == false) {
       this.setState({ showReviseForm: true, showCommentForm: false }, function(){
         // Place content of the post in textarea for user to revise
-        this.refs.revisionContent.value = this.props.content;
+        this.refs.revisionContent.value = this.props.content.replace(/<br\s*\/?>/mg,"\n");
       });
     } else {
       if (this.refs.revisionContent.value !== this.props.content) {
@@ -61,17 +61,17 @@ class PostForms extends React.Component {
     var data = {
       accessCode: this.props.accessCode,
       username: this.props.yourUsername,
-      content: this.refs.revisionContent.value.replace(/\n\r?/g, '<br />'),
+      content: this.refs.revisionContent.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' ),
       prevContent: this.props.content,
       editedFrom: this.props.version,
-      comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
+      comment: this.refs.revisionComment.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' )
     };
     
     if (data.username === 'Test user') {
       this.setState({ showTestMessage: true });
     } else {
       if (data.content === data.prevContent) {
-        data = { username: this.props.yourUsername, comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />') };  
+        data = { username: this.props.yourUsername, comment: this.refs.revisionComment.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' ) };  
         axios.post('/api/post/' + this.props._id + '/comment', data);
       } else {
         axios.post('/api/post', data).then(function(){ scroll.scrollToBottom(); });
@@ -82,7 +82,7 @@ class PostForms extends React.Component {
   
   addComment(e) {
     e.preventDefault();
-    var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value.replace(/\n\r?/g, '<br />') };  
+    var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' ) };  
     if (data.username === 'Test user') {
       this.setState({ showTestMessage: true });
     } else {

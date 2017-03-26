@@ -92,10 +92,10 @@ class SigninForm extends React.Component{
     let data = {
       accessCode: this.refs.newAccessCode.value,
       username: this.refs.newUsername.value,
-      content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
+      content: this.refs.content.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' ),
       prevContent: '',
       editedFrom: 0,
-      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+      comment: this.refs.comment.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' )
     };
     axios.post('/api/post/', data);
   }  

@@ -51,6 +51,9 @@ class PostBody extends React.Component {
       );
       
     } else if (this.props.editedFrom !== 0 ) {
+      const changes = diffString(this.props.prevContent, this.props.content).replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>');
+      console.log(changes);
+      
       // Revisions
       return (
         <ListGroupItem>
@@ -71,7 +74,7 @@ class PostBody extends React.Component {
                   - Hide changes from <Label bsStyle="default" className="change_version">VERSION {this.props.editedFrom}</Label>
                 </div>
               </a>
-              <div className={"writing" + largerText} onClick={this.changeTextSize} dangerouslySetInnerHTML={{__html: '<span class="quotations">&ldquo;</span>' + diffString(this.props.prevContent, this.props.content).trim() + '<span class="quotations">&rdquo;</span>'}}></div>
+              <div className={"writing" + largerText} onClick={this.changeTextSize} dangerouslySetInnerHTML={{__html: '<span class="quotations">&ldquo;</span>' + changes + '<span class="quotations">&rdquo;</span>'}}></div>
             </div>
           : true}
         </ListGroupItem>

@@ -46,7 +46,7 @@ class ThreadForm extends React.Component {
       content: 'general_comment',
       prevContent: 'general_comment',
       editedFrom: 0,
-      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />'),
+      comment: this.refs.comment.value.replace(/\n\r?/g, ' <br />').replace( /\s\s+/g, ' ' ),
     };
     if (data.username === 'Test user') {
       this.setState({ showTestMessage: true });
