@@ -64,7 +64,7 @@ function diffString( o, n ) {
     }
   }
   
-  return str;
+  return str.replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>').replace('</del><del><br />', '').replace('</del><ins><br />', '</del><br /><ins>').replace('<br /><ins> </ins><ins>&lt;br </ins><ins>/&gt;', '<br /><br /><ins>').replace('<br /><del> </del><del><br </del><del>/&gt; </del><del>&lt;br </del> />', '<del>&nbsp;</del><br />').replace('<del><br />', '<del>').replace('&lt;br </del><del>/&gt;', '').replace('&lt;br </del><del>/&gt; </del><del>&lt;br </del><del>/&gt;', '').replace('<del> </del><br />', '').replace('&lt;br </ins><ins>/&gt;', '').trim();
 }
 
 function randomColor() {
