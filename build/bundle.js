@@ -65568,7 +65568,7 @@ function TestMessage(props) {
         _react2.default.createElement(
           'b',
           null,
-          'This is just a demo for you to see what a Collabowrite project looks like.'
+          'Sorry, this is just a demo for you to see what a Collabowrite project looks like.'
         )
       ),
       _react2.default.createElement(
