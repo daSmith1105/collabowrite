@@ -80,7 +80,7 @@ class Header extends React.Component {
   	  return (
   	    <div>
           <Jumbotron>
-            <h2>Collabo<span className="green">write</span>
+            <h2><a href=".">Collabo<span className="green">write</span></a>
               <Button bsStyle="info" className="sound" onClick={this.setSound}>
                 <FA name={ this.state.soundButton ? "volume-up" : "volume-off" } />
               </Button>

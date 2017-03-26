@@ -65177,11 +65177,15 @@ var Header = function (_React$Component) {
             _react2.default.createElement(
               'h2',
               null,
-              'Collabo',
               _react2.default.createElement(
-                'span',
-                { className: 'green' },
-                'write'
+                'a',
+                { href: '.' },
+                'Collabo',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'green' },
+                  'write'
+                )
               ),
               _react2.default.createElement(
                 _reactBootstrap.Button,
