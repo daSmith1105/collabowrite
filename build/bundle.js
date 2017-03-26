@@ -37532,8 +37532,7 @@ var PostBody = function (_React$Component) {
           _react2.default.createElement('div', { className: "writing" + largerText, onClick: this.changeTextSize, dangerouslySetInnerHTML: { __html: '<span class="quotations">&ldquo;</span>' + this.props.content + '<span class="quotations">&rdquo;</span>' } })
         );
       } else if (this.props.editedFrom !== 0) {
-        var changes = (0, _jsdiff2.default)(this.props.prevContent, this.props.content).replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>');
-        console.log(changes);
+        var changes = (0, _jsdiff2.default)(this.props.prevContent, this.props.content).replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>').replace('</del><del><br />', '').trim();
 
         // Revisions
         return _react2.default.createElement(

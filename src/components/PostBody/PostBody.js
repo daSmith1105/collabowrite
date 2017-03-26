@@ -51,8 +51,7 @@ class PostBody extends React.Component {
       );
       
     } else if (this.props.editedFrom !== 0 ) {
-      const changes = diffString(this.props.prevContent, this.props.content).replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>');
-      console.log(changes);
+      const changes = diffString(this.props.prevContent, this.props.content).replace('&lt;', '<').replace('&gt;', '>').replace('<br </ins><ins>/>', '<br />').replace('<br </del><del>/>', '<br />').replace('<br <ins>/>', '<br /><ins>').replace('<ins><br </ins> />', '<br />').replace('<br <del>/>', '<br /><del>').replace('<del><br </del> />', '<br />').replace('<ins>&lt;br </ins><ins>/&gt;', '<br /><ins>').replace('</del><del><br />', '').trim();
       
       // Revisions
       return (
