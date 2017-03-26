@@ -28,7 +28,9 @@ class Comment extends React.Component {
   
     return (
       <p className={pClass} onClick={this.changeTextSize}>
-        <span className="displayed_username">{this.props.username}</span>: {this.props.comment} <span className="comment_timestamp">{timeStamp}</span>
+        <span className="displayed_username">{this.props.username}: </span>
+        <span dangerouslySetInnerHTML={{__html: this.props.comment }}></span>
+        <span className="comment_timestamp">{timeStamp}</span>
       </p>
     );
   }

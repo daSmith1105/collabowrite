@@ -70,19 +70,26 @@ class PostForms extends React.Component {
     if (data.username === 'Test user') {
       this.setState({ showTestMessage: true });
     } else {
-      axios.post('/api/post', data).then(function(){ scroll.scrollToBottom(); });
+      if (data.content === data.prevContent) {
+        data = { username: this.props.yourUsername, comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />') };  
+        axios.post('/api/post/' + this.props._id + '/comment', data);
+      } else {
+        axios.post('/api/post', data).then(function(){ scroll.scrollToBottom(); });
+      }
       this.setState({ showReviseForm: false, showCommentForm: false });
     }
   }
   
   addComment(e) {
     e.preventDefault();
-    var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value };  
+    var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value.replace(/\n\r?/g, '<br />') };  
     if (data.username === 'Test user') {
       this.setState({ showTestMessage: true });
     } else {
-      axios.post('/api/post/' + this.props._id + '/comment', data);
-      this.setState({ showReviseForm: false, showCommentForm: false });
+      axios.post('/api/post/' + this.props._id + '/comment', data).then(function(){
+        this.refs.commentOnly.value = '';
+        this.setState({ showReviseForm: false, showCommentForm: false });        
+      }.bind(this));
     }
   }
   

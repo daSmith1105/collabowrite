@@ -36936,11 +36936,10 @@ var Comment = function (_React$Component) {
         _react2.default.createElement(
           'span',
           { className: 'displayed_username' },
-          this.props.username
+          this.props.username,
+          ': '
         ),
-        ': ',
-        this.props.comment,
-        ' ',
+        _react2.default.createElement('span', { dangerouslySetInnerHTML: { __html: this.props.comment } }),
         _react2.default.createElement(
           'span',
           { className: 'comment_timestamp' },
@@ -37874,9 +37873,14 @@ var PostForms = function (_React$Component) {
       if (data.username === 'Test user') {
         this.setState({ showTestMessage: true });
       } else {
-        _axios2.default.post('/api/post', data).then(function () {
-          scroll.scrollToBottom();
-        });
+        if (data.content === data.prevContent) {
+          data = { username: this.props.yourUsername, comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />') };
+          _axios2.default.post('/api/post/' + this.props._id + '/comment', data);
+        } else {
+          _axios2.default.post('/api/post', data).then(function () {
+            scroll.scrollToBottom();
+          });
+        }
         this.setState({ showReviseForm: false, showCommentForm: false });
       }
     }
@@ -37884,12 +37888,14 @@ var PostForms = function (_React$Component) {
     key: 'addComment',
     value: function addComment(e) {
       e.preventDefault();
-      var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value };
+      var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value.replace(/\n\r?/g, '<br />') };
       if (data.username === 'Test user') {
         this.setState({ showTestMessage: true });
       } else {
-        _axios2.default.post('/api/post/' + this.props._id + '/comment', data);
-        this.setState({ showReviseForm: false, showCommentForm: false });
+        _axios2.default.post('/api/post/' + this.props._id + '/comment', data).then(function () {
+          this.refs.commentOnly.value = '';
+          this.setState({ showReviseForm: false, showCommentForm: false });
+        }.bind(this));
       }
     }
   }, {
