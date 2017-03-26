@@ -1,6 +1,6 @@
 import React from 'react';
 import store from 'store';
-import { Jumbotron, Button, Alert } from 'react-bootstrap';
+import { Tooltip, Jumbotron, OverlayTrigger, Button, Alert } from 'react-bootstrap';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -64,6 +64,12 @@ class Header extends React.Component {
   handleAlertDismiss() { this.setState({ alertVisible: false }); }
 
 	render() {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        <b><FA name="lightbulb-o" /> Tip</b>: Turn on/off notification sounds for new posts and comments.
+      </Tooltip>
+    );
+    
 	  if (!this.props.signIn) {
 	    return (
         <Jumbotron>
@@ -81,15 +87,17 @@ class Header extends React.Component {
   	    <div>
           <Jumbotron>
             <h2><a href=".">Collabo<span className="green">write</span></a>
-              <Button bsStyle="info" className="sound" onClick={this.setSound}>
-                <FA name={ this.state.soundButton ? "volume-up" : "volume-off" } />
-              </Button>
+              <OverlayTrigger placement="left" overlay={tooltip}>
+                <Button bsStyle="info" className="sound" onClick={this.setSound}>
+                  <FA name={ this.state.soundButton ? "volume-up" : "volume-off" } />
+                </Button>
+              </OverlayTrigger>
             </h2>
           </Jumbotron>	 
           <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
             {this.state.alertVisible ?
               <Alert bsStyle="info" onDismiss={this.handleAlertDismiss}>
-                <b><FA name="lightbulb-o" /> Tip: If you're showing this on a projector, click on a post or comment to enlarge its text size.</b>
+                <b><FA name="lightbulb-o" /> Tip</b>: If you're showing this on a projector, click on a post or comment to enlarge its text size.
               </Alert>
             : true}
           </ReactCSSTransitionGroup>

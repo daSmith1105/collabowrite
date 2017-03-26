@@ -65178,6 +65178,18 @@ var Header = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var tooltip = _react2.default.createElement(
+        _reactBootstrap.Tooltip,
+        { id: 'tooltip' },
+        _react2.default.createElement(
+          'b',
+          null,
+          _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
+          ' Tip'
+        ),
+        ': Turn on/off notification sounds for new posts and comments.'
+      );
+
       if (!this.props.signIn) {
         return _react2.default.createElement(
           _reactBootstrap.Jumbotron,
@@ -65227,9 +65239,13 @@ var Header = function (_React$Component) {
                 )
               ),
               _react2.default.createElement(
-                _reactBootstrap.Button,
-                { bsStyle: 'info', className: 'sound', onClick: this.setSound },
-                _react2.default.createElement(_reactFontawesome2.default, { name: this.state.soundButton ? "volume-up" : "volume-off" })
+                _reactBootstrap.OverlayTrigger,
+                { placement: 'left', overlay: tooltip },
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'info', className: 'sound', onClick: this.setSound },
+                  _react2.default.createElement(_reactFontawesome2.default, { name: this.state.soundButton ? "volume-up" : "volume-off" })
+                )
               )
             )
           ),
@@ -65243,8 +65259,9 @@ var Header = function (_React$Component) {
                 'b',
                 null,
                 _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
-                ' Tip: If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
-              )
+                ' Tip'
+              ),
+              ': If you\'re showing this on a projector, click on a post or comment to enlarge its text size.'
             ) : true
           )
         );
