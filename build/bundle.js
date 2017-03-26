@@ -65578,7 +65578,7 @@ function TestMessage(props) {
           'b',
           null,
           _react2.default.createElement(_reactFontawesome2.default, { name: 'plus-circle' }),
-          ' Create your own project by:'
+          ' To create your own project:'
         )
       ),
       _react2.default.createElement(
@@ -65587,12 +65587,12 @@ function TestMessage(props) {
         _react2.default.createElement(
           'li',
           null,
-          'Describing the context of your project'
+          'Describe a context of your project'
         ),
         _react2.default.createElement(
           'li',
           null,
-          'Providing an initial version (optional)'
+          'Optionally provide an initial version'
         )
       ),
       _react2.default.createElement(
