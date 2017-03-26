@@ -14,6 +14,7 @@ class Comment extends React.Component {
   render() {
     let pClass ='';
     let timeStamp = moment(this.props.insertedAt).fromNow();
+    if (timeStamp === 'in a few seconds') { timeStamp = 'a few seconds ago' }
     const now = moment();
     
     if (!moment(this.props.insertedAt).add(60, 'minutes').isBefore(now)) {

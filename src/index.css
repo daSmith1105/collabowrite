@@ -228,7 +228,7 @@ span:focus {
   outline: none;
 }
 
-.btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {
+.btn.btn-default, .btn-block, .btn-group.btn-group-justified, .alert, .panel, input, textarea, .well {
     box-shadow: 1px 1px 6px #cccccc;
 }
 

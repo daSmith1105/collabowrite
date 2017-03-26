@@ -76,9 +76,9 @@ class SigninForm extends React.Component{
   
   storeSigninVars(e) {
     e.preventDefault();
-    axios.get('/api/posts/' + this.refs.accessCode.value).then(function(res){
+    axios.get('/api/posts/' + this.refs.accessCode.value.toLowerCase()).then(function(res){
       if (res.data.length === 0) {  this.setState({ showModal: true }); }
-      else { this.props.onSignin(this.refs.accessCode.value, this.refs.username.value); }
+      else { this.props.onSignin(this.refs.accessCode.value.toLowerCase(), this.refs.username.value); }
     }.bind(this));
   }
 

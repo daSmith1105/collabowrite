@@ -91,8 +91,8 @@ class App extends React.Component {
             setTimeout(function() {
               newArray[i].updated = false;
               this.setState({ posts: newArray });
-            }.bind(this), 1000);
-          }.bind(this), 1000);
+            }.bind(this), 5000);
+          }.bind(this), 5000);
         }.bind(this), 100);
         
         if (this.state.sound && this.state.username !== commentUser) { notification.play(); } 
