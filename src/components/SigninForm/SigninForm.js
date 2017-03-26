@@ -4,6 +4,7 @@ import IntroScreen from '../IntroScreen/IntroScreen';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AlertMessage from '../AlertMessage/AlertMessage';
+import CodeMessage from '../CodeMessage/CodeMessage';
 import axios from 'axios';
 
 class SigninForm extends React.Component{
@@ -13,7 +14,9 @@ class SigninForm extends React.Component{
       showIntro: true,
       showNewForm: false,
       showJoinForm: false,
-      showModal: false
+      showModal: false,
+      showCodeMessage: false,
+      accessCode: ''
     };
     this.showDemo = this.showDemo.bind(this);
     this.showNewForm = this.showNewForm.bind(this);
@@ -21,6 +24,8 @@ class SigninForm extends React.Component{
     this.createNewPost = this.createNewPost.bind(this);
     this.storeSigninVars = this.storeSigninVars.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
+    this.closeCodeMessage = this.closeCodeMessage.bind(this);
+    this.confirmCodeMessage = this.confirmCodeMessage.bind(this);
   }
   
   showDemo() { this.props.onSignin('1234', 'Test user'); }
@@ -47,8 +52,10 @@ class SigninForm extends React.Component{
       if (res.data.length !== 0) {
         // Regenerate code in the statistically insignificant scenario that the code is already in use
         generateCode();
+        this.setState({ accessCode: candidateCode });
         this.refs.newAccessCode.value = candidateCode;
       } else {
+        this.setState({ accessCode: candidateCode });
         this.refs.newAccessCode.value = candidateCode;
       }
     }.bind(this));
@@ -64,16 +71,7 @@ class SigninForm extends React.Component{
   
   createNewPost(e) {
     e.preventDefault();
-    this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
-    let data = {
-      accessCode: this.refs.newAccessCode.value,
-      username: this.refs.newUsername.value,
-      content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
-      prevContent: '',
-      editedFrom: 0,
-      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
-    };
-    axios.post('/api/post/', data);
+    this.setState({ showCodeMessage: true });
   }
   
   storeSigninVars(e) {
@@ -84,7 +82,23 @@ class SigninForm extends React.Component{
     }.bind(this));
   }
 
-  closeAlert() { this.setState({ showModal: false }); }  
+  closeAlert() { this.setState({ showModal: false }); }
+  
+  closeCodeMessage() { this.setState({ showCodeMessage: false }); }
+  
+  confirmCodeMessage() {
+    this.setState({ showCodeMessage: false });
+    this.props.onStart(this.refs.newAccessCode.value, this.refs.newUsername.value);
+    let data = {
+      accessCode: this.refs.newAccessCode.value,
+      username: this.refs.newUsername.value,
+      content: this.refs.content.value.replace(/\n\r?/g, '<br />'),
+      prevContent: '',
+      editedFrom: 0,
+      comment: this.refs.comment.value.replace(/\n\r?/g, '<br />')
+    };
+    axios.post('/api/post/', data);
+  }  
 
   render() {
     const buttons = (
@@ -132,6 +146,7 @@ class SigninForm extends React.Component{
           : false}
         </ReactCSSTransitionGroup>
         <AlertMessage showModal={this.state.showModal} closeAlert={this.closeAlert} />
+        <CodeMessage showCodeMessage={this.state.showCodeMessage} closeCodeMessage={this.closeCodeMessage} confirmCodeMessage={this.confirmCodeMessage} accessCode={this.state.accessCode}/>
       </Panel>
     );
   }

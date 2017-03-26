@@ -10,7 +10,7 @@ export default function AlertMessage(props) {
       </Modal.Header>
       <Modal.Body>
         <p><b>The project access code you entered doesn't seem to be valid.</b></p>
-        <p><FA name="info-circle" /> You may want to:</p>
+        <p><FA name="info-circle" /> <b>You may want to:</b></p>
         <ul>
           <li>Check your code for typos</li>
           <li>Ask your project initiater for the correct code again</li>
