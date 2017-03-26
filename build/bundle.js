@@ -34855,6 +34855,10 @@ var App = function (_React$Component) {
         posts: data,
         showPosts: true
       });
+
+      if (this.state.sound) {
+        notification.play();
+      }
     }
   }, {
     key: 'getSigninVars',

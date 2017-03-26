@@ -105,6 +105,10 @@ class App extends React.Component {
       posts: data,
       showPosts: true
     });
+    
+    if (this.state.sound) {
+  	  notification.play();
+  	}
   }
   
   getSigninVars(accessCode, username) {
