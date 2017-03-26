@@ -16430,7 +16430,7 @@ function TestMessage(props) {
         _react2.default.createElement(
           'li',
           null,
-          'Describe a context of your project'
+          'Describe the context of your project'
         ),
         _react2.default.createElement(
           'li',
@@ -16444,7 +16444,7 @@ function TestMessage(props) {
         _react2.default.createElement(
           'b',
           null,
-          'Easier than 1-2-3, right? Go test it out!'
+          'And that\'s it, so go test it out!'
         )
       )
     ),

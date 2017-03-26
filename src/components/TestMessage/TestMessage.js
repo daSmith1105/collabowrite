@@ -12,10 +12,10 @@ export default function TestMessage(props) {
         <p><b>Sorry, this is just a demo for you to see what a Collabowrite project looks like.</b></p>
         <p><FA name="plus-circle" /> <b>To create your own project:</b></p>
         <ul>
-          <li>Describe a context of your project</li>
+          <li>Describe the context of your project</li>
           <li>Optionally provide an initial version</li>
         </ul>
-        <p><b>Easier than 1-2-3, right? Go test it out!</b></p>
+        <p><b>And that's it, so go test it out!</b></p>
       </Modal.Body>
       <Modal.Footer>
         <Button bsStyle="success"><a href=".">Create my own</a></Button>
