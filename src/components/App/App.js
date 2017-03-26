@@ -62,7 +62,8 @@ class App extends React.Component {
       newArray.push(data);
       this.setState({ posts: newArray });
       
-      if (this.state.sound) {
+      if (this.state.sound && this.state.username !== data.username) {
+      // Notification sounds if setting is on AND post created by other users
     	  notification.play();
     	}
     }
@@ -94,7 +95,7 @@ class App extends React.Component {
           }.bind(this), 1000);
         }.bind(this), 100);
         
-        if (this.state.sound) { notification.play(); } 
+        if (this.state.sound && this.state.username !== commentUser) { notification.play(); } 
         break;
       }
     }
