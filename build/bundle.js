@@ -64553,6 +64553,10 @@ var _ConfirmMessage = __webpack_require__(1025);
 
 var _ConfirmMessage2 = _interopRequireDefault(_ConfirmMessage);
 
+var _TestMessage = __webpack_require__(1074);
+
+var _TestMessage2 = _interopRequireDefault(_TestMessage);
+
 var _reactBootstrap = __webpack_require__(62);
 
 var _reactFontawesome = __webpack_require__(77);
@@ -64593,7 +64597,8 @@ var PostForms = function (_React$Component) {
       showReviseForm: false,
       showCommentForm: false,
       showWriteButton: true,
-      showModal: false
+      showModal: false,
+      showTestMessage: false
     };
     _this.showReviseForm = _this.showReviseForm.bind(_this);
     _this.showCommentForm = _this.showCommentForm.bind(_this);
@@ -64602,6 +64607,7 @@ var PostForms = function (_React$Component) {
     _this.goBack = _this.goBack.bind(_this);
     _this.closeForm = _this.closeForm.bind(_this);
     _this.closeConfirm = _this.closeConfirm.bind(_this);
+    _this.closeTestMessage = _this.closeTestMessage.bind(_this);
     return _this;
   }
 
@@ -64647,18 +64653,27 @@ var PostForms = function (_React$Component) {
         editedFrom: this.props.version,
         comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
       };
-      _axios2.default.post('/api/post', data).then(function () {
-        scroll.scrollToBottom();
-      });
-      this.setState({ showReviseForm: false, showCommentForm: false });
+
+      if (data.username === 'Test user') {
+        this.setState({ showTestMessage: true });
+      } else {
+        _axios2.default.post('/api/post', data).then(function () {
+          scroll.scrollToBottom();
+        });
+        this.setState({ showReviseForm: false, showCommentForm: false });
+      }
     }
   }, {
     key: 'addComment',
     value: function addComment(e) {
       e.preventDefault();
       var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value };
-      _axios2.default.post('/api/post/' + this.props._id + '/comment', data);
-      this.setState({ showReviseForm: false, showCommentForm: false });
+      if (data.username === 'Test user') {
+        this.setState({ showTestMessage: true });
+      } else {
+        _axios2.default.post('/api/post/' + this.props._id + '/comment', data);
+        this.setState({ showReviseForm: false, showCommentForm: false });
+      }
     }
   }, {
     key: 'goBack',
@@ -64677,9 +64692,15 @@ var PostForms = function (_React$Component) {
       this.setState({ showModal: false });
     }
   }, {
+    key: 'closeTestMessage',
+    value: function closeTestMessage() {
+      this.setState({ showReviseForm: false, showCommentForm: false, showTestMessage: false });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var confirmMsg = _react2.default.createElement(_ConfirmMessage2.default, { showModal: this.state.showModal, closeConfirm: this.closeConfirm, closeForm: this.closeForm });
+      var testMsg = _react2.default.createElement(_TestMessage2.default, { showTestMessage: this.state.showTestMessage, closeTestMessage: this.closeTestMessage });
 
       if (this.props.content === "general_comment") {
         //Inline comment form only for discussion threads
@@ -64704,7 +64725,8 @@ var PostForms = function (_React$Component) {
               )
             )
           ),
-          confirmMsg
+          confirmMsg,
+          testMsg
         );
       } else {
         //Collapsible comment & write forms for other post types
@@ -64765,7 +64787,8 @@ var PostForms = function (_React$Component) {
               )
             ) : false
           ),
-          confirmMsg
+          confirmMsg,
+          testMsg
         );
       }
     }
@@ -65488,6 +65511,116 @@ function AlertMessage(props) {
         _reactBootstrap.Button,
         { bsStyle: 'success', onClick: props.closeAlert },
         'Got it'
+      )
+    )
+  );
+}
+
+/***/ }),
+/* 1074 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = TestMessage;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = __webpack_require__(62);
+
+var _reactFontawesome = __webpack_require__(77);
+
+var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function TestMessage(props) {
+  return _react2.default.createElement(
+    _reactBootstrap.Modal,
+    { show: props.showTestMessage, onHide: props.closeTestMessage },
+    _react2.default.createElement(
+      _reactBootstrap.Modal.Header,
+      { closeButton: true },
+      _react2.default.createElement(
+        _reactBootstrap.Modal.Title,
+        null,
+        _react2.default.createElement(_reactFontawesome2.default, { name: 'question-circle' }),
+        ' ',
+        _react2.default.createElement(
+          'b',
+          null,
+          'Want to post or comment?'
+        )
+      )
+    ),
+    _react2.default.createElement(
+      _reactBootstrap.Modal.Body,
+      null,
+      _react2.default.createElement(
+        'p',
+        null,
+        _react2.default.createElement(
+          'b',
+          null,
+          'This is just a demo for you to see what a Collabowrite project looks like.'
+        )
+      ),
+      _react2.default.createElement(
+        'p',
+        null,
+        _react2.default.createElement(
+          'b',
+          null,
+          _react2.default.createElement(_reactFontawesome2.default, { name: 'plus-circle' }),
+          ' Create your own project by:'
+        )
+      ),
+      _react2.default.createElement(
+        'ul',
+        null,
+        _react2.default.createElement(
+          'li',
+          null,
+          'Describing the context of your project'
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          'Providing an initial version (optional)'
+        )
+      ),
+      _react2.default.createElement(
+        'p',
+        null,
+        _react2.default.createElement(
+          'b',
+          null,
+          'Easier than 1-2-3, right? Go test it out!'
+        )
+      )
+    ),
+    _react2.default.createElement(
+      _reactBootstrap.Modal.Footer,
+      null,
+      _react2.default.createElement(
+        _reactBootstrap.Button,
+        { bsStyle: 'success' },
+        _react2.default.createElement(
+          'a',
+          { href: '.' },
+          'Create my own'
+        )
+      ),
+      _react2.default.createElement(
+        _reactBootstrap.Button,
+        { bsStyle: 'info', onClick: props.closeTestMessage },
+        'Look around more'
       )
     )
   );

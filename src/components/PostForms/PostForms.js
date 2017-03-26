@@ -1,5 +1,6 @@
 import React from 'react';
 import ConfirmMessage from '../ConfirmMessage/ConfirmMessage';
+import TestMessage from '../TestMessage/TestMessage';
 import { FormGroup, InputGroup, Button, ButtonGroup } from 'react-bootstrap';
 import FA from 'react-fontawesome';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -14,7 +15,8 @@ class PostForms extends React.Component {
       showReviseForm: false,
       showCommentForm: false,
       showWriteButton: true,
-      showModal: false
+      showModal: false,
+      showTestMessage: false
     };
     this.showReviseForm = this.showReviseForm.bind(this);
     this.showCommentForm = this.showCommentForm.bind(this);
@@ -22,7 +24,8 @@ class PostForms extends React.Component {
     this.addComment = this.addComment.bind(this);
     this.goBack = this.goBack.bind(this);
     this.closeForm = this.closeForm.bind(this);
-    this.closeConfirm = this.closeConfirm.bind(this);    
+    this.closeConfirm = this.closeConfirm.bind(this);   
+    this.closeTestMessage = this.closeTestMessage.bind(this);
   }
   
   showReviseForm(){
@@ -63,15 +66,24 @@ class PostForms extends React.Component {
       editedFrom: this.props.version,
       comment: this.refs.revisionComment.value.replace(/\n\r?/g, '<br />')
     };
-    axios.post('/api/post', data).then(function(){ scroll.scrollToBottom(); });
-    this.setState({ showReviseForm: false, showCommentForm: false });
+    
+    if (data.username === 'Test user') {
+      this.setState({ showTestMessage: true });
+    } else {
+      axios.post('/api/post', data).then(function(){ scroll.scrollToBottom(); });
+      this.setState({ showReviseForm: false, showCommentForm: false });
+    }
   }
   
   addComment(e) {
     e.preventDefault();
     var data = { username: this.props.yourUsername, comment: this.refs.commentOnly.value };  
-    axios.post('/api/post/' + this.props._id + '/comment', data);
-    this.setState({ showReviseForm: false, showCommentForm: false });
+    if (data.username === 'Test user') {
+      this.setState({ showTestMessage: true });
+    } else {
+      axios.post('/api/post/' + this.props._id + '/comment', data);
+      this.setState({ showReviseForm: false, showCommentForm: false });
+    }
   }
   
   goBack(e) {
@@ -82,9 +94,12 @@ class PostForms extends React.Component {
   closeForm() { this.setState({ showReviseForm: false, showCommentForm: false, showModal: false }); }
 
   closeConfirm() { this.setState({ showModal: false }); }
+  
+  closeTestMessage() { this.setState({ showReviseForm: false, showCommentForm: false, showTestMessage: false }); }
 
   render() {
     const confirmMsg = <ConfirmMessage showModal={this.state.showModal} closeConfirm={this.closeConfirm} closeForm={this.closeForm} />;
+    const testMsg = <TestMessage showTestMessage={this.state.showTestMessage} closeTestMessage={this.closeTestMessage} />;
     
     if (this.props.content === "general_comment") {
       //Inline comment form only for discussion threads
@@ -99,6 +114,7 @@ class PostForms extends React.Component {
             </InputGroup>
           </FormGroup>
           {confirmMsg}
+          {testMsg}
         </form>      
       );
       
@@ -128,6 +144,7 @@ class PostForms extends React.Component {
             : false}
           </ReactCSSTransitionGroup>
           {confirmMsg}
+          {testMsg}
         </div>
       );      
     }
