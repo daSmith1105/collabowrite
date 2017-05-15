@@ -367,6 +367,8 @@ h5 {
 }
 
 .label-default {
+  /*padding-top: 6px;*/
+  padding-bottom: 1px;
   background-color: darkgray;
 }
 
