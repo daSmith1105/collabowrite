@@ -366,8 +366,7 @@ h5 {
   width: 100px;
 }
 
-.label-default {
-  /*padding-top: 6px;*/
+.changes_command > .label-default {
   padding-bottom: 1px;
   background-color: darkgray;
 }
