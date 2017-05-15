@@ -9,11 +9,11 @@ export default function TestMessage(props) {
         <Modal.Title><FA name="question-circle" /> <b>Want to post or comment?</b></Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p><b>Sorry, this is just a demo for you to see what a Collabowrite project looks like.</b></p>
+        <p><b>Sorry, this is just a demo for you to see what a Collabowrite project looks like so posting has been disabled.</b></p>
         <p><FA name="plus-circle" /> <b>To create your own project:</b></p>
         <ul>
           <li>Describe the context of your project</li>
-          <li>Optionally provide an initial version</li>
+          <li>Optionally provide an initial version to work from</li>
         </ul>
         <p><b>And that's it, so go test it out!</b></p>
       </Modal.Body>

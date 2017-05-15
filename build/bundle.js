@@ -16410,7 +16410,7 @@ function TestMessage(props) {
         _react2.default.createElement(
           'b',
           null,
-          'Sorry, this is just a demo for you to see what a Collabowrite project looks like.'
+          'Sorry, this is just a demo for you to see what a Collabowrite project looks like so posting has been disabled.'
         )
       ),
       _react2.default.createElement(
@@ -16435,7 +16435,7 @@ function TestMessage(props) {
         _react2.default.createElement(
           'li',
           null,
-          'Optionally provide an initial version'
+          'Optionally provide an initial version to work from'
         )
       ),
       _react2.default.createElement(
