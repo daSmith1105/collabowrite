@@ -38843,6 +38843,22 @@ var ThreadForm = function (_React$Component) {
             'form',
             { onSubmit: this.addComment },
             _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              'p',
+              null,
+              _react2.default.createElement(
+                'b',
+                null,
+                _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
+                ' Tips:'
+              ),
+              _react2.default.createElement(
+                'span',
+                { className: 'mobile_hide' },
+                ' To enlarge form, pull its bottom right corner.'
+              ),
+              ' To close, click the button above again.'
+            ),
             _react2.default.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
             _react2.default.createElement('br', null),
             _react2.default.createElement(

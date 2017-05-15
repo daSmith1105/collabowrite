@@ -77,6 +77,7 @@ class ThreadForm extends React.Component {
           {this.state.showCommentForm ?
             <form onSubmit={this.addComment}>
               <br />
+              <p><b><FA name="lightbulb-o" /> Tips:</b><span className="mobile_hide"> To enlarge form, pull its bottom right corner.</span> To close, click the button above again.</p>              
               <textarea className="general_comment_textarea" autoFocus spellCheck="true" required ref="comment" placeholder="Make an announcement or suggestion about this project in a separate discussion thread post." /><br />
               <Button block bsStyle="success" type="submit">Begin thread</Button>
             </form>
