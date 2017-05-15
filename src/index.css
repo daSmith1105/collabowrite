@@ -366,9 +366,12 @@ h5 {
   width: 100px;
 }
 
+.label-default {
+  background-color: darkgray;  
+}
+
 .changes_command > .label-default {
   padding-bottom: 1px;
-  background-color: darkgray;
 }
 
 .intro_screen {
