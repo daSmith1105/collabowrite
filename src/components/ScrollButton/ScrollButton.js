@@ -9,7 +9,6 @@ export default function ScrollButton(props) {
         <Button block bsStyle={props.bsStyle} bsSize="large" onClick={props.handleClick}>
           <FA name={props.FAname} /> {props.buttonText}
         </Button>
-        <br />
       </div>
     );
   } else {

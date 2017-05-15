@@ -118,8 +118,15 @@ class SigninForm extends React.Component{
       <Panel header={buttons} className="intro_screen">
         {this.state.showIntro ?
           <div>
-            <IntroScreen />
-            <Button block onClick={this.showDemo}><b>Click to see a demo project</b></Button>
+            <div className="demo_banner">
+              <div className="demo_button_wraper">
+                <h5 className="demo_h5">See it for yourself.</h5>
+                <Button bsStyle="info" className="demo_button" onClick={this.showDemo}><b>Explore a demo project</b></Button>
+              </div>
+              <img className="writer" src="writer.jpg" />
+              <div className="cite_freepik">Image by <a href="http://www.freepik.com/free-vector/office-banners_800177.htm" target="_blank">Freepik</a></div>
+            </div>
+            <IntroScreen />            
           </div>
         : true }
         <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>        

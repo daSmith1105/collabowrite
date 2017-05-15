@@ -128,7 +128,7 @@ class App extends React.Component {
           {this.state.showPosts ? <Posts posts={this.state.posts} matchCode={this.state.matchCode} username={this.state.username} /> : null}
         </ReactCSSTransitionGroup>
         <AppForms showPosts={this.showPosts} getSigninVars={this.getSigninVars} />
-        <div className="rights"><Label className="rights">© 2017 Tim Paik</Label></div>
+        <a href="http://www.timpaik.co" target="_blank" className="copyright"> Built by<img className="timpaik_icon" src="timpaikicon.png" /></a>
       </div>
     );
   }  

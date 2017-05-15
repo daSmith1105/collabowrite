@@ -19,7 +19,7 @@ export default function TestMessage(props) {
       </Modal.Body>
       <Modal.Footer>
         <Button bsStyle="success"><a href=".">Create my own</a></Button>
-        <Button bsStyle="info" onClick={props.closeTestMessage}>Look around more</Button>     
+        <Button bsStyle="info" onClick={props.closeTestMessage}>Explore more</Button>     
       </Modal.Footer>
     </Modal>
   );

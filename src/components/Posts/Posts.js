@@ -21,11 +21,11 @@ class PostContainer extends React.Component {
     
     return (
       <div>
-        <ScrollButton postsArray={postsArray} bsStyle="success" handleClick={this.scrollDown} FAname="angle-down" buttonText="Scroll down to the latest post" />
+        <ScrollButton postsArray={postsArray} bsStyle="success" handleClick={this.scrollDown} FAname="angle-down" buttonText="Scroll to latest post" />
         <ReactCSSTransitionGroup component="ul" className="postlist" transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
           {postsMapped}
         </ReactCSSTransitionGroup>
-        <ScrollButton postsArray={postsArray} bsStyle="info" handleClick={this.scrollUp} FAname="angle-up" buttonText="Scroll up to the original post" /> 
+        <ScrollButton postsArray={postsArray} bsStyle="info" handleClick={this.scrollUp} FAname="angle-up" buttonText="Scroll to first post" /> 
       </div>
     );
 	}
