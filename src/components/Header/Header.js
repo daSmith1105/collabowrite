@@ -96,7 +96,7 @@ class Header extends React.Component {
           </Jumbotron>	 
           <ReactCSSTransitionGroup transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
             {this.state.alertVisible ?
-              <Alert bsStyle="info" onDismiss={this.handleAlertDismiss}>
+              <Alert bsStyle="success" onDismiss={this.handleAlertDismiss}>
                 <b><FA name="lightbulb-o" /> Tip</b>: If you're showing this on a projector, click on a post or comment to enlarge its text size.
               </Alert>
             : true}

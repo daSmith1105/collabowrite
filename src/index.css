@@ -9,9 +9,10 @@ body {
   background: 
   linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.09) 0%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0.09) 100%
+    rgba(0, 0, 0, 0.175) 0%,
+    rgba(0, 0, 0, 0) 25%,
+    rgba(0, 0, 0, 0) 75%,
+    rgba(0, 0, 0, 0.175) 100%
   ),
   url('/bg.png');
   background-attachment: scroll;
@@ -117,7 +118,7 @@ del + ins::before {
 .writing {
   padding: 7px 10px;
   transition: font-size 0.2s ease;
-  font-size: 23px;
+  font-size: 22px;
   line-height: 30px;
 }
 
@@ -534,10 +535,53 @@ span.input-group-btn {
   border: 1px solid rgb(204, 204, 204);
 }
 
+.panel, .well, .alert{
+  box-shadow: 0 0 5px #dddddd;
+}
+
+.btn-block, .sound {
+  box-shadow: 0 0 5px #b1b1b1;
+}
+
 div.accesscode_input {
   padding-top: 30px;
   height: 80px;
 }
+
+.fa-angle-double-down, .fa-angle-double-up {
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-name: blinker;
+  -moz-animation-duration: 1s;
+  -moz-animation-timing-function: linear;
+  -moz-animation-iteration-count: infinite;
+  animation-name: blinker;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+
+@-moz-keyframes blinker {  
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@-webkit-keyframes blinker {  
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes blinker {  
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 
 @media only screen and (max-device-width :768px) { 
   .demo_button {
