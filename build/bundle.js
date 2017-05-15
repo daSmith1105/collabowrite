@@ -38313,7 +38313,7 @@ var PostContainer = function (_React$Component) {
           { component: 'ul', className: 'postlist', transitionName: 'evt-transition', transitionEnterTimeout: 500, transitionLeaveTimeout: 500 },
           postsMapped
         ),
-        _react2.default.createElement(_ScrollButton2.default, { postsArray: postsArray, bsStyle: 'info', handleClick: this.scrollUp, FAname: 'angle-dobule-up', buttonText: 'Scroll to first post' })
+        _react2.default.createElement(_ScrollButton2.default, { postsArray: postsArray, bsStyle: 'info', handleClick: this.scrollUp, FAname: 'angle-double-up', buttonText: 'Scroll to first post' })
       );
     }
   }]);

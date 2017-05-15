@@ -25,7 +25,7 @@ class PostContainer extends React.Component {
         <ReactCSSTransitionGroup component="ul" className="postlist" transitionName="evt-transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
           {postsMapped}
         </ReactCSSTransitionGroup>
-        <ScrollButton postsArray={postsArray} bsStyle="info" handleClick={this.scrollUp} FAname="angle-dobule-up" buttonText="Scroll to first post" /> 
+        <ScrollButton postsArray={postsArray} bsStyle="info" handleClick={this.scrollUp} FAname="angle-double-up" buttonText="Scroll to first post" /> 
       </div>
     );
 	}
