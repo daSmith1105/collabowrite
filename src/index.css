@@ -9,10 +9,10 @@ body {
   background: 
   linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.175) 0%,
+    rgba(0, 0, 0, 0.15) 0%,
     rgba(0, 0, 0, 0) 25%,
     rgba(0, 0, 0, 0) 75%,
-    rgba(0, 0, 0, 0.175) 100%
+    rgba(0, 0, 0, 0.15) 100%
   ),
   url('/bg.png');
   background-attachment: scroll;
