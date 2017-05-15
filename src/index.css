@@ -129,7 +129,6 @@ p {
 }
 
 .quotations {
-  font-family: sans-serif;
   font-weight: bolder;
   padding: 1px;
   transition: font-size 0.1s ease;
