@@ -282,7 +282,7 @@ h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  font-size: 25px;
+  font-size: 29px;
 }
 
 .example, .description {
@@ -302,7 +302,6 @@ h2 {
 
 .intro_section {
   padding: 5px;
-  padding-top: 0;
 }
 
 .intro_point {
@@ -635,9 +634,9 @@ div.accesscode_input {
     width: 100%;
   }
   
-  .demo_button_wraper, .writer  {
-    margin-top: 20px;
-    width: 100%;
+  .intro_point {
+    margin-top: 0;
+    margin-bottom: 20px;
   }
   
   .writer {
@@ -650,5 +649,16 @@ div.accesscode_input {
   
   h3 {
     font-size: 21px;
+  }
+  
+  .cite_freepik {
+    padding: 0;
+    margin-bottom: 5px;
+  }
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 568px) { 
+  h3 {
+    font-size: 25px;
   }
 }
