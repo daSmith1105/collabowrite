@@ -14,7 +14,7 @@ export default function IntroScreen() {
       </div>
       <div className="intro_point">      
         <h3><FA name="slideshare" className="intro" /> Involve your <span className="green"> audience</span></h3>
-        <h5>Skip the slides. If you're leading a class, meeting, or a brainstorming session, put your Collabowrite project on a projector and invite others to share ideas onto the screen using their smartphones. Enlarge text by clicking on posts or comments. </h5>
+        <h5>Skip the slides. If you're leading a class, meeting, or a brainstorming session, put your project on a projector and invite others to share ideas onto the screen using their smartphones. Enlarge text by clicking on posts or comments. </h5>
       </div>
       <div className="intro_point">
         <h3><FA name="hand-peace-o" className="intro" /> Get started <span className="green"> hassle-free</span></h3>
