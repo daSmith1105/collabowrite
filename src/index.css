@@ -195,7 +195,7 @@ input, textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
 textarea {
@@ -520,10 +520,6 @@ label {
   top: -3px;
 }
 
-.btn-default.btn-block {
-  box-shadow: 0 0 3px #dddddd;
-}
-
 input.button_combined {
   box-shadow: none;
   height: 40px;
@@ -535,14 +531,6 @@ span.input-group-btn {
 
 .panel, .well, .alert {
   border: 1px solid rgb(204, 204, 204);
-}
-
-.panel, .well, .alert{
-  box-shadow: 0 0 5px #dddddd;
-}
-
-.btn-block, .sound {
-  box-shadow: 0 0 5px #b1b1b1;
 }
 
 div.accesscode_input {
