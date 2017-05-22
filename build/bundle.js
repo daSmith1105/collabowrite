@@ -37251,7 +37251,7 @@ var Header = function (_React$Component) {
           null,
           _react2.default.createElement(
             'a',
-            { href: 'https://collabowriteit.herokuapp.com' },
+            { href: 'http://www.collabowrite.co' },
             _react2.default.createElement(
               'h2',
               null,
@@ -37285,7 +37285,7 @@ var Header = function (_React$Component) {
               null,
               _react2.default.createElement(
                 'a',
-                { href: 'https://collabowriteit.herokuapp.com' },
+                { href: 'http://www.collabowrite.co' },
                 'Collabo',
                 _react2.default.createElement(
                   'span',

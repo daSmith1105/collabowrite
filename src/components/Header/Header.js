@@ -73,7 +73,7 @@ class Header extends React.Component {
 	  if (!this.props.signIn) {
 	    return (
         <Jumbotron>
-          <a href="https://collabowriteit.herokuapp.com"><h2>Collabo<span className="green">write </span>
+          <a href="http://www.collabowrite.co"><h2>Collabo<span className="green">write </span>
             <ReactCSSTransitionGroup transitionName="text-transition" transitionEnterTimeout={1000} transitionLeaveTimeout={400}>
               <span className="example" key={this.state.example}>
                 {this.state.example}
@@ -86,7 +86,7 @@ class Header extends React.Component {
   	  return (
   	    <div>
           <Jumbotron>
-            <h2><a href="https://collabowriteit.herokuapp.com">Collabo<span className="green">write</span></a>
+            <h2><a href="http://www.collabowrite.co">Collabo<span className="green">write</span></a>
               <OverlayTrigger placement="left" overlay={tooltip}>
                 <Button bsStyle="info" className="sound" onClick={this.setSound}>
                   <FA name={ this.state.soundButton ? "volume-up" : "volume-off" } />
