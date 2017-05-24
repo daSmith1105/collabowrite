@@ -37432,7 +37432,7 @@ function IntroScreen() {
       _react2.default.createElement(
         'h5',
         null,
-        'Skip account registration, too. Just start a new project by providing a starting point or context, and we\'ll generate a unique code that you and your project members can use to access the project anytime, anywhere.'
+        'Skip account registration, too. Just start a new project by providing a starting point or context, and Collabowrite will generate a unique code that you and your project members can use to access the project anytime, anywhere.'
       )
     )
   );

@@ -18,7 +18,7 @@ export default function IntroScreen() {
       </div>
       <div className="intro_point">
         <h3><FA name="hand-peace-o" className="intro" /> Get started <span className="green"> hassle-free</span></h3>
-        <h5>Skip account registration, too. Just start a new project by providing a starting point or context, and we'll generate a unique code that you and your project members can use to access the project anytime, anywhere.</h5>
+        <h5>Skip account registration, too. Just start a new project by providing a starting point or context, and Collabowrite will generate a unique code that you and your project members can use to access the project anytime, anywhere.</h5>
       </div>
     </div>
   );
