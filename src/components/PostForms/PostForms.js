@@ -130,14 +130,14 @@ class PostForms extends React.Component {
       return (
         <div>
           <ButtonGroup justified>
-            <ButtonGroup><Button bsStyle="success" onClick={this.showCommentForm}><FA name="comment" /> Comment</Button></ButtonGroup>
-            <ButtonGroup><Button bsStyle="info" onClick={this.showReviseForm}><FA name="pencil" /> Write</Button></ButtonGroup>
+            <ButtonGroup><Button bsStyle="success" onClick={this.showCommentForm}>{this.state.showCommentForm ? <span><FA name="times-circle" /> Close</span> : <span><FA name="comment" /> Comment</span> }</Button></ButtonGroup>
+            <ButtonGroup><Button bsStyle="info" onClick={this.showReviseForm}>{this.state.showReviseForm ? <span><FA name="times-circle" /> Close</span> : <span><FA name="pencil" /> Write</span> }</Button></ButtonGroup>
           </ButtonGroup>
           <ReactCSSTransitionGroup transitionName="form-transition" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
             {this.state.showReviseForm ?
               <form onSubmit={this.addRevision}>
                 <br />
-                <p><b><FA name="lightbulb-o" /> Tips:</b><span className="mobile_hide"> To enlarge form, pull its bottom right corner.</span> To close, click "Write" button again.</p>
+                <p className="mobile_hide"><b><FA name="lightbulb-o" /> Tip:</b> To enlarge form, pull its bottom right corner.</p>
                 <textarea autoFocus spellCheck="true" required ref="revisionContent" placeholder="Suggest your version for the project writing." /><br />
                 <textarea spellCheck="true" required ref="revisionComment" placeholder="Comment on your writing above." /><br />
                 <Button block type="submit" bsStyle="info">Post your writing</Button>
@@ -146,7 +146,7 @@ class PostForms extends React.Component {
             {this.state.showCommentForm ?
               <form onSubmit={this.addComment}>
                 <br />
-                <p><b><FA name="lightbulb-o" /> Tips:</b><span className="mobile_hide"> To enlarge form, pull its bottom right corner.</span> To close, click "Comment" button again.</p>                
+                <p className="mobile_hide"><b><FA name="lightbulb-o" /> Tip:</b> To enlarge form, pull its bottom right corner.</p>             
                 <textarea autoFocus required ref="commentOnly" placeholder="Comment on the post above." /><br />
                 <Button block type="submit" bsStyle="success">Post comment</Button>
               </form>

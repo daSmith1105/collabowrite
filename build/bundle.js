@@ -38081,8 +38081,17 @@ var PostForms = function (_React$Component) {
               _react2.default.createElement(
                 _reactBootstrap.Button,
                 { bsStyle: 'success', onClick: this.showCommentForm },
-                _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
-                ' Comment'
+                this.state.showCommentForm ? _react2.default.createElement(
+                  'span',
+                  null,
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'times-circle' }),
+                  ' Close'
+                ) : _react2.default.createElement(
+                  'span',
+                  null,
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'comment' }),
+                  ' Comment'
+                )
               )
             ),
             _react2.default.createElement(
@@ -38091,8 +38100,17 @@ var PostForms = function (_React$Component) {
               _react2.default.createElement(
                 _reactBootstrap.Button,
                 { bsStyle: 'info', onClick: this.showReviseForm },
-                _react2.default.createElement(_reactFontawesome2.default, { name: 'pencil' }),
-                ' Write'
+                this.state.showReviseForm ? _react2.default.createElement(
+                  'span',
+                  null,
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'times-circle' }),
+                  ' Close'
+                ) : _react2.default.createElement(
+                  'span',
+                  null,
+                  _react2.default.createElement(_reactFontawesome2.default, { name: 'pencil' }),
+                  ' Write'
+                )
               )
             )
           ),
@@ -38105,19 +38123,14 @@ var PostForms = function (_React$Component) {
               _react2.default.createElement('br', null),
               _react2.default.createElement(
                 'p',
-                null,
+                { className: 'mobile_hide' },
                 _react2.default.createElement(
                   'b',
                   null,
                   _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
-                  ' Tips:'
+                  ' Tip:'
                 ),
-                _react2.default.createElement(
-                  'span',
-                  { className: 'mobile_hide' },
-                  ' To enlarge form, pull its bottom right corner.'
-                ),
-                ' To close, click "Write" button again.'
+                ' To enlarge form, pull its bottom right corner.'
               ),
               _react2.default.createElement('textarea', { autoFocus: true, spellCheck: 'true', required: true, ref: 'revisionContent', placeholder: 'Suggest your version for the project writing.' }),
               _react2.default.createElement('br', null),
@@ -38135,19 +38148,14 @@ var PostForms = function (_React$Component) {
               _react2.default.createElement('br', null),
               _react2.default.createElement(
                 'p',
-                null,
+                { className: 'mobile_hide' },
                 _react2.default.createElement(
                   'b',
                   null,
                   _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
-                  ' Tips:'
+                  ' Tip:'
                 ),
-                _react2.default.createElement(
-                  'span',
-                  { className: 'mobile_hide' },
-                  ' To enlarge form, pull its bottom right corner.'
-                ),
-                ' To close, click "Comment" button again.'
+                ' To enlarge form, pull its bottom right corner.'
               ),
               _react2.default.createElement('textarea', { autoFocus: true, required: true, ref: 'commentOnly', placeholder: 'Comment on the post above.' }),
               _react2.default.createElement('br', null),
@@ -38829,7 +38837,12 @@ var ThreadForm = function (_React$Component) {
         _react2.default.createElement(
           _reactBootstrap.Button,
           { block: true, bsSize: 'large', onClick: this.showCommentForm },
-          _react2.default.createElement(
+          this.state.showCommentForm ? _react2.default.createElement(
+            'b',
+            null,
+            _react2.default.createElement(_reactFontawesome2.default, { name: 'times-circle' }),
+            ' Close'
+          ) : _react2.default.createElement(
             'b',
             null,
             _react2.default.createElement(_reactFontawesome2.default, { name: 'bullhorn' }),
@@ -38845,19 +38858,14 @@ var ThreadForm = function (_React$Component) {
             _react2.default.createElement('br', null),
             _react2.default.createElement(
               'p',
-              null,
+              { className: 'mobile_hide' },
               _react2.default.createElement(
                 'b',
                 null,
                 _react2.default.createElement(_reactFontawesome2.default, { name: 'lightbulb-o' }),
                 ' Tips:'
               ),
-              _react2.default.createElement(
-                'span',
-                { className: 'mobile_hide' },
-                ' To enlarge form, pull its bottom right corner.'
-              ),
-              ' To close, click the button above again.'
+              ' To enlarge form, pull its bottom right corner.'
             ),
             _react2.default.createElement('textarea', { className: 'general_comment_textarea', autoFocus: true, spellCheck: 'true', required: true, ref: 'comment', placeholder: 'Make an announcement or suggestion about this project in a separate discussion thread post.' }),
             _react2.default.createElement('br', null),
