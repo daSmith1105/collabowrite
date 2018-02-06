@@ -102,9 +102,9 @@ class SigninForm extends React.Component{
 
   render() {
     const buttons = (
-      <ButtonGroup justified>
-        <ButtonGroup><Button bsStyle="success" onClick={this.showNewForm}>Create project</Button></ButtonGroup>
-        <ButtonGroup><Button bsStyle="info" onClick={this.showJoinForm}>Join project</Button></ButtonGroup>
+      <ButtonGroup justified className="start_buttons">
+        <Button bsStyle="success" onClick={this.showNewForm}>Create project</Button>
+        <Button bsStyle="info" onClick={this.showJoinForm}>Join project</Button>
       </ButtonGroup>
     );
     
