@@ -301,8 +301,7 @@ h2 {
 }
 
 .intro_section {
-  padding: 0 20px 15px 20px;
-  background-color: white;
+  padding: 5px;
 }
 
 .intro_point {
@@ -316,9 +315,6 @@ h2 {
   font-size: 22px;
   position: absolute;
   margin: 0 0 3px 10px;
-  left: 222px;
-  bottom: 2px;
-  width: 250px;
 }
 
 .description {
@@ -378,7 +374,6 @@ h5 {
 
 .intro_screen {
   margin-bottom: 10px;
-  background-color: white;
 }
 
 .announce {
@@ -423,7 +418,6 @@ a:link, a:hover, a:active, a:visited {
     border-bottom: none;
     -webkit-filter: contrast(1.1);
     filter: contrast(1.1);
-    margin: 10px 10px 0 10px;
 }
 
 .writer, .demo_button_wraper {
@@ -667,33 +661,4 @@ div.accesscode_input {
   h3 {
     font-size: 25px;
   }
-}
-
-.start_buttons {
-  width: 100%;
-  padding: 10px;
-  background-color: #eee;
-  border-bottom: 1px solid #ddd;
-}
-
-.start_buttons > button {
-  width: 50%;
-}
-
-.btn-success {
-  background-color: #6ac169;
-}
-
-.btn-success:hover {
-  background-color: #4cb74b;
-  border: 1px solid #3f993e !important;
-}
-
-.btn-info {
-  background-color: #39c0d6;
-}
-
-.btn-info:hover {
-  background-color: #22a8bf;
-  border-color: #1d9aaf;
 }
